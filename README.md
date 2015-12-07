@@ -1,6 +1,6 @@
 # Brave Auto Update Services
 
-An auto updater service managing update requests from locally installed updaters
+Auto updater service managing update requests from locally installed updaters
 
 ## Setup
 
@@ -10,10 +10,8 @@ Install dependencies `npm install`
 
 ## Endpoints
 
-### Public
+GET /1/release/{platform}/{version} - get latest release meta-data if newer than installed version
 
-GET /1/release/:os/:installed_version - get latest release meta-data if newer than installed version
+## Start
 
-### Start
-
-npm run build && npm start
+`npm run build && npm start`
