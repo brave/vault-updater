@@ -1,4 +1,4 @@
-let Joi = require('Joi')
+let Joi = require('joi')
 let common = require('../common')
 let _ = require('underscore')
 
