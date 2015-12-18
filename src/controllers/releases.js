@@ -13,8 +13,9 @@ let commonValidator = {
 
 // modify the release to be returned to the client
 let responseFormatter = (release) => {
-  delete release.comparable_version
-  return release
+  let response = _.clone(release)
+  delete response.comparable_version
+  return response
 }
 
 exports.setup = (runtime, releases) => {
@@ -40,6 +41,8 @@ exports.setup = (runtime, releases) => {
         // integer version for comparison
         let cv = common.comparableVersion(request.params.version)
 
+        console.log(cv)
+
         // potential releases
         let potentials = _.filter(
           releases[request.params.platform],
@@ -57,6 +60,7 @@ exports.setup = (runtime, releases) => {
 
         request.log([], 'get')
         if (targetRelease) {
+          console.log(responseFormatter(targetRelease))
           reply(responseFormatter(targetRelease))
         } else {
           let response = reply('No Content')
