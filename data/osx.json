@@ -1,16 +1,9 @@
 [
   {
-    "version": "0.0.3",
-    "notes": "Release notes",
-    "name": "Brave 0.0.3",
-    "pub_date": "2015-10-21T12:29:53+04:00",
-    "url": "https://vault-updater.heroku.com/releases/osx/0.0.3/Brave-0.0.3.zip"
-  },
-  {
     "version": "0.0.2",
     "notes": "Release notes",
     "name": "Brave 0.0.2",
     "pub_date": "2015-10-21T12:29:53+04:00",
-    "url": "https://vault-updater.heroku.com/releases/osx/0.0.2/Brave-0.0.2.zip"
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.0.2/osx/Brave-0.0.2.zip"
   }
 ]
