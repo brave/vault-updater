@@ -1,7 +1,7 @@
 [
   {
     "version": "0.0.4",
-    "notes": "Release notes for v0.0.4",
+    "notes": "persistent session state, pinned sites, other minor bug fixes",
     "name": "Brave 0.0.4",
     "pub_date": "2016-01-04T10:24:00+04:00",
     "url": "https://brave-download.global.ssl.fastly.net/releases/0.0.4/osx/Brave-0.0.4.zip"
