@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.0.4",
+    "notes": "Release notes for v0.0.4",
+    "name": "Brave 0.0.4",
+    "pub_date": "2016-01-04T10:24:00+04:00",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.0.4/osx/Brave-0.0.4.zip"
+  },
+  {
     "version": "0.0.3",
     "notes": "Release notes for v0.0.3",
     "name": "Brave 0.0.3",
