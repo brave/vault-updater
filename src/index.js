@@ -1,7 +1,6 @@
 let Hapi = require('hapi')
 let Inert = require('inert')
 let assert = require('assert')
-let fs = require('fs')
 
 let profile = process.env.NODE_ENV || 'development'
 let config = require('../config/config.' + profile + '.js')
@@ -21,6 +20,7 @@ let runtime = {}
 
 // POST, DEL and GET /1/releases/{platform}/{version}
 let routes = require('./controllers/releases').setup(runtime, releases)
+let crashes = require('./controllers/crashes').setup()
 
 let server = new Hapi.Server()
 let connection = server.connection({
@@ -38,7 +38,7 @@ server.route(
   [
     common.heartBeat,
     common.root
-  ].concat(routes)
+  ].concat(routes).concat(crashes)
 )
 
 // static release file handling (dev)
