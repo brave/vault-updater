@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "version": "0.0.6",
+    "notes": "Tab previews and loading indicators per tab",
+    "name": "Brave 0.0.6",
+    "pub_date": "2016-09-04T10:24:00+04:00"
+  },
+  {
+    "version": "0.0.5",
+    "notes": "Tracking protection and ad block",
+    "name": "Brave 0.0.5",
+    "pub_date": "2016-08-04T10:24:00+04:00"
+  },
+  {
+    "version": "0.0.4",
+    "notes": "persistent session state, pinned sites, other minor bug fixes",
+    "name": "Brave 0.0.4",
+    "pub_date": "2016-01-04T10:24:00+04:00"
+  },
+  {
+    "version": "0.0.3",
+    "notes": "Release notes for v0.0.3",
+    "name": "Brave 0.0.3",
+    "pub_date": "2015-12-30T12:29:53+04:00"
+  },
+  {
+    "version": "0.0.2",
+    "notes": "Release notes",
+    "name": "Brave 0.0.2",
+    "pub_date": "2015-10-21T12:29:53+04:00"
+  }
+]

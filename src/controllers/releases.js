@@ -41,6 +41,7 @@ exports.setup = (runtime, releases) => {
         // integer version for comparison
         let cv = common.comparableVersion(request.params.version)
 
+        // TODO - increment Mongo counter
         console.log(cv)
 
         // potential releases
