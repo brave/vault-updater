@@ -1,7 +1,9 @@
+let assert = require('assert')
 let Joi = require('joi')
 let common = require('../common')
 let _ = require('underscore')
 
+// valid platform identifiers
 exports.platforms = ['winx64', 'osx']
 
 let commonValidator = {
@@ -16,6 +18,19 @@ let responseFormatter = (release) => {
   let response = _.clone(release)
   delete response.comparable_version
   return response
+}
+
+// build a usage object is query parameters passed in
+let buildUsage = (request) => {
+  if (request.query.daily) {
+    return {
+      daily: request.query.daily === 'true',
+      weekly: request.query.weekly === 'true',
+      monthly: request.query.monthly === 'true'
+    }
+  } else {
+    return null
+  }
 }
 
 exports.setup = (runtime, releases) => {
@@ -41,8 +56,10 @@ exports.setup = (runtime, releases) => {
         // integer version for comparison
         let cv = common.comparableVersion(request.params.version)
 
-        // TODO - increment Mongo counter
         console.log(cv)
+
+        // build the usage record (for Mongo)
+        let usage = buildUsage(request)
 
         // potential releases
         let potentials = _.filter(
@@ -59,14 +76,18 @@ exports.setup = (runtime, releases) => {
           )
         }
 
-        request.log([], 'get')
-        if (targetRelease) {
-          console.log(responseFormatter(targetRelease))
-          reply(responseFormatter(targetRelease))
-        } else {
-          let response = reply('No Content')
-          response.code(204)
-        }
+        // insert usage record if not null
+        runtime.mongo.models.insertUsage(usage, (err, results) => {
+          assert.equal(err, null)
+          request.log([], 'get')
+          if (targetRelease) {
+            console.log(responseFormatter(targetRelease))
+            reply(responseFormatter(targetRelease))
+          } else {
+            let response = reply('No Content')
+            response.code(204)
+          }
+        })
       },
       validate: commonValidator
     }
