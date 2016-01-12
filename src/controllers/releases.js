@@ -2,7 +2,7 @@ let Joi = require('joi')
 let common = require('../common')
 let _ = require('underscore')
 
-exports.platforms = ['x64', 'osx']
+exports.platforms = ['winx64', 'osx']
 
 let commonValidator = {
   params: {
