@@ -25,7 +25,7 @@ db.setup((mongo) => {
 
   // POST, DEL and GET /1/releases/{platform}/{version}
   let routes = require('./controllers/releases').setup(runtime, releases)
-  let crashes = require('./controllers/crashes').setup()
+  let crashes = require('./controllers/crashes').setup(runtime)
 
   let server = new Hapi.Server()
   let connection = server.connection({

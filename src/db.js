@@ -10,7 +10,8 @@ const usageSchema = Joi.object().keys({
   daily: Joi.boolean(),
   weekly: Joi.boolean(),
   monthly: Joi.boolean()
-}).with('daily', 'weekly', 'monthly')
+})
+.with('daily', 'weekly', 'monthly')
 
 exports.setup = (done) => {
   MongoClient.connect(mongoURL, (err, connection) => {
@@ -40,11 +41,9 @@ exports.setup = (done) => {
       },
 
       // insert crash record
-      insertCrash: (usage, done) => {
-        // TODO insert crash record
-        // validate crash record
-        crashesCollection
-        done(null, {})
+      insertCrash: (crash, done) => {
+        crash.ts = (new Date()).getTime()
+        crashesCollection.insertOne(crash, done)
       }
     }
 
