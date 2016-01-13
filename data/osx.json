@@ -1,16 +1,23 @@
 [
   {
+    "version": "0.0.7",
+    "notes": "HTTPS Everywhere, Opening window fixes, Adblock fixes, and more",
+    "name": "Brave 0.0.7",
+    "pub_date": "2016-01-13T10:24:00+04:00",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.0.7/osx/Brave-0.0.7.zip"
+  },
+  {
     "version": "0.0.6",
     "notes": "Tab previews and loading indicators per tab",
     "name": "Brave 0.0.6",
-    "pub_date": "2016-09-04T10:24:00+04:00",
+    "pub_date": "2016-01-09T10:24:00+04:00",
     "url": "https://brave-download.global.ssl.fastly.net/releases/0.0.6/osx/Brave-0.0.6.zip"
   },
   {
     "version": "0.0.5",
     "notes": "Tracking protection and ad block",
     "name": "Brave 0.0.5",
-    "pub_date": "2016-08-04T10:24:00+04:00",
+    "pub_date": "2016-01-04T10:24:00+04:00",
     "url": "https://brave-download.global.ssl.fastly.net/releases/0.0.5/osx/Brave-0.0.5.zip"
   },
   {
