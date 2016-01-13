@@ -9,23 +9,13 @@ exports.setup = (runtime) => {
       handler: function (request, reply) {
         const payload = request.payload
         payload.ts = (new Date()).getTime()
+        delete payload.upload_file_minidump
+        console.log(payload)
         runtime.mongo.models.insertCrash(payload, (err, results) => {
           assert.equal(err, null)
           console.log(`crash recorded for version ${payload.ver}`)
           reply('OK')
         })
-      },
-      validate: {
-        payload: {
-          ver: Joi.string().required(),
-          platform: Joi.string().required(),
-          process_type: Joi.string().required(),
-          guid: Joi.string().required(),
-          _version: Joi.string().required(),
-          _productName: Joi.string().required(),
-          prod: Joi.string().required(),
-          _companyName: Joi.string().required()
-        }
       }
     }
   }
