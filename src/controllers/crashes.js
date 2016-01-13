@@ -9,7 +9,6 @@ exports.setup = (runtime) => {
       handler: function (request, reply) {
         const payload = request.payload
         payload.ts = (new Date()).getTime()
-        delete payload.upload_file_minidump
         console.log(payload)
         runtime.mongo.models.insertCrash(payload, (err, results) => {
           assert.equal(err, null)
