@@ -7,7 +7,8 @@
     "start": "node dist/index.js",
     "build": "babel src --out-dir dist --source-maps",
     "preinstall": "babel src --out-dir dist --source-maps",
-    "lint": "standard"
+    "lint": "standard",
+    "verify": "node tools/verify.js"
   },
   "author": "Brave",
   "license": "MPL-2.0",
