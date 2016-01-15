@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.0",
+    "notes": "Popup window fixes, new update UI, HTTPS Everywhere fixes, more menu work.",
+    "name": "Brave 0.7.0",
+    "pub_date": "2016-01-15T10:24:00+04:00",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.0/osx/Brave-0.7.0.zip"
+  },
+  {
     "version": "0.0.7",
     "notes": "HTTPS Everywhere, Opening window fixes, Adblock fixes, and more",
     "name": "Brave 0.0.7",
