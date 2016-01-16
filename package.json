@@ -1,6 +1,6 @@
 {
   "name": "vault-updater",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Auto-update server for Brave laptop browser",
   "main": "index.js",
   "scripts": {
