@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.1",
+    "name": "Brave 0.7.1",
+    "pub_date": "2016-01-16T06:12:13.143Z",
+    "notes": "Possible fix for websites not loading, fix for undoing closed tabs from session store, menu fixes",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.1/osx/Brave-0.7.1.zip"
+  },
+  {
     "version": "0.7.0",
     "notes": "Popup window fixes, new update UI, HTTPS Everywhere fixes, more menu work.",
     "name": "Brave 0.7.0",
