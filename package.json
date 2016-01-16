@@ -1,6 +1,6 @@
 {
   "name": "vault-updater",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Auto-update server for Brave laptop browser",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,8 @@
     "joi": "^7.0.1",
     "kerberos": "0.0.17",
     "mongodb": "^2.1.4",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "yargs": "^3.31.0"
   },
   "devDependencies": {
     "standard": "^5.4.1"

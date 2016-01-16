@@ -15,3 +15,11 @@ GET /1/release/{platform}/{version} - get latest release meta-data if newer than
 ## Start
 
 `npm run build && npm start`
+
+## Update
+
+`node tools/update.js --version=X.X.X --notes="Release notes" --overwrite`
+
+## Verification
+
+`npm run verify`
