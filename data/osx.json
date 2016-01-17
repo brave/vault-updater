@@ -1,5 +1,12 @@
 [
   {
+    "version": "7.2.0",
+    "name": "Brave 7.2.0",
+    "pub_date": "2016-01-17T20:30:32.635Z",
+    "notes": "Clicking on links when we are the default browser now works, more fixes for multi window filtering",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/7.2.0/osx/Brave-7.2.0.zip"
+  },
+  {
     "version": "0.7.1",
     "name": "Brave 0.7.1",
     "pub_date": "2016-01-16T06:12:13.143Z",
