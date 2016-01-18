@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.4",
+    "name": "Brave 0.7.4",
+    "pub_date": "2016-01-18T16:22:22.722Z",
+    "notes": "Enable / disable https everywhere, adblock, and tracking protection from the menus.",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.4/osx/Brave-0.7.4.zip"
+  },
+  {
     "version": "0.7.3",
     "name": "Brave 0.7.3",
     "pub_date": "2016-01-18T14:43:04.241Z",
