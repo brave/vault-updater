@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.3",
+    "name": "Brave 0.7.3",
+    "pub_date": "2016-01-18T14:43:04.241Z",
+    "notes": "Added UI for checking updates, downloading updates, no updates, release notes, and errors.  Removed some bad auto-suggest URLs (not all bad ones yet).",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.3/osx/Brave-0.7.3.zip"
+  },
+  {
     "version": "0.7.2",
     "name": "Brave 0.7.2",
     "pub_date": "2016-01-17T20:30:32.635Z",
