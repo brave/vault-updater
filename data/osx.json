@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.5",
+    "name": "Brave 0.7.5",
+    "pub_date": "2016-01-18T21:01:19.604Z",
+    "notes": "Fix link navigation sometimes not working, Facebook login fix, fix a case of adblock/TP/https-everywhere not working, fix for auto update UI appearing for background checks.",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.5/osx/Brave-0.7.5.zip"
+  },
+  {
     "version": "0.7.4",
     "name": "Brave 0.7.4",
     "pub_date": "2016-01-18T16:22:22.722Z",
