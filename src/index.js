@@ -36,7 +36,7 @@ db.setup((mongo) => {
   server.register(Inert, function () {})
 
   // Handle the boom response as well as all other requests (cache control for telemetry)
-  setGlobalHeader(server, 'Cache-Control', 'no-cache, no-store, must-revalidate')
+  setGlobalHeader(server, 'Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0')
   setGlobalHeader(server, 'Pragma', 'no-cache')
   setGlobalHeader(server, 'Expires', 0)
 
