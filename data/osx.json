@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.6",
+    "name": "Brave 0.7.6",
+    "pub_date": "2016-01-19T04:27:48.584Z",
+    "notes": "Turning blocking ads off, now also turns off insertions.  Fix for no updates available on Windows. Toggle bookmarks fix.",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.6/osx/Brave-0.7.6.zip"
+  },
+  {
     "version": "0.7.5",
     "name": "Brave 0.7.5",
     "pub_date": "2016-01-18T21:01:19.604Z",
