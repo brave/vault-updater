@@ -13,10 +13,11 @@
  *  The S3_KEY and S3_SECRET are available from the IAM console in AWS
  */
 
-var s3 = require('s3')
 var fs = require('fs')
 var path = require('path')
 var async = require('async')
+
+var AWS = require('aws-sdk')
 
 var args = require('yargs')
     .usage('node tools/uploader.js --source=/full/directory/to/browser-laptop --send')
@@ -42,6 +43,7 @@ var recipes = [
   ['Brave-darwin-x64/Brave-VERSION.zip', 'releases/VERSION/osx'],
   ['dist/Brave.dmg', 'releases/VERSION/osx'],
   ['win64-dist/BraveSetup.exe', 'releases/VERSION/winx64'],
+  ['win64-dist/setup.msi', 'releases/VERSION/winx64'],
   ['win64-dist/BraveSetup.exe', 'releases/winx64'],
   ['win64-dist/RELEASES', 'releases/winx64'],
   ['win64-dist/Brave-VERSION-full.nupkg', 'releases/winx64']
@@ -60,14 +62,11 @@ if (!process.env.S3_KEY || !process.env.S3_SECRET) {
   throw new Error('S3_KEY or S3_SECRET environment variables not set')
 }
 
-// Create the S3 client configured with our region and keys
-var client = s3.createClient({
-  s3Options: {
-    accessKeyId: process.env.S3_KEY,
-    secretAccessKey: process.env.S3_SECRET,
-    region: S3_REGION,
-    sslEnabled: true
-  }
+AWS.config.update({
+  accessKeyId: process.env.S3_KEY,
+  secretAccessKey: process.env.S3_SECRET,
+  region: S3_REGION,
+  sslEnabled: true
 })
 
 // Return a function used to transfer a file to S3
@@ -86,20 +85,29 @@ var makeS3Uploader = (filename, s3Key) => {
       }
       console.log(params)
 
-      var uploader = client.uploadFile(params)
-
-      // Called on an error condition
-      uploader.on('error', function(err) {
-        console.log(err)
-        console.error("unable to upload:", err.stack)
-        cb(err)
+      var body = fs.createReadStream(filename)
+      var s3obj = new AWS.S3({
+        params: {
+          Bucket: S3_BUCKET,
+          Key: s3Key + '/' + path.basename(filename),
+          ACL: 'public-read'
+        }
       })
 
-      // Called on a successful transfer
-      uploader.on('end', function() {
-        console.log("OK - Done uploading " + filename)
-        cb(null)
-      })
+      var lastPercent = 0
+      s3obj.upload({Body: body}).
+        on('httpUploadProgress', function(evt) {
+          var percent = Math.round(evt.loaded / evt.total * 100)
+          if (lastPercent !== percent) {
+            process.stdout.write(percent + '% ')
+            lastPercent = percent
+          }
+        }).
+        send((err, data) => {
+          console.log('Done')
+          console.log(data)
+          cb(err)
+        })
 
     } else {
       console.log('IGNORING - ' + filename + ' does not exist')

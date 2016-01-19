@@ -13,7 +13,7 @@
   "author": "Brave",
   "license": "MPL-2.0",
   "dependencies": {
-    "aws-sdk": "^2.2.27",
+    "aws-sdk": "^2.2.30",
     "babel": "^6.1.18",
     "babel-cli": "^6.2.0",
     "babel-core": "^6.2.1",
@@ -24,7 +24,6 @@
     "joi": "^7.0.1",
     "kerberos": "0.0.17",
     "mongodb": "^2.1.4",
-    "s3": "^4.4.0",
     "underscore": "^1.8.3",
     "yargs": "^3.31.0"
   },
