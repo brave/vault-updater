@@ -1,6 +1,7 @@
 let Hapi = require('hapi')
 let Inert = require('inert')
 let assert = require('assert')
+let setGlobalHeader = require('hapi-set-header')
 
 let profile = process.env.NODE_ENV || 'development'
 let config = require('../config/config.' + profile + '.js')
@@ -34,13 +35,10 @@ db.setup((mongo) => {
   })
   server.register(Inert, function () {})
 
-  // This will disable caching so telemetry operates as expected
-  server.ext('onPreResponse', (request, reply) => {
-    request.response.header('Cache-Control', 'no-cache, no-store, must-revalidate')
-    request.response.header('Pragma', 'no-cache')
-    request.response.header('Expires', '0')
-    reply.continue()
-  })
+  // Handle the boom response as well as all other requests (cache control for telemetry)
+  setGlobalHeader(server, 'Cache-Control', 'no-cache, no-store, must-revalidate')
+  setGlobalHeader(server, 'Pragma', 'no-cache')
+  setGlobalHeader(server, 'Expires', 0)
 
   connection.listener.once('clientError', function (e) {
     console.error(e)
