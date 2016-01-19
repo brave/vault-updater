@@ -52,6 +52,31 @@ exports.setup = (runtime, releases) => {
 
   */
 
+  // Redirect URLs for latest installer files
+  let platformLatest = {
+    winx64: 'https://brave-download.global.ssl.fastly.net/releases/VERSION/winx64/BraveSetup.exe',
+    osx: 'https://brave-download.global.ssl.fastly.net/releases/VERSION/osx/Brave.dmg'
+  }
+
+  let latest = {
+    method: 'GET',
+    path: '/latest/{platform}',
+    config: {
+      handler: function(request, reply) {
+        if (platformLatest[request.params.platform]) {
+          let url = platformLatest[request.params.platform]
+          let version = releases[request.params.platform][0].version
+          url = url.replace('VERSION', version)
+          console.log(`Redirect for ${request.params.platform}: ` + url)
+          reply().redirect(url)
+        } else {
+          let response = reply('Unknown platform')
+          response.code(204)
+        }
+      }
+    }
+  }
+
   // Find the latest release for this platform AFTER the version passed to this handler
   let get = {
     method: 'GET',
@@ -101,6 +126,7 @@ exports.setup = (runtime, releases) => {
   }
 
   return [
-    get
+    get,
+    latest
   ]
 }
