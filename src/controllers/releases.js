@@ -3,7 +3,7 @@ let Joi = require('joi')
 let common = require('../common')
 let _ = require('underscore')
 
-// valid platform identifiers
+// Valid platform identifiers
 exports.platforms = ['winx64', 'osx']
 
 let commonValidator = {
@@ -13,14 +13,14 @@ let commonValidator = {
   }
 }
 
-// modify the release to be returned to the client
+// Modify the release to be returned to the client
 let responseFormatter = (release) => {
   let response = _.clone(release)
   delete response.comparable_version
   return response
 }
 
-// build a usage object is query parameters passed in
+// Build a usage object if query parameters passed in
 let buildUsage = (request) => {
   if (request.query.daily) {
     return {
@@ -31,6 +31,11 @@ let buildUsage = (request) => {
   } else {
     return null
   }
+}
+
+// Build release notes from multiple versions greater than the passed in version number
+let buildReleaseNotes = (potentials) => {
+  return potentials.map((release) => release.notes).join('\n\n')
 }
 
 exports.setup = (runtime, releases) => {
@@ -47,21 +52,21 @@ exports.setup = (runtime, releases) => {
 
   */
 
-  // find the latest release for this platform AFTER the version passed to this handler
+  // Find the latest release for this platform AFTER the version passed to this handler
   let get = {
     method: 'GET',
     path: '/1/releases/{platform}/{version}',
     config: {
       handler: function (request, reply) {
-        // integer version for comparison
+        // Integer version for comparison
         let cv = common.comparableVersion(request.params.version)
 
         console.log(cv)
 
-        // build the usage record (for Mongo)
+        // Build the usage record (for Mongo)
         let usage = buildUsage(request)
 
-        // potential releases
+        // Potential releases
         let potentials = _.filter(
           releases[request.params.platform],
           (rel) => rel.comparable_version > cv
@@ -69,14 +74,16 @@ exports.setup = (runtime, releases) => {
 
         let targetRelease = null
         if (!_.isEmpty(potentials)) {
-          // most current release
-          targetRelease = _.max(
+          // Most current release
+          targetRelease = _.clone(_.max(
             potentials,
             (rel) => rel.comparable_version
-          )
+          ))
+          // Concatenate the release notes for all potential updates
+          targetRelease.notes = buildReleaseNotes(potentials)
         }
 
-        // insert usage record if not null
+        // Insert usage record if not null
         runtime.mongo.models.insertUsage(usage, (err, results) => {
           assert.equal(err, null)
           request.log([], 'get')
