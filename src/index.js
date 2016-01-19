@@ -34,6 +34,14 @@ db.setup((mongo) => {
   })
   server.register(Inert, function () {})
 
+  // This will disable caching so telemetry operates as expected
+  server.ext('onPreResponse', (request, reply) => {
+    request.response.header('Cache-Control', 'no-cache, no-store, must-revalidate')
+    request.response.header('Pragma', 'no-cache')
+    request.response.header('Expires', '0')
+    reply.continue()
+  })
+
   connection.listener.once('clientError', function (e) {
     console.error(e)
   })
