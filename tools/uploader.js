@@ -20,7 +20,7 @@ var async = require('async')
 
 var args = require('yargs')
     .usage('node tools/uploader.js --source=/full/directory/to/browser-laptop --send')
-    .demand('source')
+    .default('source', '../browser-laptop')
     .default('send', false)
     .argv
 
