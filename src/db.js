@@ -9,7 +9,9 @@ if (!mongoURL) throw new Error('MONGOLAB_URI must be set in environment')
 const usageSchema = Joi.object().keys({
   daily: Joi.boolean(),
   weekly: Joi.boolean(),
-  monthly: Joi.boolean()
+  monthly: Joi.boolean(),
+  platform: Joi.string(),
+  version: Joi.string()
 })
 .with('daily', 'weekly', 'monthly')
 

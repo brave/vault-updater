@@ -26,7 +26,9 @@ let buildUsage = (request) => {
     return {
       daily: request.query.daily === 'true',
       weekly: request.query.weekly === 'true',
-      monthly: request.query.monthly === 'true'
+      monthly: request.query.monthly === 'true',
+      platform: request.params.platform || 'unknown',
+      version: request.params.version || 'unknown'
     }
   } else {
     return null
