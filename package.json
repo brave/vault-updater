@@ -4,6 +4,8 @@
   "description": "Auto-update server for Brave laptop browser",
   "main": "index.js",
   "scripts": {
+    "checks": "npm run check-security",
+    "check-security": "nsp check",
     "start": "node dist/index.js",
     "build": "babel src --out-dir dist --source-maps",
     "preinstall": "babel src --out-dir dist --source-maps",
@@ -29,6 +31,7 @@
     "yargs": "^3.31.0"
   },
   "devDependencies": {
+    "nsp": "^2.2.0",
     "standard": "^5.4.1"
   },
   "precommit": [
