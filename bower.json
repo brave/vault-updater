@@ -1,0 +1,22 @@
+{
+  "name": "vault-updater",
+  "description": "Auto-update server for Brave laptop browser",
+  "main": "index.js",
+  "authors": [
+    "Brave"
+  ],
+  "license": "MPL-2.0",
+  "homepage": "https://github.com/brave/vault-updater",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Chart.js": "~1.0.2",
+    "underscore": "~1.8.3"
+  }
+}

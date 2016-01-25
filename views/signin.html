@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="http://brave.com/favicon.ico">
+    <title>Sign In</title>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/local/css/signin.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <form class="form-signin" action="/login" method="post">
+        <img src="/local/img/brave_logo_big2.png" text-align="center">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        {{#if message}}
+          <h4>{{message}}</h4>
+        {{/if}}
+        <label for="inputEmail" class="sr-only">User name</label>
+        <input id="inputEmail" name="username" class="form-control" placeholder="User name" required="" autofocus="">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required="">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+    </div>
+  </body>
+</html>

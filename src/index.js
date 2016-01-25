@@ -1,6 +1,9 @@
 let Hapi = require('hapi')
 let Inert = require('inert')
 let assert = require('assert')
+let ui = require('./ui')
+let api = require('./api')
+
 let setGlobalHeader = require('hapi-set-header')
 
 let profile = process.env.NODE_ENV || 'development'
@@ -63,6 +66,12 @@ db.setup((mongo) => {
       }
     }
   })
+
+  // Setup the API
+  api.setup(server, mongo)
+
+  // Setup the UI for the dashboard
+  ui.setup(server)
 
   server.start((err) => {
     assert(!err, `error starting service ${err}`)
