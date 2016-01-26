@@ -8,8 +8,17 @@ exports.setup = (server) => {
     throw new Error("ADMIN_PASSWORD not set")
   }
 
+  // The SESSION_SECRET environment variable must be set
+  if (!process.env.SESSION_SECRET) {
+    throw new Error("SESSION_SECRET not set")
+  }
+
   // Register the server side templates
   server.register(require('vision'), (err) => {
+    if (err) {
+      throw new Error('vision template handler could not be registered')
+    }
+
     server.views({
       engines: {
         html: require('handlebars')
@@ -82,12 +91,18 @@ exports.setup = (server) => {
     })
     server.app.cache = cache
 
+    // For local development set LOCAL to true
+    var secure = true
+    if (process.env.LOCAL) {
+      secure = false
+    }
+
     // Auth strategy
     server.auth.strategy('session', 'cookie', true, {
-      password: 'secret',
+      password: process.env.SESSION_SECRET,
       cookie: 'sid',
       redirectTo: '/login',
-      isSecure: false,
+      isSecure: secure,
       validateFunc: (request, session, callback) => {
         cache.get(session.sid, (err, cached) => {
           if (err) {
