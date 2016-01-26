@@ -72,4 +72,4 @@ verifyUrl(winx64_url + '/BraveSetup.exe', 'BraveSetup.exe not found')
 var version = versions[0]
 var winx64_version_url = 'https://brave-download.global.ssl.fastly.net/releases/' + version + '/winx64/'
 verifyUrl(winx64_version_url + 'BraveSetup.exe', 'Versioned BraveSetup.exe not found for version ' + version)
-verifyUrl(winx64_version_url + 'Setup.msi', 'Versioned setup.msi not found for version ' + version)
+verifyUrl(winx64_version_url + 'setup.msi', 'Versioned setup.msi not found for version ' + version)
