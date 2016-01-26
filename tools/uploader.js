@@ -40,13 +40,13 @@ var version = pack.version
 
 // Recipe pairs containing local relative paths to files and key locations on S3
 var recipes = [
-  ['Brave-darwin-x64/Brave-VERSION.zip', 'releases/VERSION/osx'],
+  ['dist/Brave-VERSION.zip', 'releases/VERSION/osx'],
   ['dist/Brave.dmg', 'releases/VERSION/osx'],
-  ['win64-dist/BraveSetup.exe', 'releases/VERSION/winx64'],
-  ['win64-dist/setup.msi', 'releases/VERSION/winx64'],
-  ['win64-dist/BraveSetup.exe', 'releases/winx64'],
-  ['win64-dist/RELEASES', 'releases/winx64'],
-  ['win64-dist/Brave-VERSION-full.nupkg', 'releases/winx64']
+  ['dist/BraveSetup.exe', 'releases/VERSION/winx64'],
+  ['dist/setup.msi', 'releases/VERSION/winx64'],
+  ['dist/BraveSetup.exe', 'releases/winx64'],
+  ['dist/RELEASES', 'releases/winx64'],
+  ['dist/Brave-VERSION-full.nupkg', 'releases/winx64']
 ]
 
 // Replace VERSION in the recipes with the package version
