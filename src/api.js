@@ -17,12 +17,28 @@ const pullOutAttribs = (obj, k) => {
 // Data endpoints
 exports.setup = (server, db) => {
 
-  // Daily active users
+  // daily active users
   server.route({
     method: 'GET',
     path: '/api/1/dau',
     handler: function (request, reply) {
       reporting.dailyActiveUsersGrouped(db, (err, rows) => {
+        if (err) {
+          reply(err.toString).statusCode(500)
+        } else {
+          rows.forEach((row) => pullOutAttribs(row, '_id'))
+          reply(rows)
+        }
+      })
+    }
+  })
+
+  // daily active users
+  server.route({
+    method: 'GET',
+    path: '/api/1/dau_aggregated',
+    handler: function (request, reply) {
+      reporting.dailyActiveUsersAggregated(db, (err, rows) => {
         if (err) {
           reply(err.toString).statusCode(500)
         } else {

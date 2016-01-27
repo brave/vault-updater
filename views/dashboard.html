@@ -44,6 +44,7 @@
           <ul class="nav nav-sidebar">
             <li><a href="">Overview <span class="sr-only">(current)</span></a></li>
             <li><a href="#" id="usage">Usage</a></li>
+            <li><a href="#" id="usageAgg">Usage (Aggregated)</a></li>
             <li><a href="#" id="crashes">Crash Reporting</a></li>
           </ul>
         </div>
@@ -59,6 +60,23 @@
                   <tr>
                     <th>Date</th>
                     <th>O/S</th>
+                    <th class="text-right">Unique</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="usageContentAgg" style="display: none;">
+            <canvas id="usageChartAgg" height="300" width="800"></canvas>
+            <h2 class="sub-header">Usage</h2>
+            <div class="table-responsive">
+              <table class="table table-striped" id="usageAggDataTable">
+                <thead>
+                  <tr>
+                    <th>Date</th>
                     <th class="text-right">Unique</th>
                   </tr>
                 </thead>
