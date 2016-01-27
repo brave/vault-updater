@@ -33,6 +33,25 @@ var styles = [
      }
 ]
 
+var versionSuccess = function(rows) {
+  var options = {}
+  var sum = _.reduce(
+    _.pluck(rows, 'count'),
+    function(a, b) { return a + b },
+    0
+  )
+  var data = _.map(rows, function(row, idx) {
+    var per = Math.round(row.count / sum * 100)
+    return {
+      label: row.version + ' (' + per + '%)',
+      value: row.count,
+      color: styles[idx].fillColor
+    }
+  })
+  var ctx = document.getElementById("versionChart").getContext("2d");
+  var doughnutChart = new Chart(ctx).Doughnut(data, options)
+}
+
 var usageSuccess = function(rows) {
 
   var table = $('#usageDataTable tbody')
@@ -109,6 +128,11 @@ $('#usageAgg').on('click', function(evt) {
   $.ajax('/api/1/dau_aggregated', {
     success: usageSuccess
   })
+
+  $.ajax('/api/1/version', {
+    success: versionSuccess
+  })
+
 })
 
 

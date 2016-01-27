@@ -17,7 +17,23 @@ const pullOutAttribs = (obj, k) => {
 // Data endpoints
 exports.setup = (server, db) => {
 
-  // daily active users
+  // Version for today's daily active users
+  server.route({
+    method: 'GET',
+    path: '/api/1/version',
+    handler: function (request, reply) {
+      reporting.dailyVersions(db, (err, rows) => {
+        if (err) {
+          reply(err.toString).statusCode(500)
+        } else {
+          rows.forEach((row) => pullOutAttribs(row, '_id'))
+          reply(rows)
+        }
+      })
+    }
+  })
+
+  // Daily active users
   server.route({
     method: 'GET',
     path: '/api/1/dau',
@@ -33,7 +49,7 @@ exports.setup = (server, db) => {
     }
   })
 
-  // daily active users
+  // Daily active users aggregated across platforms
   server.route({
     method: 'GET',
     path: '/api/1/dau_aggregated',

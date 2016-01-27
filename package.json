@@ -30,6 +30,7 @@
     "joi": "^7.0.1",
     "jquery": "^2.2.0",
     "kerberos": "0.0.17",
+    "moment": "^2.11.1",
     "mongodb": "^2.1.4",
     "underscore": "^1.8.3",
     "uuid-js": "^0.7.5",
