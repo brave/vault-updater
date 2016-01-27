@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.9",
+    "name": "Brave 0.7.9",
+    "pub_date": "2016-01-27T01:45:20.933Z",
+    "notes": "UI tweaks, adblock bug fix, left and right nav keyboard shortcuts, and better privacy. Full details at https://github.com/brave/browser-laptop/releases/tag/v0.7.9dev",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.9/osx/Brave-0.7.9.zip"
+  },
+  {
     "version": "0.7.8",
     "name": "Brave 0.7.8",
     "pub_date": "2016-01-26T02:51:47.572Z",
