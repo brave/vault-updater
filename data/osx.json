@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.10",
+    "name": "Brave 0.7.10",
+    "pub_date": "2016-01-28T18:15:25.220Z",
+    "notes": "Added hamburger menu, fixed Windows packaging issues, Windows black window problem, and fixed various in-content problems.   Release notes: https://github.com/brave/browser-laptop/releases/tag/v0.7.10dev",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.10/osx/Brave-0.7.10.zip"
+  },
+  {
     "version": "0.7.9",
     "name": "Brave 0.7.9",
     "pub_date": "2016-01-27T01:45:20.933Z",
