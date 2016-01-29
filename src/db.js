@@ -10,6 +10,7 @@ const usageSchema = Joi.object().keys({
   daily: Joi.boolean(),
   weekly: Joi.boolean(),
   monthly: Joi.boolean(),
+  first: Joi.boolean(),
   platform: Joi.string(),
   version: Joi.string()
 })
@@ -27,6 +28,7 @@ exports.setup = (done) => {
     connection.models = {
       // insert usage record
       insertUsage: (usage, done) => {
+        console.log(JSON.stringify(usage))
         if (usage) {
           const invalid = Joi.validate(usage, usageSchema)
           if (invalid.error) {
