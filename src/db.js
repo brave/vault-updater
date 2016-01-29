@@ -37,7 +37,6 @@ exports.setup = (done) => {
             // store the current timestamp in epoch seconds
             usage.ts = (new Date()).getTime()
             usage.year_month_day = moment().format('YYYY-MM-DD')
-            console.log(JSON.stringify(usage))
             usageCollection.insertOne(usage, done)
           }
         } else {
