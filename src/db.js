@@ -1,4 +1,5 @@
 let assert = require('assert')
+let moment = require('moment')
 
 const Joi = require('joi')
 const MongoClient = require('mongodb').MongoClient
@@ -28,7 +29,6 @@ exports.setup = (done) => {
     connection.models = {
       // insert usage record
       insertUsage: (usage, done) => {
-        console.log(JSON.stringify(usage))
         if (usage) {
           const invalid = Joi.validate(usage, usageSchema)
           if (invalid.error) {
@@ -36,6 +36,8 @@ exports.setup = (done) => {
           } else {
             // store the current timestamp in epoch seconds
             usage.ts = (new Date()).getTime()
+            usage.year_month_day = moment().format('YYYY-MM-DD')
+            console.log(JSON.stringify(usage))
             usageCollection.insertOne(usage, done)
           }
         } else {

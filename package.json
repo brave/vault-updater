@@ -24,6 +24,7 @@
     "inert": "^3.2.0",
     "joi": "^7.0.1",
     "kerberos": "0.0.17",
+    "moment": "^2.11.1",
     "mongodb": "^2.1.4",
     "underscore": "^1.8.3",
     "yargs": "^3.31.0"
