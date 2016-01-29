@@ -28,7 +28,8 @@ let buildUsage = (request) => {
       weekly: request.query.weekly === 'true',
       monthly: request.query.monthly === 'true',
       platform: request.params.platform || 'unknown',
-      version: request.params.version || 'unknown'
+      version: request.params.version || 'unknown',
+      first: request.query.first === 'true'
     }
   } else {
     return null
@@ -87,8 +88,6 @@ exports.setup = (runtime, releases) => {
       handler: function (request, reply) {
         // Integer version for comparison
         let cv = common.comparableVersion(request.params.version)
-
-        console.log(cv)
 
         // Build the usage record (for Mongo)
         let usage = buildUsage(request)
