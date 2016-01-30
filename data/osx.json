@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.11",
+    "name": "Brave 0.7.11",
+    "pub_date": "2016-01-30T03:52:33.320Z",
+    "notes": "Fixed a security issue, added Windows shortcuts, fixed site loading problems, and a lot more.  Full details: https://github.com/brave/browser-laptop/releases",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.11/osx/Brave-0.7.11.zip"
+  },
+  {
     "version": "0.7.10",
     "name": "Brave 0.7.10",
     "pub_date": "2016-01-28T18:15:25.220Z",
