@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.7.12",
+    "name": "Brave 0.7.12",
+    "pub_date": "2016-02-01T17:29:50.783Z",
+    "notes": "Various crash fixes and window.opener fixes, various keyboard shortcut fixes, and much more. Full release notes here: https://github.com/brave/browser-laptop/releases/tag/v0.7.12dev"
+  },
+  {
     "version": "0.7.11",
     "name": "Brave 0.7.11",
     "pub_date": "2016-01-30T03:52:33.320Z",
