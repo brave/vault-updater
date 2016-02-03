@@ -48,6 +48,9 @@ exports.setup = (done) => {
       // insert crash record
       insertCrash: (crash, done) => {
         crash.ts = (new Date()).getTime()
+        crash.year_month_day = moment().format('YYYY-MM-DD')
+        delete crash.upload_file_minidump
+        console.log(JSON.stringify(crash))
         crashesCollection.insertOne(crash, done)
       }
     }
