@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.7.13",
+    "name": "Brave 0.7.13",
+    "pub_date": "2016-02-07T07:36:35.025Z",
+    "notes": "Preferences tab added, third party cookie blocking and referrer blocking, various keyboard shortcuts added, context menu fixes, 2 finger swipe navigation for OSX. and much more. Full release notes: https://github.com/brave/browser-laptop/releases/tag/v0.7.13dev"
+  },
+  {
     "version": "0.7.12",
     "name": "Brave 0.7.12",
     "pub_date": "2016-02-01T17:29:50.783Z",
