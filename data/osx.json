@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.7.14",
+    "name": "Brave 0.7.14",
+    "pub_date": "2016-02-11T00:31:03.010Z",
+    "notes": "Added security sandbox for content processes, various UI perf optimizations, bug fixes, and more. Full details:  https://github.com/brave/browser-laptop/releases/tag/v0.7.14dev",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.14/osx/Brave-0.7.14.zip"
+  },
+  {
     "version": "0.7.13",
     "name": "Brave 0.7.13",
     "pub_date": "2016-02-07T07:36:35.025Z",
