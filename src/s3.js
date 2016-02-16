@@ -19,11 +19,18 @@ AWS.config.update({
 })
 
 exports.storeCrashReport = (s3Key, miniDump, cb) => {
-  var s3obj = new AWS.S3({
-    params: {
-      Bucket: S3_CRASH_BUCKET,
-      Key: s3Key.toString()
-    }
-  })
-  s3obj.upload( { Body: miniDump } ).send(cb)
+  // This option will allow us to quickly disable storing S3 crash
+  // reports on S3.
+  if (process.env.IGNORE_S3) {
+    cb(null)
+  } else {
+    // Store the S3 crash report objects
+    var s3obj = new AWS.S3({
+      params: {
+        Bucket: S3_CRASH_BUCKET,
+        Key: s3Key.toString()
+      }
+    })
+    s3obj.upload( { Body: miniDump } ).send(cb)
+  }
 }
