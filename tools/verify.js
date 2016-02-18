@@ -9,6 +9,8 @@ var path = require('path')
 var request = require('request')
 var url = require('url')
 
+var channelData = require('./lib/channels').channelData
+
 // Verify (via HEAD call) that a file exists at a url, throw if not
 var verifyUrl = (url, msg) => {
   request.head(url, (err, response, body) => {

@@ -19,11 +19,18 @@ var async = require('async')
 
 var AWS = require('aws-sdk')
 
+var channelData = require('../dist/common').channelData
+
 var args = require('yargs')
     .usage('node tools/uploader.js --source=/full/directory/to/browser-laptop --send')
     .default('source', '../browser-laptop')
     .default('send', false)
+    .default('channel', 'dev')
     .argv
+
+if (!channelData[args.channel]) {
+  throw new Error(`Invalid channel ${args.channel}`)
+}
 
 // Default bucket and region
 const S3_BUCKET = process.env.S3_BUCKET || 'brave-download'
@@ -40,22 +47,27 @@ var version = pack.version
 
 // Recipe pairs containing local relative paths to files and key locations on S3
 var recipes = [
-  ['dist/Brave-VERSION.zip', 'releases/VERSION/osx'],
-  ['dist/Brave.dmg', 'releases/VERSION/osx'],
-  ['dist/BraveSetup.exe', 'releases/VERSION/winx64'],
-  ['dist/setup.msi', 'releases/VERSION/winx64'],
-  ['dist/BraveSetup.exe', 'releases/winx64'],
-  ['dist/RELEASES', 'releases/winx64'],
-  ['dist/Brave-VERSION-full.nupkg', 'releases/winx64']
+  ['dist/Brave-VERSION.zip', 'multi-channel/releases/CHANNEL/VERSION/osx'],
+  ['dist/Brave.dmg', 'multi-channel/releases/CHANNEL/VERSION/osx'],
+  ['dist/BraveSetup.exe', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
+  ['dist/setup.msi', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
+  ['dist/BraveSetup.exe', 'multi-channel/releases/CHANNEL/winx64'],
+  ['dist/RELEASES', 'multi-channel/releases/CHANNEL/winx64'],
+  ['dist/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64']
 ]
 
 // Replace VERSION in the recipes with the package version
 recipes = recipes.map((recipe) => {
-  return [recipe[0].replace('VERSION', version),
-          recipe[1].replace('VERSION', version)]
+  var dist = recipe[0].replace('VERSION', version)
+  dist = dist.replace('CHANNEL', args.channel)
+
+  var multi = recipe[1].replace('VERSION', version)
+  multi = multi.replace('CHANNEL', args.channel)
+  
+  return [dist, multi]
 })
 
-console.log('Working with version: ' + version)
+console.log(`Working with version: ${version} on channel ${args.channel}. Sending to bucket ${process.env.S3_BUCKET}.`)
 
 // Check for S3 env variables
 if (!process.env.S3_KEY || !process.env.S3_SECRET) {

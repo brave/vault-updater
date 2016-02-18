@@ -1,7 +1,7 @@
 let Hapi = require('hapi')
-let Inert = require('inert')
 let assert = require('assert')
 let setGlobalHeader = require('hapi-set-header')
+let _ = require('underscore')
 
 let profile = process.env.NODE_ENV || 'development'
 let config = require('../config/config.' + profile + '.js')
@@ -10,12 +10,11 @@ let db = require('./db')
 let setup = require('./setup')
 let common = require('./common')
 
-// confirm release directories exist
-setup.confirm(profile)
+// Read in the channel / platform releases meta-data
 let releases = setup.readReleases('data')
 
 if (process.env.DEBUG) {
-  console.log(releases)
+  console.log(_.keys(releases))
 }
 
 // setup connection to MongoDB
@@ -33,7 +32,6 @@ db.setup((mongo) => {
     host: config.host,
     port: config.port
   })
-  server.register(Inert, function () {})
 
   // Handle the boom response as well as all other requests (cache control for telemetry)
   setGlobalHeader(server, 'Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0')
@@ -47,22 +45,9 @@ db.setup((mongo) => {
   // dynamic routes
   server.route(
     [
-      common.heartBeat,
       common.root
     ].concat(routes).concat(crashes)
   )
-
-  // static release file handling (dev)
-  server.route({
-    method: 'GET',
-    path: '/releases/{param*}',
-    handler: {
-      directory: {
-        path: 'releases',
-        listing: true
-      }
-    }
-  })
 
   server.start((err) => {
     assert(!err, `error starting service ${err}`)

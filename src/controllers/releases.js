@@ -3,12 +3,16 @@ let Joi = require('joi')
 let common = require('../common')
 let _ = require('underscore')
 
+let channelData = require('../common').channelData
+let platformData = require('../common').platformData
+
 // Valid platform identifiers
-exports.platforms = ['winx64', 'osx']
+let platforms = _.keys(platformData)
 
 let commonValidator = {
   params: {
-    platform: Joi.valid(exports.platforms),
+    platform: Joi.valid(platforms),
+    channel: Joi.string(),
     version: Joi.string().regex(/[\d]+\.[\d]+\.[\d]+/)
   }
 }
@@ -29,7 +33,8 @@ let buildUsage = (request) => {
       monthly: request.query.monthly === 'true',
       platform: request.params.platform || 'unknown',
       version: request.params.version || 'unknown',
-      first: request.query.first === 'true'
+      first: request.query.first === 'true',
+      channel: request.params.channel || 'unknown'
     }
   } else {
     return null
@@ -57,44 +62,77 @@ exports.setup = (runtime, releases) => {
 
   // Redirect URLs for latest installer files
   let platformLatest = {
-    winx64: 'https://brave-download.global.ssl.fastly.net/releases/VERSION/winx64/BraveSetup.exe',
-    osx: 'https://brave-download.global.ssl.fastly.net/releases/VERSION/osx/Brave.dmg'
+    winx64: 'https://brave-download.global.ssl.fastly.net/multi-channel/releases/CHANNEL/VERSION/winx64/BraveSetup.exe',
+    osx: 'https://brave-download.global.ssl.fastly.net/multi-channel/releases/CHANNEL/VERSION/osx/Brave.dmg'
   }
 
-  let latest = {
+  // Handle pre-channel implementation browser requests
+  let legacy_latest = {
     method: 'GET',
     path: '/latest/{platform}',
     config: {
       handler: function(request, reply) {
-        if (platformLatest[request.params.platform]) {
-          let url = platformLatest[request.params.platform]
-          let version = releases[request.params.platform][0].version
+        var url = `/latest/dev/${request.params.platform}`
+        console.log(url)
+        reply().redirect(url)
+      }
+    }
+  }
+
+  let latest = {
+    method: 'GET',
+    path: '/latest/{channel}/{platform}',
+    config: {
+      handler: function(request, reply) {
+        var channel = request.params.channel
+        var platform = request.params.platform
+        if (platformLatest[platform] && channelData[channel]) {
+          let url = platformLatest[platform]
+          let version = releases[channel + ':' + platform][0].version
+          url = url.replace('CHANNEL', channel)
           url = url.replace('VERSION', version)
-          console.log(`Redirect for ${request.params.platform}: ` + url)
-          reply().redirect(url)
+          console.log(`Redirect: ` + url)
+          // TODO - re-enable
+          // reply().redirect(url)
         } else {
-          let response = reply('Unknown platform')
+          console.log(`Invalid request for latest build ${channel} ${platform}`)
+          let response = reply('Unknown platform / channel')
           response.code(204)
         }
       }
     }
   }
 
-  // Find the latest release for this platform AFTER the version passed to this handler
-  let get = {
+  // Handle legacy update requests
+  // Example: maps /1/releases/osx/0.7.11 -> /1/releases/dev/0.7.11/osx
+  let legacy_get = {
     method: 'GET',
     path: '/1/releases/{platform}/{version}',
     config: {
       handler: function (request, reply) {
+        let url = `/1/releases/dev/${request.params.version}/${request.params.platform}`
+        console.log("redirecting to " + url)
+        reply().redirect(url)
+      }
+    }
+  }
+
+  // Find the latest release for this channel / platform AFTER the version passed to this handler
+  let get = {
+    method: 'GET',
+    path: '/1/releases/{channel}/{version}/{platform}',
+    config: {
+      handler: function (request, reply) {
         // Integer version for comparison
         let cv = common.comparableVersion(request.params.version)
-
+        let channel = request.params.channel
+        
         // Build the usage record (for Mongo)
         let usage = buildUsage(request)
 
         // Potential releases
         let potentials = _.filter(
-          releases[request.params.platform],
+          releases[channel + ':' + request.params.platform],
           (rel) => rel.comparable_version > cv
         )
 
@@ -127,7 +165,9 @@ exports.setup = (runtime, releases) => {
   }
 
   return [
+    legacy_get,
     get,
+    legacy_latest,
     latest
   ]
 }

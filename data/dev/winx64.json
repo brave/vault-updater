@@ -1,0 +1,128 @@
+[
+  {
+    "version": "9.0.0",
+    "name": "Brave 9.0.0",
+    "pub_date": "2016-02-17T01:46:29.816Z",
+    "notes": "foo"
+  },
+  {
+    "version": "0.7.14",
+    "name": "Brave 0.7.14",
+    "pub_date": "2016-02-11T00:31:03.010Z",
+    "notes": "Added security sandbox for content processes, various UI perf optimizations, bug fixes, and more. Full details:  https://github.com/brave/browser-laptop/releases/tag/v0.7.14dev"
+  },
+  {
+    "version": "0.7.13",
+    "name": "Brave 0.7.13",
+    "pub_date": "2016-02-07T07:36:35.025Z",
+    "notes": "Preferences tab added, third party cookie blocking and referrer blocking, various keyboard shortcuts added, context menu fixes, 2 finger swipe navigation for OSX. and much more. Full release notes: https://github.com/brave/browser-laptop/releases/tag/v0.7.13dev"
+  },
+  {
+    "version": "0.7.12",
+    "name": "Brave 0.7.12",
+    "pub_date": "2016-02-01T17:29:50.783Z",
+    "notes": "Various crash fixes and window.opener fixes, various keyboard shortcut fixes, and much more. Full release notes here: https://github.com/brave/browser-laptop/releases/tag/v0.7.12dev"
+  },
+  {
+    "version": "0.7.11",
+    "name": "Brave 0.7.11",
+    "pub_date": "2016-01-30T03:52:33.320Z",
+    "notes": "Fixed a security issue, added Windows shortcuts, fixed site loading problems, and a lot more.  Full details: https://github.com/brave/browser-laptop/releases"
+  },
+  {
+    "version": "0.7.10",
+    "name": "Brave 0.7.10",
+    "pub_date": "2016-01-28T18:15:25.220Z",
+    "notes": "Added hamburger menu, fixed Windows packaging issues, Windows black window problem, and fixed various in-content problems.   Release notes: https://github.com/brave/browser-laptop/releases/tag/v0.7.10dev"
+  },
+  {
+    "version": "0.7.9",
+    "name": "Brave 0.7.9",
+    "pub_date": "2016-01-27T01:45:20.933Z",
+    "notes": "UI tweaks, adblock bug fix, left and right nav keyboard shortcuts, and better privacy. Full details at https://github.com/brave/browser-laptop/releases/tag/v0.7.9dev"
+  },
+  {
+    "version": "0.7.8",
+    "name": "Brave 0.7.8",
+    "pub_date": "2016-01-26T02:51:47.572Z",
+    "notes": "New UI, various features, and various fixes. Full details at https://github.com/brave/browser-laptop/releases/tag/v0.7.8"
+  },
+  {
+    "version": "0.7.7",
+    "name": "Brave 0.7.7",
+    "pub_date": "2016-01-19T17:24:26.325Z",
+    "notes": "Fixed load time indicator and Windows menus"
+  },
+  {
+    "version": "0.7.6",
+    "name": "Brave 0.7.6",
+    "pub_date": "2016-01-19T04:27:48.584Z",
+    "notes": "Turning blocking ads off, now also turns off insertions.  Fix for no updates available on Windows. Toggle bookmarks fix."
+  },
+  {
+    "version": "0.7.5",
+    "name": "Brave 0.7.5",
+    "pub_date": "2016-01-18T21:01:19.604Z",
+    "notes": "Fix link navigation sometimes not working, Facebook login fix, fix a case of adblock/TP/https-everywhere not working, fix for auto update UI appearing for background checks."
+  },
+  {
+    "version": "0.7.4",
+    "name": "Brave 0.7.4",
+    "pub_date": "2016-01-18T16:22:22.722Z",
+    "notes": "Enable / disable https everywhere, adblock, and tracking protection from the menus."
+  },
+  {
+    "version": "0.7.3",
+    "name": "Brave 0.7.3",
+    "pub_date": "2016-01-18T14:43:04.241Z",
+    "notes": "Added UI for checking updates, downloading updates, no updates, release notes, and errors.  Removed some bad auto-suggest URLs (not all bad ones yet)."
+  },
+  {
+    "version": "0.7.2",
+    "name": "Brave 0.7.2",
+    "pub_date": "2016-01-17T20:30:32.635Z",
+    "notes": "Clicking on links when we are the default browser now works, more fixes for multi window filtering"
+  },
+  {
+    "version": "0.7.1",
+    "name": "Brave 0.7.1",
+    "pub_date": "2016-01-16T06:12:13.143Z",
+    "notes": "Possible fix for websites not loading, fix for undoing closed tabs from session store, menu fixes"
+  },
+  {
+    "version": "0.7.0",
+    "notes": "Popup window fixes, new update UI, HTTPS Everywhere fixes, more menu work.",
+    "name": "Brave 0.7.0",
+    "pub_date": "2016-01-15T10:24:00+04:00"
+  },
+  {
+    "version": "0.0.6",
+    "notes": "Tab previews and loading indicators per tab",
+    "name": "Brave 0.0.6",
+    "pub_date": "2016-09-04T10:24:00+04:00"
+  },
+  {
+    "version": "0.0.5",
+    "notes": "Tracking protection and ad block",
+    "name": "Brave 0.0.5",
+    "pub_date": "2016-08-04T10:24:00+04:00"
+  },
+  {
+    "version": "0.0.4",
+    "notes": "persistent session state, pinned sites, other minor bug fixes",
+    "name": "Brave 0.0.4",
+    "pub_date": "2016-01-04T10:24:00+04:00"
+  },
+  {
+    "version": "0.0.3",
+    "notes": "Release notes for v0.0.3",
+    "name": "Brave 0.0.3",
+    "pub_date": "2015-12-30T12:29:53+04:00"
+  },
+  {
+    "version": "0.0.2",
+    "notes": "Release notes",
+    "name": "Brave 0.0.2",
+    "pub_date": "2015-10-21T12:29:53+04:00"
+  }
+]
