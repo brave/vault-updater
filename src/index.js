@@ -27,6 +27,7 @@ db.setup((mongo) => {
   // POST, DEL and GET /1/releases/{platform}/{version}
   let routes = require('./controllers/releases').setup(runtime, releases)
   let crashes = require('./controllers/crashes').setup(runtime)
+  let monitoring = require('./controllers/monitoring').setup(runtime)
 
   let server = new Hapi.Server()
   let connection = server.connection({
@@ -44,12 +45,12 @@ db.setup((mongo) => {
     console.error(e)
   })
 
-  // dynamic routes
+  // Routes
   server.route(
     [
       common.heartBeat,
       common.root
-    ].concat(routes).concat(crashes)
+    ].concat(routes, crashes, monitoring)
   )
 
   // static release file handling (dev)
