@@ -33,6 +33,11 @@ exports.setup = (done) => {
 
     // install a series of model data handlers on connection
     connection.models = {
+
+      retrieveStats: (done) => {
+        connection.stats(done)
+      },
+
       // insert usage record
       insertUsage: (usage, done) => {
         if (usage) {
