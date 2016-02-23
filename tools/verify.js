@@ -9,7 +9,15 @@ var path = require('path')
 var request = require('request')
 var url = require('url')
 
+var args = require('yargs')
+    .demand(['channel'])
+    .argv
+
 var channelData = require('./lib/channels').channelData
+
+if (!channelData[args.channel]) {
+  throw new Error('Invalid channel ' + args.channel)
+}
 
 // Verify (via HEAD call) that a file exists at a url, throw if not
 var verifyUrl = (url, msg) => {
@@ -26,7 +34,7 @@ var verifyUrl = (url, msg) => {
 process.stdout.write('[1] Verifying data files have identical most current version numbers ... ')
 
 // Read data files
-var files = glob.sync(path.join(__dirname, '..', 'data', '*'))
+var files = glob.sync(path.join(__dirname, '..', 'data', args.channel, '*'))
 var contents = files.map((filename) => {
   return JSON.parse(fs.readFileSync(filename, 'utf-8'))
 })

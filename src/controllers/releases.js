@@ -92,6 +92,7 @@ exports.setup = (runtime, releases) => {
           url = url.replace('CHANNEL', channel)
           url = url.replace('VERSION', version)
           console.log(`Redirect: ` + url)
+          reply(url)
           // TODO - re-enable
           // reply().redirect(url)
         } else {

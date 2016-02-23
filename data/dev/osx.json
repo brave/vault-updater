@@ -2,9 +2,9 @@
   {
     "version": "9.0.0",
     "name": "Brave 9.0.0",
-    "pub_date": "2016-02-17T01:46:29.816Z",
+    "pub_date": "2016-02-22T18:40:02.049Z",
     "notes": "foo",
-    "url": "https://brave-download.global.ssl.fastly.net/releases/9.0.0/osx/Brave-9.0.0.zip"
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/9.0.0/osx/Brave-9.0.0.zip"
   },
   {
     "version": "0.7.14",

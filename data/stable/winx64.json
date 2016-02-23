@@ -1,11 +1,5 @@
 [
   {
-    "version": "9.0.0",
-    "name": "Brave 9.0.0",
-    "pub_date": "2016-02-17T01:46:29.816Z",
-    "notes": "foo"
-  },
-  {
     "version": "0.7.14",
     "name": "Brave 0.7.14",
     "pub_date": "2016-02-11T00:31:03.010Z",
