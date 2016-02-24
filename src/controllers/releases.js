@@ -4,7 +4,7 @@ let common = require('../common')
 let _ = require('underscore')
 
 // Valid platform identifiers
-exports.platforms = ['winx64', 'osx']
+exports.platforms = ['winx64', 'osx', 'linux64']
 
 let commonValidator = {
   params: {
@@ -58,7 +58,8 @@ exports.setup = (runtime, releases) => {
   // Redirect URLs for latest installer files
   let platformLatest = {
     winx64: 'https://brave-download.global.ssl.fastly.net/releases/VERSION/winx64/BraveSetup.exe',
-    osx: 'https://brave-download.global.ssl.fastly.net/releases/VERSION/osx/Brave.dmg'
+    osx: 'https://brave-download.global.ssl.fastly.net/releases/VERSION/osx/Brave.dmg',
+    linux64: 'https://brave-download.global.ssl.fastly.net/releases/VERSION/linux64/Brave.tar.bz2'
   }
 
   let latest = {

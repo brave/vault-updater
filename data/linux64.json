@@ -1,0 +1,9 @@
+[
+  {
+    "version": "0.7.15",
+    "name": "Brave 0.7.15",
+    "pub_date": "2016-02-19T21:18:55.110Z",
+    "notes": "Bookmarks toolbar, bookmarks manager, optimizations, bug fixes, and crash fixes. Full release notes at: https://github.com/brave/browser-laptop/releases/tag/v0.7.15dev",
+    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.15/linux64/Brave.tar.bz2"
+  }
+]
