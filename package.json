@@ -26,6 +26,7 @@
     "kerberos": "0.0.17",
     "moment": "^2.11.1",
     "mongodb": "^2.1.4",
+    "newrelic": "^1.25.3",
     "underscore": "^1.8.3",
     "yargs": "^3.31.0"
   },
