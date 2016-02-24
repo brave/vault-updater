@@ -45,12 +45,14 @@ console.log('OK')
 console.log('[2] Verifying file location and status')
 contents.forEach((json) => {
   if (json[0].url && json[0].version) {
-    // osx
     verifyUrl(json[0].url, json[0].url + ' could not be found')
-    var parsed = url.parse(json[0].url)
-    var urlPath = parsed.path.split('/')
-    urlPath = urlPath.slice(0, urlPath.length - 1).join('/')
-    verifyUrl(parsed.protocol + '//' + parsed.hostname + urlPath + '/Brave.dmg', 'Brave.dmg not found')
+    // osx
+    if (json[0].url.match(/osx/)) {
+      var parsed = url.parse(json[0].url)
+      var urlPath = parsed.path.split('/')
+      urlPath = urlPath.slice(0, urlPath.length - 1).join('/')
+      verifyUrl(parsed.protocol + '//' + parsed.hostname + urlPath + '/Brave.dmg', 'Brave.dmg not found')
+    }
   }
 })
 
@@ -71,5 +73,5 @@ verifyUrl(winx64_url + '/BraveSetup.exe', 'BraveSetup.exe not found')
 // Verify the versioned Windows files
 var version = versions[0]
 var winx64_version_url = 'https://brave-download.global.ssl.fastly.net/releases/' + version + '/winx64/'
-verifyUrl(winx64_version_url + 'BraveSetup.exe', 'Versioned BraveSetup.exe not found for version ' + version)
-verifyUrl(winx64_version_url + 'setup.msi', 'Versioned setup.msi not found for version ' + version)
+verifyUrl(winx64_version_url + 'BraveSetup.exe', 'Versioned BraveSetup.exe not found for winx64 version ' + version)
+verifyUrl(winx64_version_url + 'setup.msi', 'Versioned setup.msi not found for winx64 version ' + version)
