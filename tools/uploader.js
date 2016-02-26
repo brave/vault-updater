@@ -23,9 +23,9 @@ var channelData = require('../dist/common').channelData
 
 var args = require('yargs')
     .usage('node tools/uploader.js --source=/full/directory/to/browser-laptop --send')
+    .demand(['channel'])
     .default('source', '../browser-laptop')
     .default('send', false)
-    .default('channel', 'dev')
     .argv
 
 if (!channelData[args.channel]) {

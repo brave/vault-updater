@@ -10,9 +10,8 @@ var channelData = require('../dist/common').channelData
 
 var args = require('yargs')
     .usage('Update version files\n\nNote: Will not replace data files unless --overwrite flag set\n\nnode $0 --version=X.X.X --notes="release notes" --overwrite --channel=dev')
-    .demand(['version', 'notes'])
+    .demand(['version', 'notes', 'channel'])
     .default('overwrite', false)
-    .default('channel', 'dev')
     .argv
 
 // check the channel names
