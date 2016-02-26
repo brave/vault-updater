@@ -1,4 +1,13 @@
 let Hapi = require('hapi')
+
+process.env.NEW_RELIC_NO_CONFIG_FILE = true
+if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
+  var newrelic = require('newrelic')
+} else {
+  console.log("Warning: New Relic not configured!")
+}
+
+let Inert = require('inert')
 let assert = require('assert')
 let setGlobalHeader = require('hapi-set-header')
 let _ = require('underscore')
@@ -29,7 +38,7 @@ db.setup((mongo) => {
   let monitoring = require('./controllers/monitoring').setup(runtime)
 
   let server = new Hapi.Server()
-  let connection = server.connection({
+  let serv = server.connection({
     host: config.host,
     port: config.port
   })
@@ -39,7 +48,7 @@ db.setup((mongo) => {
   setGlobalHeader(server, 'Pragma', 'no-cache')
   setGlobalHeader(server, 'Expires', 0)
 
-  connection.listener.once('clientError', function (e) {
+  serv.listener.once('clientError', function (e) {
     console.error(e)
   })
 

@@ -23,5 +23,6 @@ exports.channelData = {
 
 exports.platformData = {
   'osx': {},
-  'winx64': {}
+  'winx64': {},
+  'linux64': {}
 }

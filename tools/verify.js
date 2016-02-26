@@ -13,7 +13,7 @@ var args = require('yargs')
     .demand(['channel'])
     .argv
 
-var channelData = require('./lib/channels').channelData
+var channelData = require('../dist/common').channelData
 
 if (!channelData[args.channel]) {
   throw new Error('Invalid channel ' + args.channel)
@@ -26,7 +26,7 @@ var verifyUrl = (url, msg) => {
     if (response.statusCode === 200) {
       console.log('  OK ... ' + url)
     } else {
-      throw new Error(msg)
+      throw new Error(msg + ' : ' + url)
     }
   })
 }
@@ -55,19 +55,25 @@ console.log('OK')
 console.log('[2] Verifying file location and status')
 contents.forEach((json) => {
   if (json[0].url && json[0].version) {
-    // osx
     verifyUrl(json[0].url, json[0].url + ' could not be found')
-    var parsed = url.parse(json[0].url)
-    var urlPath = parsed.path.split('/')
-    urlPath = urlPath.slice(0, urlPath.length - 1).join('/')
-    verifyUrl(parsed.protocol + '//' + parsed.hostname + urlPath + '/Brave.dmg', 'Brave.dmg not found')
+    // osx
+    if (json[0].url.match(/osx/)) {
+      var parsed = url.parse(json[0].url)
+      var urlPath = parsed.path.split('/')
+      urlPath = urlPath.slice(0, urlPath.length - 1).join('/')
+      verifyUrl(parsed.protocol + '//' + parsed.hostname + urlPath + '/Brave.dmg', 'Brave.dmg not found')
+    }
   }
 })
 
+// Set allowing override for testing
+var BASE_URL = process.env.BASE_URL || 'https://brave-download.global.ssl.fastly.net/multi-channel/releases'
+
 // Verify Windows files
-var winx64_url = 'https://brave-download.global.ssl.fastly.net/releases/winx64'
+var winx64_url = BASE_URL + '/' + args.channel + '/' + 'winx64'
 request.get(winx64_url + '/RELEASES', (err, response, body) => {
   assert.equal(err, null)
+  console.log(body)
   if (response.statusCode === 200) {
     console.log('  OK ... ' + winx64_url + '/RELEASES')
     var filename = body.split(' ')[1]
@@ -80,6 +86,6 @@ verifyUrl(winx64_url + '/BraveSetup.exe', 'BraveSetup.exe not found')
 
 // Verify the versioned Windows files
 var version = versions[0]
-var winx64_version_url = 'https://brave-download.global.ssl.fastly.net/releases/' + version + '/winx64/'
-verifyUrl(winx64_version_url + 'BraveSetup.exe', 'Versioned BraveSetup.exe not found for version ' + version)
-verifyUrl(winx64_version_url + 'setup.msi', 'Versioned setup.msi not found for version ' + version)
+var winx64_version_url = BASE_URL + '/' + args.channel + '/' + version + '/winx64/'
+verifyUrl(winx64_version_url + 'BraveSetup.exe', 'Versioned BraveSetup.exe not found for winx64 version ' + version)
+verifyUrl(winx64_version_url + 'setup.msi', 'Versioned setup.msi not found for winx64 version ' + version)

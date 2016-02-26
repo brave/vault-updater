@@ -47,6 +47,7 @@ var version = pack.version
 
 // Recipe pairs containing local relative paths to files and key locations on S3
 var recipes = [
+  ['dist/Brave.tar.bz2', 'multi-channel/releases/CHANNEL/VERSION/linux64'],
   ['dist/Brave-VERSION.zip', 'multi-channel/releases/CHANNEL/VERSION/osx'],
   ['dist/Brave.dmg', 'multi-channel/releases/CHANNEL/VERSION/osx'],
   ['dist/BraveSetup.exe', 'multi-channel/releases/CHANNEL/VERSION/winx64'],

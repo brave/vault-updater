@@ -60,10 +60,14 @@ exports.setup = (runtime, releases) => {
 
   */
 
+  let BASE_URL = process.env.BASE_URL || 'https://brave-download.global.ssl.fastly.net/multi-channel/releases'
+  console.log(`Base URL: ${BASE_URL}`)
+  
   // Redirect URLs for latest installer files
   let platformLatest = {
-    winx64: 'https://brave-download.global.ssl.fastly.net/multi-channel/releases/CHANNEL/VERSION/winx64/BraveSetup.exe',
-    osx: 'https://brave-download.global.ssl.fastly.net/multi-channel/releases/CHANNEL/VERSION/osx/Brave.dmg'
+    winx64: BASE_URL + '/CHANNEL/VERSION/winx64/BraveSetup.exe',
+    osx: BASE_URL + '/CHANNEL/VERSION/osx/Brave.dmg',
+    linux64: BASE_URL + '/CHANNEL/VERSION/linux64/Brave.tar.bz2'
   }
 
   // Handle pre-channel implementation browser requests

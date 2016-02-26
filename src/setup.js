@@ -3,9 +3,12 @@ let path = require('path')
 let _ = require('underscore')
 
 let common = require('./common')
-let channelData = require('./common').channelData
+
+let channelData = common.channelData
 let channels = _.keys(channelData)
-let platforms = ['osx', 'winx64']
+
+let platformData = common.platformData
+let platforms = _.keys(platformData)
 
 // Read in the release files by channel / platform
 exports.readReleases = (directory) => {
@@ -22,6 +25,8 @@ exports.readReleases = (directory) => {
       releases[`${channel}:${platform}`] = contents
     })
   })
-  
+
+  console.log(_.keys(releases))
+
   return releases
 }
