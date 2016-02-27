@@ -4,7 +4,7 @@ let common = require('../common')
 let _ = require('underscore')
 
 // Valid platform identifiers
-exports.platforms = ['winx64', 'osx', 'linux64']
+exports.platforms = ['winx64', 'osx', 'linux64', 'undefined']
 
 let commonValidator = {
   params: {
@@ -87,6 +87,11 @@ exports.setup = (runtime, releases) => {
     path: '/1/releases/{platform}/{version}',
     config: {
       handler: function (request, reply) {
+        // Handle undefined platforms
+        if (request.params.platform === 'undefined') {
+          request.params.platform = 'unknown'
+        }
+
         // Integer version for comparison
         let cv = common.comparableVersion(request.params.version)
 
