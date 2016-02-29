@@ -68,7 +68,7 @@ recipes = recipes.map((recipe) => {
   return [dist, multi]
 })
 
-console.log(`Working with version: ${version} on channel ${args.channel}. Sending to bucket ${process.env.S3_BUCKET}.`)
+console.log(`Working with version: ${version} on channel ${args.channel}. Sending to bucket ${S3_BUCKET}.`)
 
 // Check for S3 env variables
 if (!process.env.S3_KEY || !process.env.S3_SECRET) {
