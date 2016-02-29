@@ -96,9 +96,7 @@ exports.setup = (runtime, releases) => {
           url = url.replace('CHANNEL', channel)
           url = url.replace('VERSION', version)
           console.log(`Redirect: ` + url)
-          reply(url)
-          // TODO - re-enable
-          // reply().redirect(url)
+          reply().redirect(url)
         } else {
           console.log(`Invalid request for latest build ${channel} ${platform}`)
           let response = reply('Unknown platform / channel')
