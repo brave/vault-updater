@@ -4,7 +4,7 @@
     "name": "Brave 0.7.16",
     "pub_date": "2016-02-24T21:25:38.659Z",
     "notes": "Various fixes and optimizations, full notes here: https://github.com/brave/browser-laptop/releases/tag/v0.7.16dev",
-    "url": "https://brave-download.global.ssl.fastly.net/releases/0.7.16/linux64/Brave.tar.bz2"
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.7.16/linux64/Brave.tar.bz2"
   },
   {
     "version": "0.7.15",
