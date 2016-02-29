@@ -68,7 +68,7 @@ recipes = recipes.map((recipe) => {
   return [dist, multi]
 })
 
-console.log(`Working with version: ${version} on channel ${args.channel}. Sending to bucket ${S3_BUCKET}.`)
+console.log(`Working with version: '${version}' on channel '${args.channel}'. Sending to bucket '${S3_BUCKET}'.`)
 
 // Check for S3 env variables
 if (!process.env.S3_KEY || !process.env.S3_SECRET) {
@@ -130,10 +130,10 @@ var makeS3Uploader = (filename, s3Key) => {
 }
 
 // Return a function used to report on the status of a file
-var makeReporter = (filename) => {
+var makeReporter = (filename, recipe) => {
   return (cb) => {
     if (fs.existsSync(filename)) {
-      console.log('OK       - ' + filename + ' exists')
+      console.log('OK       - ' + filename + ' exists -> ' + recipe)
     } else {
       console.log('IGNORING - ' + filename + ' does not exist')
     }
@@ -147,7 +147,7 @@ var recipeHandlers = recipes.map((recipe) => {
   if (args.send) {
     return makeS3Uploader(fullFilename, recipe[1])
   } else {
-    return makeReporter(fullFilename)
+    return makeReporter(fullFilename, recipe[1])
   }
 })
 
