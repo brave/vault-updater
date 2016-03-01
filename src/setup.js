@@ -16,13 +16,15 @@ exports.readReleases = (directory) => {
 
   _.each(channels, (channel) => {
     _.each(platforms, (platform) => {
-      let filename = path.join(__dirname, '..', 'data', channel, platform + '.json')
-      let contents = JSON.parse(fs.readFileSync(filename, 'utf-8'))
-      _.each(contents, (release) => {
-        // integer for version comparison
-        release.comparable_version = common.comparableVersion(release.version)
-      })
-      releases[`${channel}:${platform}`] = contents
+      if (platform !== 'undefined') {
+        let filename = path.join(__dirname, '..', 'data', channel, platform + '.json')
+        let contents = JSON.parse(fs.readFileSync(filename, 'utf-8'))
+        _.each(contents, (release) => {
+          // integer for version comparison
+          release.comparable_version = common.comparableVersion(release.version)
+        })
+        releases[`${channel}:${platform}`] = contents
+      }
     })
   })
 
