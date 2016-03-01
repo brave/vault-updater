@@ -1,9 +1,2 @@
 [
-  {
-    "version": "0.0.2",
-    "name": "Brave 0.7.16",
-    "pub_date": "2016-02-24T21:25:38.659Z",
-    "notes": "Various fixes and optimizations, full notes here: https://github.com/brave/browser-laptop/releases/tag/v0.7.16dev",
-    "url": "https://s3-us-west-2.amazonaws.com/brave-download-staging/multi-channel/releases/beta/0.0.2/osx/Brave-0.0.2.zip"
-  }
 ]
