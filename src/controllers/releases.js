@@ -2,6 +2,7 @@ let assert = require('assert')
 let Joi = require('joi')
 let common = require('../common')
 let _ = require('underscore')
+let qs = require('querystring')
 
 let channelData = require('../common').channelData
 let platformData = require('../common').platformData
@@ -116,7 +117,7 @@ exports.setup = (runtime, releases) => {
     path: '/1/releases/{platform}/{version}',
     config: {
       handler: function (request, reply) {
-        let url = `/1/releases/dev/${request.params.version}/${request.params.platform}`
+        let url = `/1/releases/dev/${request.params.version}/${request.params.platform}?${qs.stringify(request.query)}`
         console.log("redirecting to " + url)
         reply().redirect(url)
       }
