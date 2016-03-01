@@ -126,6 +126,11 @@ exports.setup = (runtime, releases) => {
     path: '/1/releases/{channel}/{version}/{platform}',
     config: {
       handler: function (request, reply) {
+        // Handle undefined platforms
+        if (request.params.platform === 'undefined') {
+          request.params.platform = 'unknown'
+        }
+
         // Integer version for comparison
         let cv = common.comparableVersion(request.params.version)
         let channel = request.params.channel
