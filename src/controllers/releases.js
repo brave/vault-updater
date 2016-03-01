@@ -77,7 +77,6 @@ exports.setup = (runtime, releases) => {
     config: {
       handler: function(request, reply) {
         var url = `/latest/dev/${request.params.platform}`
-        console.log(url)
         reply().redirect(url)
       }
     }
@@ -91,12 +90,16 @@ exports.setup = (runtime, releases) => {
         var channel = request.params.channel
         var platform = request.params.platform
         if (platformLatest[platform] && channelData[channel]) {
-          let url = platformLatest[platform]
-          let version = releases[channel + ':' + platform][0].version
-          url = url.replace('CHANNEL', channel)
-          url = url.replace('VERSION', version)
-          console.log(`Redirect: ` + url)
-          reply().redirect(url)
+          if (releases[channel + ':' + platform][0]) {
+            let url = platformLatest[platform]
+            let version = releases[channel + ':' + platform][0].version
+            url = url.replace('CHANNEL', channel)
+            url = url.replace('VERSION', version)
+            console.log(`Redirect: ` + url)
+            reply().redirect(url)
+          } else {
+            reply(`No current version for ${channel} / ${platform}`)
+          }
         } else {
           console.log(`Invalid request for latest build ${channel} ${platform}`)
           let response = reply('Unknown platform / channel')
