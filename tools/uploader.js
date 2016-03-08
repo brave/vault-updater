@@ -54,11 +54,18 @@ var recipes = [
   ['dist/setup.msi', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
   ['dist/BraveSetup.exe', 'multi-channel/releases/CHANNEL/winx64'],
   ['dist/RELEASES', 'multi-channel/releases/CHANNEL/winx64'],
-  ['dist/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64'],
-  ['dist/BraveSetup.exe', 'releases/winx64'],
-  ['dist/RELEASES', 'releases/winx64'],
-  ['dist/Brave-VERSION-full.nupkg', 'releases/winx64']
+  ['dist/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64']
 ]
+
+// For the dev channel we need to upload files to the legacy location. This will move them on to the dev
+// mainline code where they will update from /multi-channel/releases/CHANNEL/winx64
+if (args.channel === 'dev') {
+  recipes = recipes.concat([
+    ['dist/BraveSetup.exe', 'releases/winx64'],
+    ['dist/RELEASES', 'releases/winx64'],
+    ['dist/Brave-VERSION-full.nupkg', 'releases/winx64']
+  ])
+}
 
 // Replace VERSION in the recipes with the package version
 recipes = recipes.map((recipe) => {
