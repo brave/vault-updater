@@ -54,7 +54,10 @@ var recipes = [
   ['dist/setup.msi', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
   ['dist/BraveSetup.exe', 'multi-channel/releases/CHANNEL/winx64'],
   ['dist/RELEASES', 'multi-channel/releases/CHANNEL/winx64'],
-  ['dist/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64']
+  ['dist/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64'],
+  ['dist/BraveSetup.exe', 'releases/winx64'],
+  ['dist/RELEASES', 'releases/winx64'],
+  ['dist/Brave-VERSION-full.nupkg', 'releases/winx64']
 ]
 
 // Replace VERSION in the recipes with the package version

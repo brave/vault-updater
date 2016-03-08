@@ -68,9 +68,25 @@ contents.forEach((json) => {
 
 // Set allowing override for testing
 var BASE_URL = process.env.BASE_URL || 'https://brave-download.global.ssl.fastly.net/multi-channel/releases'
+var BASE_LEGACY_URL = process.env.BASE_LEGACY_URL || 'https://brave-download.global.ssl.fastly.net/releases'
 
 // Verify Windows files
 var winx64_url = BASE_URL + '/' + args.channel + '/' + 'winx64'
+request.get(winx64_url + '/RELEASES', (err, response, body) => {
+  assert.equal(err, null)
+  console.log(body)
+  if (response.statusCode === 200) {
+    console.log('  OK ... ' + winx64_url + '/RELEASES')
+    var filename = body.split(' ')[1]
+    verifyUrl(winx64_url + '/' + filename, 'Windows update file ' + filename + ' is not available at ' + winx64_url + '/' + filename)
+  } else {
+    throw new Error(winx64_url + ' could not be found')
+  }
+})
+verifyUrl(winx64_url + '/BraveSetup.exe', 'BraveSetup.exe not found')
+
+// Verify Legacy Windows files
+var winx64_url = BASE_LEGACY_URL + '/' + 'winx64'
 request.get(winx64_url + '/RELEASES', (err, response, body) => {
   assert.equal(err, null)
   console.log(body)
