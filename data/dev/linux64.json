@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.8.2",
+    "name": "Brave 0.8.2",
+    "pub_date": "2016-03-23T18:42:19.315Z",
+    "notes": "Password saving, single instance app, more HTTPS Everywhere info, full screen mode fixes, and more.  More details here: https://github.com/brave/browser-laptop/releases/tag/v0.8.2dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.8.2/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.8.1",
     "name": "Brave 0.8.1",
     "pub_date": "2016-03-17T13:59:59.231Z",
