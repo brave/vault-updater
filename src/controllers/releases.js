@@ -73,7 +73,8 @@ exports.setup = (runtime, releases) => {
     ubuntu64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb',
     fedora64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.amd64.rpm',
     openSUSE64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.amd64.rpm',
-    redhat64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.amd64.rpm'
+    redhat64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.amd64.rpm',
+    mint64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb'
   }
 
   // Handle pre-channel implementation browser requests

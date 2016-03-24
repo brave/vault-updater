@@ -30,5 +30,6 @@ exports.platformData = {
   'fedora64': {},
   'openSUSE64': {},
   'redhat64' :{},
+  'mint64' :{},
   'undefined': {}
 }
