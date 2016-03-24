@@ -69,7 +69,11 @@ exports.setup = (runtime, releases) => {
     winx64: BASE_URL + '/CHANNEL/VERSION/winx64/BraveSetup.exe',
     osx: BASE_URL + '/CHANNEL/VERSION/osx/Brave.dmg',
     linux64: BASE_URL + '/CHANNEL/VERSION/linux64/Brave.tar.bz2',
-    debian64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb'
+    debian64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb',
+    ubuntu64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb',
+    fedora64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.amd64.rpm',
+    openSUSE64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.amd64.rpm',
+    redhat64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.amd64.rpm'
   }
 
   // Handle pre-channel implementation browser requests

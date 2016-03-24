@@ -12,7 +12,11 @@ let platforms = _.keys(platformData)
 
 // Aliases allow us to re-use platform configuration .json files for different identifiers
 let aliases = {
-  debian64: 'linux64'
+  debian64: 'linux64',
+  ubuntu64: 'linux64',
+  fedora64: 'linux64',
+  openSUSE64: 'linux64',
+  redhat64: 'linux64'
 }
 
 // Read in the release files by channel / platform

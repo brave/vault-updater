@@ -25,6 +25,10 @@ exports.platformData = {
   'osx': {},
   'winx64': {},
   'linux64': {},
+  'ubuntu64': {},
   'debian64': {},
+  'fedora64': {},
+  'openSUSE64': {},
+  'redhat64' :{},
   'undefined': {}
 }
