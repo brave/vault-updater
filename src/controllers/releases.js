@@ -68,7 +68,8 @@ exports.setup = (runtime, releases) => {
   let platformLatest = {
     winx64: BASE_URL + '/CHANNEL/VERSION/winx64/BraveSetup.exe',
     osx: BASE_URL + '/CHANNEL/VERSION/osx/Brave.dmg',
-    linux64: BASE_URL + '/CHANNEL/VERSION/linux64/Brave.tar.bz2'
+    linux64: BASE_URL + '/CHANNEL/VERSION/linux64/Brave.tar.bz2',
+    debian64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb'
   }
 
   // Handle pre-channel implementation browser requests
@@ -95,7 +96,7 @@ exports.setup = (runtime, releases) => {
             let url = platformLatest[platform]
             let version = releases[channel + ':' + platform][0].version
             url = url.replace('CHANNEL', channel)
-            url = url.replace('VERSION', version)
+            url = url.replace(new RegExp('VERSION', 'g'), version)
             console.log(`Redirect: ` + url)
             reply().redirect(url)
           } else {

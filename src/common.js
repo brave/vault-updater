@@ -25,5 +25,6 @@ exports.platformData = {
   'osx': {},
   'winx64': {},
   'linux64': {},
+  'debian64': {},
   'undefined': {}
 }

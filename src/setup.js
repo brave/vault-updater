@@ -10,6 +10,11 @@ let channels = _.keys(channelData)
 let platformData = common.platformData
 let platforms = _.keys(platformData)
 
+// Aliases allow us to re-use platform configuration .json files for different identifiers
+let aliases = {
+  debian64: 'linux64'
+}
+
 // Read in the release files by channel / platform
 exports.readReleases = (directory) => {
   let releases = {}
@@ -17,7 +22,10 @@ exports.readReleases = (directory) => {
   _.each(channels, (channel) => {
     _.each(platforms, (platform) => {
       if (platform !== 'undefined') {
-        let filename = path.join(__dirname, '..', 'data', channel, platform + '.json')
+        // Check for aliases
+        let aliased = aliases[platform] || platform
+        // Read in configuration
+        let filename = path.join(__dirname, '..', 'data', channel, aliased + '.json')
         let contents = JSON.parse(fs.readFileSync(filename, 'utf-8'))
         _.each(contents, (release) => {
           // integer for version comparison
@@ -27,7 +35,7 @@ exports.readReleases = (directory) => {
       }
     })
   })
-
+  // Log out configured release keys
   console.log(_.keys(releases))
 
   return releases
