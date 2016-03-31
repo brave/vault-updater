@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.8.3",
+    "name": "Brave 0.8.3",
+    "pub_date": "2016-03-31T20:52:06.553Z",
+    "notes": "Downloads manager, downloads toolbar, passwords manager, and more. Full details: https://github.com/brave/browser-laptop/releases/tag/v0.8.3dev"
+  },
+  {
     "version": "0.8.2",
     "name": "Brave 0.8.2",
     "pub_date": "2016-03-23T18:42:19.315Z",
