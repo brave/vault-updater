@@ -105,3 +105,9 @@ var version = versions[0]
 var winx64_version_url = BASE_URL + '/' + args.channel + '/' + version + '/winx64/'
 verifyUrl(winx64_version_url + 'BraveSetup.exe', 'Versioned BraveSetup.exe not found for winx64 version ' + version)
 verifyUrl(winx64_version_url + 'setup.msi', 'Versioned setup.msi not found for winx64 version ' + version)
+
+// Verify the versioned Linux files
+var version = versions[0]
+var linux64_version_url = BASE_URL + '/' + args.channel + '/' + version
+verifyUrl(linux64_version_url + '/debian64/brave_' + version + '_amd64.deb', 'debian file not found')
+verifyUrl(linux64_version_url + '/fedora64/brave-' + version + '.amd64.rpm', 'fedora file not found')
