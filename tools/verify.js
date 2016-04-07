@@ -109,5 +109,5 @@ verifyUrl(winx64_version_url + 'setup.msi', 'Versioned setup.msi not found for w
 // Verify the versioned Linux files
 var version = versions[0]
 var linux64_version_url = BASE_URL + '/' + args.channel + '/' + version
-verifyUrl(linux64_version_url + '/debian64/brave_' + version + '_amd64.deb', 'debian file not found')
-verifyUrl(linux64_version_url + '/fedora64/brave-' + version + '.amd64.rpm', 'fedora file not found')
+verifyUrl(linux64_version_url + '/debian64/brave_' + version + '_amd64.deb', 'debian file not found for version ' + version)
+verifyUrl(linux64_version_url + '/fedora64/brave-' + version + '.amd64.rpm', 'fedora file not found for version ' + version)
