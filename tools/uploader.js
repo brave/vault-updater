@@ -33,7 +33,7 @@ if (!channelData[args.channel]) {
 }
 
 // Default bucket and region
-const S3_BUCKET = process.env.S3_BUCKET || 'brave-download'
+const S3_BUCKET = process.env.S3_BUCKET || 'brave-download1'
 const S3_REGION = process.env.S3_REGION || 'us-east-1'
 
 // Check that the source directory for the binary assets exists
@@ -52,20 +52,27 @@ var recipes = [
   ['dist/brave-VERSION.amd64.rpm', 'multi-channel/releases/CHANNEL/VERSION/fedora64'],
   ['dist/Brave-VERSION.zip', 'multi-channel/releases/CHANNEL/VERSION/osx'],
   ['dist/Brave.dmg', 'multi-channel/releases/CHANNEL/VERSION/osx'],
-  ['dist/BraveSetup.exe', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
-  ['dist/setup.msi', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
-  ['dist/BraveSetup.exe', 'multi-channel/releases/CHANNEL/winx64'],
-  ['dist/RELEASES', 'multi-channel/releases/CHANNEL/winx64'],
-  ['dist/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64']
+
+  ['dist-x64/BraveSetup-x64.exe', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
+  ['dist-x64/BraveSetup-x64.msi', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
+  ['dist-x64/BraveSetup-x64.exe', 'multi-channel/releases/CHANNEL/winx64'],
+  ['dist-x64/RELEASES', 'multi-channel/releases/CHANNEL/winx64'],
+  ['dist-x64/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64'],
+
+  ['dist-ia32/BraveSetup-ia32.exe', 'multi-channel/releases/CHANNEL/VERSION/winia32'],
+  ['dist-ia32/BraveSetup-ia32.msi', 'multi-channel/releases/CHANNEL/VERSION/winia32'],
+  ['dist-ia32/BraveSetup-ia32.exe', 'multi-channel/releases/CHANNEL/winia32'],
+  ['dist-ia32/RELEASES', 'multi-channel/releases/CHANNEL/winia32'],
+  ['dist-ia32/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winia32']
 ]
 
 // For the dev channel we need to upload files to the legacy location. This will move them on to the dev
 // mainline code where they will update from /multi-channel/releases/CHANNEL/winx64
 if (args.channel === 'dev') {
   recipes = recipes.concat([
-    ['dist/BraveSetup.exe', 'releases/winx64'],
-    ['dist/RELEASES', 'releases/winx64'],
-    ['dist/Brave-VERSION-full.nupkg', 'releases/winx64']
+    ['dist-x64/BraveSetup-x64.exe', 'releases/winx64'],
+    ['dist-x64/RELEASES', 'releases/winx64'],
+    ['dist-x64/Brave-VERSION-full.nupkg', 'releases/winx64']
   ])
 }
 
