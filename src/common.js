@@ -24,6 +24,7 @@ exports.channelData = {
 exports.platformData = {
   'osx': {},
   'winx64': {},
+  'winia32': {},
   'linux64': {},
   'ubuntu64': {},
   'debian64': {},

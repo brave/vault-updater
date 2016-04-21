@@ -66,7 +66,8 @@ exports.setup = (runtime, releases) => {
 
   // Redirect URLs for latest installer files
   let platformLatest = {
-    winx64: BASE_URL + '/CHANNEL/VERSION/winx64/BraveSetup.exe',
+    winx64: BASE_URL + '/CHANNEL/VERSION/winx64/BraveSetup-x64.exe',
+    winia32: BASE_URL + '/CHANNEL/VERSION/winia32/BraveSetup-ia32.exe',
     osx: BASE_URL + '/CHANNEL/VERSION/osx/Brave.dmg',
     linux64: BASE_URL + '/CHANNEL/VERSION/linux64/Brave.tar.bz2',
     debian64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb',

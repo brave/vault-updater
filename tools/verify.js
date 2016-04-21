@@ -9,8 +9,10 @@ var path = require('path')
 var request = require('request')
 var url = require('url')
 
+// The warn flag will continue checking for files and not throw an error for the first verification error
 var args = require('yargs')
     .demand(['channel'])
+    .default('warn', false)
     .argv
 
 var channelData = require('../dist/common').channelData
@@ -26,7 +28,11 @@ var verifyUrl = (url, msg) => {
     if (response.statusCode === 200) {
       console.log('  OK ... ' + url)
     } else {
-      throw new Error(msg + ' : ' + url)
+      if (args.warn) {
+        console.log('  FAILED ... ' + msg + ' : ' + url)
+      } else {
+        throw new Error(msg + ' : ' + url)
+      }
     }
   })
 }
@@ -70,7 +76,7 @@ contents.forEach((json) => {
 var BASE_URL = process.env.BASE_URL || 'https://brave-download.global.ssl.fastly.net/multi-channel/releases'
 var BASE_LEGACY_URL = process.env.BASE_LEGACY_URL || 'https://brave-download.global.ssl.fastly.net/releases'
 
-// Verify Windows files
+// Verify Windows x64 files
 var winx64_url = BASE_URL + '/' + args.channel + '/' + 'winx64'
 request.get(winx64_url + '/RELEASES', (err, response, body) => {
   assert.equal(err, null)
@@ -83,7 +89,22 @@ request.get(winx64_url + '/RELEASES', (err, response, body) => {
     throw new Error(winx64_url + ' could not be found')
   }
 })
-verifyUrl(winx64_url + '/BraveSetup.exe', 'BraveSetup.exe not found')
+verifyUrl(winx64_url + '/BraveSetup-x64.exe', 'BraveSetup-x64.exe not found')
+
+// Verify Windows ia32 files
+var winia32_url = BASE_URL + '/' + args.channel + '/' + 'ia32'
+request.get(winx64_url + '/RELEASES', (err, response, body) => {
+  assert.equal(err, null)
+  console.log(body)
+  if (response.statusCode === 200) {
+    console.log('  OK ... ' + winia32_url + '/RELEASES')
+    var filename = body.split(' ')[1]
+    verifyUrl(winia32_url + '/' + filename, 'Windows update file ' + filename + ' is not available at ' + winia32_url + '/' + filename)
+  } else {
+    throw new Error(winia32_url + ' could not be found')
+  }
+})
+verifyUrl(winx64_url + '/BraveSetup-ia32.exe', 'BraveSetup-ia32.exe not found')
 
 // Verify Legacy Windows files
 var winx64_url = BASE_LEGACY_URL + '/' + 'winx64'
@@ -98,13 +119,18 @@ request.get(winx64_url + '/RELEASES', (err, response, body) => {
     throw new Error(winx64_url + ' could not be found')
   }
 })
-verifyUrl(winx64_url + '/BraveSetup.exe', 'BraveSetup.exe not found')
 
-// Verify the versioned Windows files
+// Verify the versioned Windows x64 files
 var version = versions[0]
 var winx64_version_url = BASE_URL + '/' + args.channel + '/' + version + '/winx64/'
-verifyUrl(winx64_version_url + 'BraveSetup.exe', 'Versioned BraveSetup.exe not found for winx64 version ' + version)
-verifyUrl(winx64_version_url + 'setup.msi', 'Versioned setup.msi not found for winx64 version ' + version)
+verifyUrl(winx64_version_url + 'BraveSetup-x64.exe', 'Versioned BraveSetup-x64.exe not found for winx64 version ' + version)
+verifyUrl(winx64_version_url + 'BraveSetup-x64.msi', 'Versioned BraveSetup-x64.msi not found for winx64 version ' + version)
+
+// Verify the versioned Windows ia32 files
+var version = versions[0]
+var winia32_version_url = BASE_URL + '/' + args.channel + '/' + version + '/ia32/'
+verifyUrl(winia32_version_url + 'BraveSetup-ia32.exe', 'Versioned BraveSetup-ia32.exe not found for ia32 version ' + version)
+verifyUrl(winia32_version_url + 'BraveSetup-ia32.msi', 'Versioned BraveSetup-ia32.msi not found for ia32 version ' + version)
 
 // Verify the versioned Linux files
 var version = versions[0]
