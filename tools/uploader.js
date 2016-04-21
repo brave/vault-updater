@@ -70,9 +70,9 @@ var recipes = [
 // mainline code where they will update from /multi-channel/releases/CHANNEL/winx64
 if (args.channel === 'dev') {
   recipes = recipes.concat([
-    ['dist-x64/BraveSetup-x64.exe', 'releases/winx64'],
-    ['dist-x64/RELEASES', 'releases/winx64'],
-    ['dist-x64/Brave-VERSION-full.nupkg', 'releases/winx64']
+    ['dist/x64/BraveSetup-x64.exe', 'releases/winx64'],
+    ['dist/x64/RELEASES', 'releases/winx64'],
+    ['dist/x64/Brave-VERSION-full.nupkg', 'releases/winx64']
   ])
 }
 
