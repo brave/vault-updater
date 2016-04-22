@@ -93,7 +93,7 @@ verifyUrl(winx64_url + '/BraveSetup-x64.exe', 'BraveSetup-x64.exe not found')
 
 // Verify Windows ia32 files
 var winia32_url = BASE_URL + '/' + args.channel + '/' + 'winia32'
-request.get(winx64_url + '/RELEASES', (err, response, body) => {
+request.get(winia32_url + '/RELEASES', (err, response, body) => {
   assert.equal(err, null)
   console.log(body)
   if (response.statusCode === 200) {
@@ -104,7 +104,7 @@ request.get(winx64_url + '/RELEASES', (err, response, body) => {
     throw new Error(winia32_url + ' could not be found')
   }
 })
-verifyUrl(winx64_url + '/BraveSetup-ia32.exe', 'BraveSetup-ia32.exe not found')
+verifyUrl(winia32_url + '/BraveSetup-ia32.exe', 'BraveSetup-ia32.exe not found')
 
 // Verify Legacy Windows files
 var winx64_url = BASE_LEGACY_URL + '/' + 'winx64'
