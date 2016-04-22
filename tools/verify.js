@@ -92,7 +92,7 @@ request.get(winx64_url + '/RELEASES', (err, response, body) => {
 verifyUrl(winx64_url + '/BraveSetup-x64.exe', 'BraveSetup-x64.exe not found')
 
 // Verify Windows ia32 files
-var winia32_url = BASE_URL + '/' + args.channel + '/' + 'ia32'
+var winia32_url = BASE_URL + '/' + args.channel + '/' + 'winia32'
 request.get(winx64_url + '/RELEASES', (err, response, body) => {
   assert.equal(err, null)
   console.log(body)
@@ -128,7 +128,7 @@ verifyUrl(winx64_version_url + 'BraveSetup-x64.msi', 'Versioned BraveSetup-x64.m
 
 // Verify the versioned Windows ia32 files
 var version = versions[0]
-var winia32_version_url = BASE_URL + '/' + args.channel + '/' + version + '/ia32/'
+var winia32_version_url = BASE_URL + '/' + args.channel + '/' + version + '/winia32/'
 verifyUrl(winia32_version_url + 'BraveSetup-ia32.exe', 'Versioned BraveSetup-ia32.exe not found for ia32 version ' + version)
 verifyUrl(winia32_version_url + 'BraveSetup-ia32.msi', 'Versioned BraveSetup-ia32.msi not found for ia32 version ' + version)
 
