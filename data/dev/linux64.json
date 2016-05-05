@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.9.4",
+    "name": "Brave 0.9.4",
+    "pub_date": "2016-05-05T22:07:47.490Z",
+    "notes": "Startup fix if profile dir does not exist",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.9.4/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.9.3",
     "name": "Brave 0.9.3",
     "pub_date": "2016-05-04T13:13:01.219Z",
