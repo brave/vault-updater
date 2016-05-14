@@ -57,13 +57,13 @@ var recipes = [
   ['dist/x64/BraveSetup-x64.msi', 'multi-channel/releases/CHANNEL/VERSION/winx64'],
   ['dist/x64/BraveSetup-x64.exe', 'multi-channel/releases/CHANNEL/winx64'],
   ['dist/x64/RELEASES', 'multi-channel/releases/CHANNEL/winx64'],
-  ['dist/x64/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64'],
+  ['dist/x64/brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64'],
 
   ['dist/ia32/BraveSetup-ia32.exe', 'multi-channel/releases/CHANNEL/VERSION/winia32'],
   ['dist/ia32/BraveSetup-ia32.msi', 'multi-channel/releases/CHANNEL/VERSION/winia32'],
   ['dist/ia32/BraveSetup-ia32.exe', 'multi-channel/releases/CHANNEL/winia32'],
   ['dist/ia32/RELEASES', 'multi-channel/releases/CHANNEL/winia32'],
-  ['dist/ia32/Brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winia32']
+  ['dist/ia32/brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winia32']
 ]
 
 // For the dev channel we need to upload files to the legacy location. This will move them on to the dev
@@ -72,7 +72,7 @@ if (args.channel === 'dev') {
   recipes = recipes.concat([
     ['dist/x64/BraveSetup-x64.exe', 'releases/winx64'],
     ['dist/x64/RELEASES', 'releases/winx64'],
-    ['dist/x64/Brave-VERSION-full.nupkg', 'releases/winx64']
+    ['dist/x64/brave-VERSION-full.nupkg', 'releases/winx64']
   ])
 }
 
