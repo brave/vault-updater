@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.9.6",
+    "name": "Brave 0.9.6",
+    "pub_date": "2016-05-14T02:01:33.703Z",
+    "notes": "Chromium 50.0.2661.102 and various bug fixes. Full details: https://github.com/brave/browser-laptop/releases/tag/v0.9.6dev"
+  },
+  {
     "version": "0.9.5",
     "name": "Brave 0.9.5",
     "pub_date": "2016-05-12T13:08:30.197Z",

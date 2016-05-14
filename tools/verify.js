@@ -28,6 +28,7 @@ var verifyUrl = (url, msg) => {
     if (response.statusCode === 200) {
       console.log('  OK ... ' + url)
     } else {
+      console.log('HTTP Status code: ' + response.statusCode, 'url: ', url)
       if (args.warn) {
         console.log('  FAILED ... ' + msg + ' : ' + url)
       } else {
