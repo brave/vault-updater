@@ -3,15 +3,13 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 var amqp = require('amqplib/callback_api')
 
-const MQ_HOST = process.env.MQ_HOST || 'localhost'
-const MQ_PORT = process.env.MQ_PORT || '5672'
 const MQ_QUEUE = process.env.MQ_QUEUE || 'crashes'
+const MQ_URL = process.env.RABBITMQ_BIGWIG_TX_URL || process.env.AMQP_URL || 'amqp://localhost:5672'
 
 // Initiate connection to RabbitMQ
 exports.setup = (done) => {
-  var amqpConnectionString = 'amqp://' + MQ_HOST + ':' + MQ_PORT
-  console.log('Connecting to AMQP server at ' + amqpConnectionString)
-  amqp.connect(amqpConnectionString, (err, conn) => {
+  console.log('Connecting to AMQP server at ' + MQ_URL)
+  amqp.connect(MQ_URL, (err, conn) => {
     if (err != null) {
       throw new Error(err)
     }

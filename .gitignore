@@ -32,3 +32,6 @@ dist
 # browser releases
 releases
 ssl
+
+# tmp folder
+tmp/
