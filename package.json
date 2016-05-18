@@ -13,6 +13,7 @@
   "author": "Brave",
   "license": "MPL-2.0",
   "dependencies": {
+    "amqplib": "^0.4.1",
     "aws-sdk": "^2.2.30",
     "babel": "^6.1.18",
     "babel-cli": "^6.2.0",

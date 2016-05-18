@@ -23,7 +23,7 @@ const usageSchema = Joi.object().keys({
 })
 .with('daily', 'weekly', 'monthly')
 
-exports.setup = (done) => {
+exports.setup = (amqpSender, done) => {
   MongoClient.connect(mongoURL, (err, connection) => {
     assert.equal(null, err)
     console.log('connection to Mongo established')
@@ -66,12 +66,16 @@ exports.setup = (done) => {
         // Save the miniDump data for S3 storage
         var miniDump = crash.upload_file_minidump || null
         delete crash.upload_file_minidump
-        // Log the crash
-        console.log(JSON.stringify(crash))
         // Insert into Mongo
         crashesCollection.insertOne(crash, (err, results) => {
           let id = results.ops[0]._id
           if (miniDump) {
+            // Record the mongoId (also the S3 id)
+            crash.mongoId = id
+            // Log the crash
+            console.log(JSON.stringify(crash))
+            // Send rabbitmq message
+            amqpSender(crash)
             // Insert miniDump into S3
             s3.storeCrashReport(id, miniDump, done)
           } else {
