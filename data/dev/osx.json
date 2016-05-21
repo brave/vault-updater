@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.10.0",
+    "name": "Brave 0.10.0",
+    "pub_date": "2016-05-21T05:13:15.791Z",
+    "notes": "Per site Bravery panel, error pages, and much more. Full detail: https://github.com/brave/browser-laptop/releases/tag/v0.10.0dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.10.0/osx/Brave-0.10.0.zip"
+  },
+  {
     "version": "0.9.6",
     "name": "Brave 0.9.6",
     "pub_date": "2016-05-14T02:01:33.703Z",
