@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.10.1",
+    "name": "Brave 0.10.1",
+    "pub_date": "2016-06-03T16:42:10.424Z",
+    "notes": "Fingerprint protection in the Bravery panel and various fixes. Full notes: https://github.com/brave/browser-laptop/releases/v0.10.1dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.10.1/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.10.0",
     "name": "Brave 0.10.0",
     "pub_date": "2016-05-21T05:13:15.791Z",
