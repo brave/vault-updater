@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.10.3",
+    "name": "Brave 0.10.3",
+    "pub_date": "2016-06-08T16:23:55.491Z",
+    "notes": "Update to libchromiumcontent 51.0.2704.84"
+  },
+  {
     "version": "0.10.2",
     "name": "Brave 0.10.2",
     "pub_date": "2016-06-03T23:17:10.325Z",
