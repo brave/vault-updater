@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.11.0",
+    "name": "Brave 0.11.0",
+    "pub_date": "2016-07-05T13:58:12.284Z",
+    "notes": "LastPass support, WebRTC fingerprinting protection, Flash click to play if Flash is enabled, and more: https://github.com/brave/browser-laptop/releases/tag/v0.11.0dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.11.0/osx/Brave-0.11.0.zip"
+  },
+  {
     "version": "0.10.4",
     "name": "Brave 0.10.4",
     "pub_date": "2016-06-24T20:24:27.615Z",
