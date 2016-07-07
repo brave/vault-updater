@@ -17,7 +17,8 @@ let aliases = {
   fedora64: 'linux64',
   openSUSE64: 'linux64',
   redhat64: 'linux64',
-  mint64: 'linux64'
+  mint64: 'linux64',
+  linux: 'linux64'
 }
 
 // Read in the release files by channel / platform

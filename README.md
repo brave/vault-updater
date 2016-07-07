@@ -25,6 +25,10 @@ GET /latest/winx64 - redirect to the latest Windows setup file
 `node tools/uploader.js --source=/path/to/browser-laptop --send`
 `npm run verify`
 
+## Test
+
+`npm run build && npm test`
+
 ## Environment variables
 
 Required

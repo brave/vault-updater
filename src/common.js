@@ -32,5 +32,6 @@ exports.platformData = {
   'openSUSE64': {},
   'redhat64' :{},
   'mint64' :{},
-  'undefined': {}
+  'undefined': {},
+  'linux': {}
 }
