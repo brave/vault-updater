@@ -77,11 +77,13 @@ exports.setup = (amqpSender, done) => {
             // Send rabbitmq message
             amqpSender(crash)
             // Insert miniDump into S3
-            s3.storeCrashReport(id, miniDump, done)
-          } else {
-            // If no miniDump then return a valid condition
-            done(null)
+            s3.storeCrashReport(id, miniDump, function() {
+              console.log('minidump stored in S3')
+            })
           }
+          // We are returning BEFORE the S3 and rabbitmq messages are validated because
+          // Heroku is timing out with a 499 status code
+          done(null)
         })
       }
     }
