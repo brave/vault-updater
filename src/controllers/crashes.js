@@ -10,10 +10,10 @@ exports.setup = (runtime) => {
         const payload = request.payload
         payload.ts = (new Date()).getTime()
         runtime.mongo.models.insertCrash(payload, (err, results) => {
-          assert.equal(err, null)
           console.log(`crash recorded for version ${payload.ver}`)
-          reply('OK')
         })
+        console.log('Crash response sent')
+        reply('OK')
       }
     }
   }
