@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.11.1",
+    "name": "Brave 0.11.1",
+    "pub_date": "2016-07-20T17:55:49.152Z",
+    "notes": "PDF viewing, more data clearing options, navigator.registerProtocolHandler support, copy image option and more: https://github.com/brave/browser-laptop/releases/tag/v0.11.1dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.11.1/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.11.0",
     "name": "Brave 0.11.0",
     "pub_date": "2016-07-05T13:58:12.284Z",
