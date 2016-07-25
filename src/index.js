@@ -7,6 +7,7 @@ if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
   console.log("Warning: New Relic not configured!")
 }
 
+let logger = require('logfmt')
 let Inert = require('inert')
 let assert = require('assert')
 let setGlobalHeader = require('hapi-set-header')
@@ -45,6 +46,13 @@ mq.setup((sender) => {
       host: config.host,
       port: config.port
     })
+
+    // Output request headers to aid in osx crash storage issue
+    if (process.env.LOG_HEADERS) {
+      serv.listener.on('request', (request, event, tags) => {
+        logger.log(request.headers)
+      })
+    }
 
     // Handle the boom response as well as all other requests (cache control for telemetry)
     setGlobalHeader(server, 'Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0')
