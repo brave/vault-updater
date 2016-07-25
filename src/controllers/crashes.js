@@ -1,5 +1,6 @@
 let assert = require('assert')
 let Joi = require('joi')
+let logger = require('logfmt')
 
 exports.setup = (runtime) => {
   let post = {
@@ -7,6 +8,7 @@ exports.setup = (runtime) => {
     path: '/1/crashes',
     config: {
       handler: function (request, reply) {
+        logger.log(request.headers)
         console.log('Crash report start of processing')
         reply('OK')
         const payload = request.payload
