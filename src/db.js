@@ -74,16 +74,16 @@ exports.setup = (amqpSender, done) => {
             crash.mongoId = id
             // Log the crash
             console.log(JSON.stringify(crash))
-            // Send rabbitmq message
-            amqpSender(crash)
             // Insert miniDump into S3
             s3.storeCrashReport(id, miniDump, function() {
               console.log('minidump stored in S3')
+              setTimeout(function () {
+                // Send rabbitmq message
+                amqpSender(crash)
+                done(null)
+              }, 500)
             })
           }
-          // We are returning BEFORE the S3 and rabbitmq messages are validated because
-          // Heroku is timing out with a 499 status code
-          done(null)
         })
       }
     }

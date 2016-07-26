@@ -35,3 +35,6 @@ ssl
 
 # tmp folder
 tmp/
+
+# Heroku local env vars
+.env

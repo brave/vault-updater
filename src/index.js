@@ -41,7 +41,20 @@ mq.setup((sender) => {
     let crashes = require('./controllers/crashes').setup(runtime)
     let monitoring = require('./controllers/monitoring').setup(runtime)
 
-    let server = new Hapi.Server()
+    let server = null
+
+    // Output request headers to aid in osx crash storage issue
+    if (process.env.LOG_HEADERS) {
+      server = new Hapi.Server({
+        debug: {
+          request: ['error', 'received', 'handler'],
+          log: ['error']
+        }
+      })
+    } else {
+      server = new Hapi.Server()
+    }
+
     let serv = server.connection({
       host: config.host,
       port: config.port
