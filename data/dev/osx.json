@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.11.4",
+    "name": "Brave 0.11.4",
+    "pub_date": "2016-08-10T15:34:47.985Z",
+    "notes": "More data clearing options, tab page previews, printing fix on Windows, memory leak fixes, crash fixes and more: https://github.com/brave/browser-laptop/releases/tag/v0.11.4dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.11.4/osx/Brave-0.11.4.zip"
+  },
+  {
     "version": "0.11.3",
     "name": "Brave 0.11.3",
     "pub_date": "2016-08-06T05:06:58.325Z",
