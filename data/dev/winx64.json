@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.11.6",
+    "name": "Brave 0.11.6",
+    "pub_date": "2016-09-01T14:23:27.525Z",
+    "notes": "Added the ability to pay publishers with the Brave Ledger. Added autofill, bookmarks enhancements, find bar design update, and history. More details: https://github.com/brave/browser-laptop/releases/tag/0.11.6dev"
+  },
+  {
     "version": "0.11.5",
     "name": "Brave 0.11.5",
     "pub_date": "2016-08-15T18:31:32.610Z",
