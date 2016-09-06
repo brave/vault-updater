@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.12.0",
+    "name": "Brave 0.12.0",
+    "pub_date": "2016-09-06T18:01:34.612Z",
+    "notes": "Added option to allow for mixed-content. Added shortcut to view source. Various fixes for autofill, bookmarks, and history. More details: https://github.com/brave/browser-laptop/releases/tag/0.12.0dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.12.0/osx/Brave-0.12.0.zip"
+  },
+  {
     "version": "0.11.6",
     "name": "Brave 0.11.6",
     "pub_date": "2016-09-01T14:23:27.525Z",
