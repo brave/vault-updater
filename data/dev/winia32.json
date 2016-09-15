@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.12.1",
+    "name": "Brave 0.12.1",
+    "pub_date": "2016-09-15T19:59:10.303Z",
+    "notes": "Added many languages. Added extension UI. Various fixes for Brave Payments, history, and password manager extensions. More details: https://github.com/brave/browser-laptop/releases/tag/0.12.1dev"
+  },
+  {
     "version": "0.12.0",
     "name": "Brave 0.12.0",
     "pub_date": "2016-09-06T18:01:34.612Z",
