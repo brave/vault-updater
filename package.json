@@ -31,6 +31,7 @@
     "mongodb": "^2.1.4",
     "newrelic": "^1.25.3",
     "underscore": "^1.8.3",
+    "xmldoc": "^0.5.1",
     "yargs": "^3.31.0"
   },
   "devDependencies": {

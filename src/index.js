@@ -23,6 +23,7 @@ let mq = require('./mq')
 
 // Read in the channel / platform releases meta-data
 let releases = setup.readReleases('data')
+let extensions = setup.readExtensions()
 
 if (process.env.DEBUG) {
   console.log(_.keys(releases))
@@ -37,7 +38,8 @@ mq.setup((sender) => {
     }
 
     // POST, DEL and GET /1/releases/{platform}/{version}
-    let routes = require('./controllers/releases').setup(runtime, releases)
+    let releaseRoutes = require('./controllers/releases').setup(runtime, releases)
+    let extensionRoutes = require('./controllers/extensions').setup(runtime, extensions)
     let crashes = require('./controllers/crashes').setup(runtime)
     let monitoring = require('./controllers/monitoring').setup(runtime)
 
@@ -80,7 +82,7 @@ mq.setup((sender) => {
     server.route(
       [
         common.root
-      ].concat(routes, crashes, monitoring)
+      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring)
     )
 
     server.start((err) => {
