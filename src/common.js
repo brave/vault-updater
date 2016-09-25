@@ -10,10 +10,17 @@ exports.root = {
   }
 }
 
-exports.comparableVersion = (version) => {
-  let components = version.split('.').map((x) => parseInt(x, 10))
-  return components[0] * 10000000 + components[1] * 10000 + components[2]
-}
+/* Converts a version string to something that can be compared
+ * with comparison operators.
+ * For 4 component versions, this is only guaranteed to work with
+ * versions of the form: 9007.1992.5474.0991 and lower because
+ * Number.MAX_SAFE_INTEGER is 9007199254740991
+ */
+exports.comparableVersion = (version) =>
+  version.split('.')
+    .map((x) => parseInt(x, 10))
+    .reduce((prevValue, currentValue) =>
+      Math.pow(10, 4) * prevValue + currentValue, 0)
 
 exports.channelData = {
   'dev': {},
