@@ -53,6 +53,8 @@ exports.readExtensions = () => [
   // 1Password
   ['aomjjhallfgjeglblehebfpbcfeobpgk', '4.5.9.90', 'f75d7808766429ec63ec41d948c1cb6a486407945d604961c6adf54fe3f459b7'],
   // PDFJS
+  ['jdbefljfgobbmcidnmpjamcbhnbphjnb', '1.5.444', '25689984431ca8a60f087c761f472e500a7fe8a9065a4a47e92559237bcd1d6d'],
+  // Obsolete PDFJS (only kept for 0.12.3RC1 requests, we can remove when we build 0.12.3RC2)
   ['oemmndcbldboiebfnladdacbdfmadadm', '1.5.294', '499e05d5cde9a1e735e29fa49af7839690f34eb27a3d952b8e4396ea50c77526'],
   // Dashlane
   ['fdjamakpfbbddfjaooikfcpapjohcfmg', '4.2.4', '0be29a787290db4c554fd7c77e5c45939d2161688b6cb6b51d39cdedb9cc69d4'],
