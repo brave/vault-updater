@@ -51,7 +51,7 @@ exports.readReleases = (directory) => {
 // Format is: [extensionId, version, hash]
 exports.readExtensions = () => [
   // 1Password
-  ['aomjjhallfgjeglblehebfpbcfeobpgk', '4.5.9.90', 'f75d7808766429ec63ec41d948c1cb6a486407945d604961c6adf54fe3f459b7'],
+  ['aomjjhallfgjeglblehebfpbcfeobpgk', '4.6.1.90', 'e1c67d1505ccfb8d14879ab02355c7bfaa376054fe9c918dbd5397f7e1755bbe'],
   // PDFJS
   ['jdbefljfgobbmcidnmpjamcbhnbphjnb', '1.5.444', '25689984431ca8a60f087c761f472e500a7fe8a9065a4a47e92559237bcd1d6d'],
   // Obsolete PDFJS (only kept for 0.12.3RC1 requests, we can remove when we build 0.12.3RC2)
