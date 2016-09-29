@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.12.3",
+    "name": "Brave 0.12.3",
+    "pub_date": "2016-09-29T21:44:59.076Z",
+    "notes": "Added importing from other browsers. Added extension enhancements including auto-update, post-install downloads. Various fixes for Brave Payments, geolocation, toolbar, autofill, history, address bar, and per-site settings. More details: https://github.com/brave/browser-laptop/releases/tag/0.12.3dev"
+  },
+  {
     "version": "0.12.1",
     "name": "Brave 0.12.1",
     "pub_date": "2016-09-15T19:59:10.303Z",
