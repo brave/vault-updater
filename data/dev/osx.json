@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.12.4",
+    "name": "Brave 0.12.4",
+    "pub_date": "2016-10-08T00:37:58.558Z",
+    "notes": "Added support for regional adblocking in about:adblock, Bravery panel for private tabs, Windows scrolling fixes and much more: https://github.com/brave/browser-laptop/releases/tag/v0.12.4dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.12.4/osx/Brave-0.12.4.zip"
+  },
+  {
     "version": "0.12.3",
     "name": "Brave 0.12.3",
     "pub_date": "2016-09-29T21:44:59.076Z",
