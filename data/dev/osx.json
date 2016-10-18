@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.12.5",
+    "name": "Brave 0.12.5",
+    "pub_date": "2016-10-18T15:50:58.651Z",
+    "notes": "Added Brave Wallet backup and recovery, fixed numerous issues for bookmark manager, and updated to Electron 1.4.14. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.5dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.12.5/osx/Brave-0.12.5.zip"
+  },
+  {
     "version": "0.12.4",
     "name": "Brave 0.12.4",
     "pub_date": "2016-10-08T00:37:58.558Z",
