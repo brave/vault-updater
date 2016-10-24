@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.12.6",
+    "name": "Brave 0.12.6",
+    "pub_date": "2016-10-24T16:08:37.145Z",
+    "notes": "Ability to set default browser on startup and in preferences, URL bar fixes, error page reloading fixes, and much more: https://github.com/brave/browser-laptop/releases/tag/v0.12.6dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.12.6/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.12.5",
     "name": "Brave 0.12.5",
     "pub_date": "2016-10-18T15:50:58.651Z",
