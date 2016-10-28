@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.12.7",
+    "name": "Brave 0.12.7",
+    "pub_date": "2016-10-28T18:54:56.474Z",
+    "notes": "Added Google Widevine for Netflix support. Added Startpage search engine. Fixed autocomplete, bookmark management, and a couple security issues. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.7dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.12.7/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.12.6",
     "name": "Brave 0.12.6",
     "pub_date": "2016-10-24T16:08:37.145Z",
