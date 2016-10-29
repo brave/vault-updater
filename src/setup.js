@@ -59,5 +59,7 @@ exports.readExtensions = () => [
   // Dashlane
   ['fdjamakpfbbddfjaooikfcpapjohcfmg', '4.2.4', '0be29a787290db4c554fd7c77e5c45939d2161688b6cb6b51d39cdedb9cc69d4'],
   // LastPass
-  ['hdokiejnpimakedhajhdlcegeplioahd', '4.1.28', '1e94a15dfaa59afd8ceb8b8cace7194aea3cc718d9a77fcff812eac918246e80']
+  ['hdokiejnpimakedhajhdlcegeplioahd', '4.1.28', '1e94a15dfaa59afd8ceb8b8cace7194aea3cc718d9a77fcff812eac918246e80'],
+  // Pocket
+  ['niloccemoadcdkdjlinkgdfekeahmflj', '2.1.10', '67039d0154f3c97e9a9aa83fe5fd18f371678e34f3552f040f505727b07e2ca1']
 ]
