@@ -26,9 +26,10 @@ const usageSchema = Joi.object().keys({
 exports.setup = (amqpSender, done) => {
   MongoClient.connect(mongoURL, (err, connection) => {
     assert.equal(null, err)
-    console.log('connection to Mongo established')
+    console.log(`connection to Mongo established at ${mongoURL}`)
 
     const usageCollection = connection.collection('usage')
+    const androidUsageCollection = connection.collection('android_usage')
     const crashesCollection = connection.collection('crashes')
 
     // install a series of model data handlers on connection
@@ -51,6 +52,26 @@ exports.setup = (amqpSender, done) => {
             // store as a useful backup
             console.log(JSON.stringify(usage))
             usageCollection.insertOne(usage, done)
+          }
+        } else {
+          // Null usage indicates no values passed
+          done(null, {})
+        }
+      },
+
+      // insert usage record
+      insertAndroidUsage: (usage, done) => {
+        if (usage) {
+          const invalid = Joi.validate(usage, usageSchema)
+          if (invalid.error) {
+            done(invalid, null)
+          } else {
+            // store the current timestamp in epoch seconds
+            usage.ts = (new Date()).getTime()
+            usage.year_month_day = moment().format('YYYY-MM-DD')
+            // store as a useful backup
+            console.log(JSON.stringify(usage))
+            androidUsageCollection.insertOne(usage, done)
           }
         } else {
           // Null usage indicates no values passed

@@ -42,6 +42,7 @@ mq.setup((sender) => {
     let extensionRoutes = require('./controllers/extensions').setup(runtime, extensions)
     let crashes = require('./controllers/crashes').setup(runtime)
     let monitoring = require('./controllers/monitoring').setup(runtime)
+    let androidRoutes = require('./controllers/android').setup(runtime)
 
     let server = null
 
@@ -82,7 +83,7 @@ mq.setup((sender) => {
     server.route(
       [
         common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring)
+      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes)
     )
 
     server.start((err) => {
