@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.12.8",
+    "name": "Brave 0.12.8",
+    "pub_date": "2016-11-07T18:04:45.191Z",
+    "notes": "Added Pocket extension, fixed numerous issues for bookmarks manager and findbar, and fixed crashes for a few sites. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.8dev"
+  },
+  {
     "version": "0.12.7",
     "name": "Brave 0.12.7",
     "pub_date": "2016-10-28T18:54:56.474Z",
