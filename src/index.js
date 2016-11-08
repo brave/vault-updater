@@ -1,3 +1,7 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 let Hapi = require('hapi')
 
 process.env.NEW_RELIC_NO_CONFIG_FILE = true
@@ -42,7 +46,10 @@ mq.setup((sender) => {
     let extensionRoutes = require('./controllers/extensions').setup(runtime, extensions)
     let crashes = require('./controllers/crashes').setup(runtime)
     let monitoring = require('./controllers/monitoring').setup(runtime)
+
+    // GET /1/usage/[ios|android]
     let androidRoutes = require('./controllers/android').setup(runtime)
+    let iosRoutes = require('./controllers/ios').setup(runtime)
 
     let server = null
 
@@ -83,7 +90,7 @@ mq.setup((sender) => {
     server.route(
       [
         common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes)
+      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes)
     )
 
     server.start((err) => {

@@ -30,6 +30,7 @@ exports.setup = (amqpSender, done) => {
 
     const usageCollection = connection.collection('usage')
     const androidUsageCollection = connection.collection('android_usage')
+    const iosUsageCollection = connection.collection('ios_usage')
     const crashesCollection = connection.collection('crashes')
 
     // install a series of model data handlers on connection
@@ -39,7 +40,7 @@ exports.setup = (amqpSender, done) => {
         connection.stats(done)
       },
 
-      // insert usage record
+      // insert Laptop usage record
       insertUsage: (usage, done) => {
         if (usage) {
           const invalid = Joi.validate(usage, usageSchema)
@@ -59,7 +60,7 @@ exports.setup = (amqpSender, done) => {
         }
       },
 
-      // insert usage record
+      // insert Android usage record
       insertAndroidUsage: (usage, done) => {
         if (usage) {
           const invalid = Joi.validate(usage, usageSchema)
@@ -72,6 +73,26 @@ exports.setup = (amqpSender, done) => {
             // store as a useful backup
             console.log(JSON.stringify(usage))
             androidUsageCollection.insertOne(usage, done)
+          }
+        } else {
+          // Null usage indicates no values passed
+          done(null, {})
+        }
+      },
+
+      // insert iOS usage record
+      insertIOSUsage: (usage, done) => {
+        if (usage) {
+          const invalid = Joi.validate(usage, usageSchema)
+          if (invalid.error) {
+            done(invalid, null)
+          } else {
+            // store the current timestamp in epoch seconds
+            usage.ts = (new Date()).getTime()
+            usage.year_month_day = moment().format('YYYY-MM-DD')
+            // store as a useful backup
+            console.log(JSON.stringify(usage))
+            iosUsageCollection.insertOne(usage, done)
           }
         } else {
           // Null usage indicates no values passed
