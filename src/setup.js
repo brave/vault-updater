@@ -65,5 +65,5 @@ exports.readExtensions = () => [
   // LastPass
   ['hdokiejnpimakedhajhdlcegeplioahd', '4.1.28', '1e94a15dfaa59afd8ceb8b8cace7194aea3cc718d9a77fcff812eac918246e80'],
   // Pocket
-  ['niloccemoadcdkdjlinkgdfekeahmflj', '2.1.10', '67039d0154f3c97e9a9aa83fe5fd18f371678e34f3552f040f505727b07e2ca1']
+  ['niloccemoadcdkdjlinkgdfekeahmflj', '2.1.11', 'c2f67e8caa9247c36dba4052989c6bf3c8d1e0e76b7d828f49aadaeb5e3a71e6']
 ]
