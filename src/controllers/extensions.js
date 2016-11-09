@@ -22,6 +22,26 @@ const getRequestedExtensions = (requestXML) => {
 }
 
 /**
+ * Extracts an array of components along with their version from response XML
+ *
+ * @param @responseXML - The update check response XML protocol 3.0
+ * @return undefined if there was an error parsing the document, or an array of
+ *   [componentId, componentVersion] if successful.
+ */
+const getResponseComponents = (responseXML) => {
+  const doc = new xmldoc.XmlDocument(responseXML)
+  if (doc.attr.protocol !== '3.0') {
+    console.error('Only protocol v3 is supproted')
+    return undefined
+  }
+  const extensions = doc.childrenNamed('app')
+      .map((app) => {
+        return [app.attr.appid, app.descendantWithPath('updatecheck.manifest').attr.version]
+      })
+  return extensions
+}
+
+/**
  * Filters out to only the availableExtensions that should be updated for the request.
  * For example some extensions may not be requested, and some may already have a fully
  * updated, or even newer versions.
@@ -91,6 +111,7 @@ const setup = (runtime, availableExtensions) => {
 
 module.exports = {
   getRequestedExtensions,
+  getResponseComponents,
   getExtensionsWithUpdates,
   getExtensionsResponse,
   setup

@@ -55,15 +55,22 @@ exports.readReleases = (directory) => {
 // Format is: [extensionId, version, hash]
 exports.readExtensions = () => [
   // 1Password
-  ['aomjjhallfgjeglblehebfpbcfeobpgk', '4.6.1.90', 'e1c67d1505ccfb8d14879ab02355c7bfaa376054fe9c918dbd5397f7e1755bbe'],
+  ['aomjjhallfgjeglblehebfpbcfeobpgk', '4.6.1.90', 'e1c67d1505ccfb8d14879ab02355c7bfaa376054fe9c918dbd5397f7e1755bbe', '1Password'],
   // PDFJS
-  ['jdbefljfgobbmcidnmpjamcbhnbphjnb', '1.5.444', '25689984431ca8a60f087c761f472e500a7fe8a9065a4a47e92559237bcd1d6d'],
+  ['jdbefljfgobbmcidnmpjamcbhnbphjnb', '1.5.444', '25689984431ca8a60f087c761f472e500a7fe8a9065a4a47e92559237bcd1d6d', 'Brave PDFJS'],
   // Obsolete PDFJS (only kept for 0.12.3RC1 requests, we can remove when we build 0.12.3RC2)
-  ['oemmndcbldboiebfnladdacbdfmadadm', '1.5.294', '499e05d5cde9a1e735e29fa49af7839690f34eb27a3d952b8e4396ea50c77526'],
+  ['oemmndcbldboiebfnladdacbdfmadadm', '1.5.294', '499e05d5cde9a1e735e29fa49af7839690f34eb27a3d952b8e4396ea50c77526', 'Upstream PDFJS'],
   // Dashlane
-  ['fdjamakpfbbddfjaooikfcpapjohcfmg', '4.2.4', '0be29a787290db4c554fd7c77e5c45939d2161688b6cb6b51d39cdedb9cc69d4'],
+  ['fdjamakpfbbddfjaooikfcpapjohcfmg', '4.2.4', '0be29a787290db4c554fd7c77e5c45939d2161688b6cb6b51d39cdedb9cc69d4', 'Dashlane'],
   // LastPass
-  ['hdokiejnpimakedhajhdlcegeplioahd', '4.1.28', '1e94a15dfaa59afd8ceb8b8cace7194aea3cc718d9a77fcff812eac918246e80'],
+  ['hdokiejnpimakedhajhdlcegeplioahd', '4.1.28', '1e94a15dfaa59afd8ceb8b8cace7194aea3cc718d9a77fcff812eac918246e80', 'LastPass'],
   // Pocket
-  ['niloccemoadcdkdjlinkgdfekeahmflj', '2.1.11', 'c2f67e8caa9247c36dba4052989c6bf3c8d1e0e76b7d828f49aadaeb5e3a71e6']
+  ['niloccemoadcdkdjlinkgdfekeahmflj', '2.1.11', 'c2f67e8caa9247c36dba4052989c6bf3c8d1e0e76b7d828f49aadaeb5e3a71e6', 'Pocket']
+]
+
+// Components are all extensions plus some other things like Widevine
+exports.readComponentsForVersionUpgradesOnly = () => [...module.exports.readExtensions(),
+  // This should always be served from Google servers for licensing reasons
+  // and this is only used for purposes of reporting.  We don't actually serve this file.
+  ['oimompecagnajdejgnnjijobebaeigek', '1.4.8.903', '', 'Widevine']
 ]
