@@ -42,3 +42,12 @@ exports.platformData = {
   'undefined': {},
   'linux': {}
 }
+
+/*
+  return ip address from the request, taking into consideration the Heroku request headers
+*/
+exports.ipAddressFrom = function (request) {
+  if (request.headers['X-Forwarded-For']) return request.headers['X-Forwarded-For'].split(',')[0]
+  if (request.info.remoteAddress) return request.info.remoteAddress
+  return
+}

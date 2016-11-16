@@ -1,3 +1,7 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 var tap = require('tap')
 var _ = require('underscore')
 var ios = require('../dist/controllers/android')
@@ -38,7 +42,11 @@ tap.test('Android Controller', function (t) {
     t.ok(obj.status === 'ok', 'status ok')
   }
   var requestMock = {
-    query: query
+    query: query,
+    info: {
+      remoteAddress: '1.1.1.1'
+    },
+    headers: {}
   }
   var endpoints = ios.setup(runtimeMock)
   endpoints[0].config.handler(requestMock, replyMock)

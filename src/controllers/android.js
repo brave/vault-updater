@@ -1,3 +1,6 @@
+const common = require('../common')
+const ipLimit = require('../IPLimit')
+
 // Build a usage object if query parameters passed in
 let buildUsage = (request) => {
   if (request.query.daily) {
@@ -21,6 +24,11 @@ exports.setup = (runtime) => {
     path: '/1/usage/android',
     config: {
       handler: function (request, reply) {
+        var ipAddress = common.ipAddressFrom(request)
+        if (!ipLimit.shouldRecord(ipAddress)) {
+          console.log('*** cache hit, not recording')
+          return reply({ ts: (new Date()).getTime(), status: 'ok' })
+        }
         var usage = buildUsage(request)
         runtime.mongo.models.insertAndroidUsage(usage, (err, results) => {
           if (err) {
