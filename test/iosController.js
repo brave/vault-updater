@@ -38,7 +38,10 @@ tap.test('iOS Controller', function (t) {
     t.ok(obj.status === 'ok', 'status ok')
   }
   var requestMock = {
-    query: query
+    query: query,
+    headers: {
+      'X-Forwarded-For': '1.1.1.1'
+    }
   }
   var endpoints = ios.setup(runtimeMock)
   endpoints[0].config.handler(requestMock, replyMock)

@@ -1,3 +1,10 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+const common = require('../common')
+const ipLimit = require('../IPLimit')
+
 // Build a usage object if query parameters passed in
 let buildUsage = (request) => {
   if (request.query.daily) {
@@ -21,6 +28,11 @@ exports.setup = (runtime) => {
     path: '/1/usage/ios',
     config: {
       handler: function (request, reply) {
+        var ipAddress = common.ipAddressFrom(request)
+        if (!ipLimit.shouldRecord(ipAddress)) {
+          console.log('*** cache hit, not recording')
+          return reply({ ts: (new Date()).getTime(), status: 'ok' })
+        }
         var usage = buildUsage(request)
         runtime.mongo.models.insertIOSUsage(usage, (err, results) => {
           if (err) {
