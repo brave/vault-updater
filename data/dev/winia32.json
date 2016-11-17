@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.12.9",
+    "name": "Brave 0.12.9",
+    "pub_date": "2016-11-15T19:48:04.713Z",
+    "notes": "Added a new tab page, added Wolfram Alpha and Infogalactic search engines. Fixed various UI, bookmark, and address bar issues. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.9dev"
+  },
+  {
     "version": "0.12.8",
     "name": "Brave 0.12.8",
     "pub_date": "2016-11-07T18:04:45.191Z",
