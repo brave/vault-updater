@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.12.10",
+    "name": "Brave 0.12.10",
+    "pub_date": "2016-11-21T20:22:18.040Z",
+    "notes": "Added dropdown menu with options for new tab. Fixed various issues for the new tab page, Brave Payments, and UI fixes. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.10dev"
+  },
+  {
     "version": "0.12.9",
     "name": "Brave 0.12.9",
     "pub_date": "2016-11-15T19:48:04.713Z",
