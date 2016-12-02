@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.12.11",
+    "name": "Brave 0.12.11",
+    "pub_date": "2016-12-02T21:13:23.399Z",
+    "notes": "Hotfix to address a security issue. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.11dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.12.11/osx/Brave-0.12.11.zip"
+  },
+  {
     "version": "0.12.10",
     "name": "Brave 0.12.10",
     "pub_date": "2016-11-21T20:22:18.040Z",
