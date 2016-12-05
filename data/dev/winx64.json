@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.12.12",
+    "name": "Brave 0.12.12",
+    "pub_date": "2016-12-05T17:18:29.041Z",
+    "notes": "Hotfix to address a security issue. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.12dev"
+  },
+  {
     "version": "0.12.11",
     "name": "Brave 0.12.11",
     "pub_date": "2016-12-02T21:13:23.399Z",
