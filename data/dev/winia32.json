@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.12.13",
+    "name": "Brave 0.12.13",
+    "pub_date": "2016-12-07T17:55:25.004Z",
+    "notes": "Hotfix to address URL bar usability issues a security issue. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.13dev"
+  },
+  {
     "version": "0.12.12",
     "name": "Brave 0.12.12",
     "pub_date": "2016-12-05T17:18:29.041Z",
