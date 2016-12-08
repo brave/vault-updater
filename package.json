@@ -35,6 +35,7 @@
     "yargs": "^3.31.0"
   },
   "devDependencies": {
+    "s3": "^4.4.0",
     "standard": "^5.4.1",
     "tap": "^6.1.1"
   },

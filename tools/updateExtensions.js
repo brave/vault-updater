@@ -1,12 +1,16 @@
 const request = require('request')
 const {getResponseComponents} = require('../src/controllers/extensions')
 const {readComponentsForVersionUpgradesOnly} = require('../src/setup')
+const s3 = require('s3')
 const fs = require('fs')
 const path = require('path')
 const args = require('yargs')
     .usage('node $0 --chromium=X.X.X.X [--download]')
     .demand(['chromium'])
+    // Whether or not to download from the chromium server when it is outdated
     .default('download', false)
+    // Whether or not to upload to brave's s3 when it is downloaded (download must also be set)
+    .default('upload', false)
     .argv
 
 const googleUpdateServerBaseUrl = 'https://clients2.google.com/service/update2'
@@ -24,6 +28,16 @@ const getRequestBody = (componentId, chromiumVersion, components) =>
   }, '') +
   '</request>'
 
+const client = s3.createClient({
+  maxAsyncS3: 20,
+  s3RetryCount: 3,
+  s3RetryDelay: 1000,
+  multipartUploadThreshold: 20971520,
+  multipartUploadSize: 15728640,
+  // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#constructor-property
+  s3Options: {}
+})
+
 const braveComponents = readComponentsForVersionUpgradesOnly()
 const components = braveComponents
   // Skip PDFJS since we maintain our own and Google doesn't know anything about it
@@ -31,6 +45,28 @@ const components = braveComponents
 
 const body = getRequestBody('niloccemoadcdkdjlinkgdfekeahmflj', args.chromium, components)
 const mkdir = (path) => !fs.existsSync(path) && fs.mkdirSync(path)
+
+const uploadFile = (filePath, componentId, componentFilename) => {
+  return new Promise((resolve, reject) => {
+    var params = {
+      localFile: filePath,
+      // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
+      s3Params: {
+        Bucket: 'brave-extensions',
+        Key: `release/${componentId}/${componentFilename}`,
+        ACL: 'public-read'
+      }
+    }
+    const uploader = client.uploadFile(params)
+    uploader.on('error', function (err) {
+      console.error('Unable to upload:', err.stack, 'Do you have ~/.aws/credentials filled out?')
+      reject()
+    })
+    uploader.on('end', function (params) {
+      resolve()
+    })
+  })
+}
 
 request.post({
   url: googleUpdateServerBaseUrl,
@@ -63,8 +99,16 @@ request.post({
       const outputPath = path.join(dir, filename)
       var file = fs.createWriteStream(outputPath)
       const url = `${googleUpdateServerBaseUrl}/crx?response=redirect&prodversion=${args.chromium}&x=id%3D${componentId}%26uc`
-      console.log(url)
-      request(url).pipe(fs.createWriteStream(outputPath))
+      request(url)
+        .pipe(fs.createWriteStream(outputPath))
+        .on('finish', function () {
+          console.log(`Downloaded ${outputPath} from Google's server`)
+          if (args.upload) {
+            uploadFile(outputPath, componentId, filename).then(() => {
+              console.log(`Uploaded ${outputPath} to s3`)
+            })
+          }
+        });
     })
   }
 })
