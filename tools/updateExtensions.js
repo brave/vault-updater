@@ -1,11 +1,15 @@
 const request = require('request')
 const {getResponseComponents} = require('../src/controllers/extensions')
 const {readComponentsForVersionUpgradesOnly} = require('../src/setup')
+const fs = require('fs')
+const path = require('path')
 const args = require('yargs')
-    .usage('node $0 --chromium=X.X.X.X')
+    .usage('node $0 --chromium=X.X.X.X [--download]')
     .demand(['chromium'])
+    .default('download', false)
     .argv
 
+const googleUpdateServerBaseUrl = 'https://clients2.google.com/service/update2'
 const getRequestBody = (componentId, chromiumVersion, components) =>
   `<?xml version="1.0" encoding="UTF-8"?>
   <request protocol="3.0" version="chrome-${chromiumVersion}" prodversion="${chromiumVersion}" requestid="{b4f77b70-af29-462b-a637-8a3e4be5ecd9}" lang="" updaterchannel="stable" prodchannel="stable" os="mac" arch="x64" nacl_arch="x86-64">
@@ -26,9 +30,10 @@ const components = braveComponents
   .filter((component) => component[0] !== 'jdbefljfgobbmcidnmpjamcbhnbphjnb')
 
 const body = getRequestBody('niloccemoadcdkdjlinkgdfekeahmflj', args.chromium, components)
+const mkdir = (path) => !fs.existsSync(path) && fs.mkdirSync(path)
 
 request.post({
-  url: 'https://clients2.google.com/service/update2',
+  url: googleUpdateServerBaseUrl,
   body: body
 }, function optionalCallback (err, httpResponse, body) {
   if (err) {
@@ -47,4 +52,19 @@ request.post({
     .filter((component) => component[1] !== component[3])
     // And reduce to a string that we print out
     .reduce((result, component) => result + `Component: ${component[5]} (${component[0]})\nChrome store: ${component[1]}\nBrave store: ${component[3]}\n\n`, ''))
+
+  if (args.download) {
+    mkdir('out')
+    console.log('Downloading...')
+    responseComponents.forEach(([componentId, componentVersion]) => {
+      const dir = path.join('out', componentId)
+      const filename = `extension_${componentVersion.replace(/\./g,'_')}.crx`
+      mkdir(dir)
+      const outputPath = path.join(dir, filename)
+      var file = fs.createWriteStream(outputPath)
+      const url = `${googleUpdateServerBaseUrl}/crx?response=redirect&prodversion=${args.chromium}&x=id%3D${componentId}%26uc`
+      console.log(url)
+      request(url).pipe(fs.createWriteStream(outputPath))
+    })
+  }
 })

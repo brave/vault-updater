@@ -38,3 +38,6 @@ tmp/
 
 # Heroku local env vars
 .env
+
+# extensions output
+out
