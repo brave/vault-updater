@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.12.14",
+    "name": "Brave 0.12.14",
+    "pub_date": "2016-12-10T05:05:33.103Z",
+    "notes": "Hotfix to address a certificate expiration issue. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.14dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.12.14/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.12.13",
     "name": "Brave 0.12.13",
     "pub_date": "2016-12-07T17:55:25.004Z",
