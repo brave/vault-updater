@@ -1,15 +1,16 @@
 const request = require('request')
 const {getResponseComponents} = require('../src/controllers/extensions')
-const {readComponentsForVersionUpgradesOnly} = require('../src/setup')
+const {readComponentsForVersionUpgradesOnly, readExtensions, extensionManifestPath} = require('../src/setup')
 const s3 = require('s3')
 const fs = require('fs')
+const crypto = require('crypto')
 const path = require('path')
 const args = require('yargs')
     .usage('node $0 --chromium=X.X.X.X [--download]')
     .demand(['chromium'])
     // Whether or not to download from the chromium server when it is outdated
     .default('download', false)
-    // Whether or not to upload to brave's s3 when it is downloaded (download must also be set)
+    // Whether or not to upload to brave's s3 when it is downloaded (download is implied)
     .default('upload', false)
     .argv
 
@@ -46,6 +47,24 @@ const components = braveComponents
 const body = getRequestBody('niloccemoadcdkdjlinkgdfekeahmflj', args.chromium, components)
 const mkdir = (path) => !fs.existsSync(path) && fs.mkdirSync(path)
 
+const verifyFileSHA = (filePath, expectedSHA256) => {
+  return new Promise((resolve, reject) => {
+    var s = fs.ReadStream(filePath)
+    const checksum = crypto.createHash('sha256')
+    s.on('data', function (d) { checksum.update(d); });
+    s.on('end', function () {
+      var calculatedSHA256 = checksum.digest('hex');
+      if (calculatedSHA256 === expectedSHA256) {
+        console.log(`Verified SHA for ${filePath}`)
+        resolve()
+      } else {
+        console.error('Bad SHA56:', calculatedSHA256, ', expected: ', expectedSHA256)
+        reject('mismatch')
+      }
+    })
+  })
+}
+
 const uploadFile = (filePath, componentId, componentFilename) => {
   return new Promise((resolve, reject) => {
     var params = {
@@ -68,6 +87,9 @@ const uploadFile = (filePath, componentId, componentFilename) => {
   })
 }
 
+const writeExtensionsManifest = (componentData) =>
+  fs.writeFileSync(extensionManifestPath, JSON.stringify(componentData, null, 2) + '\n')
+
 request.post({
   url: googleUpdateServerBaseUrl,
   body: body
@@ -80,21 +102,22 @@ request.post({
     console.log('All components up to date')
   }
 
+
+  // Add in the Brave info for each component
   console.log('Outdated components:\n--------------------')
-  console.log(responseComponents
-    // Add in the Brave info for each component
+  console.log(responseComponents.map((component) => [...component, ...braveComponents.find((braveComponent) => braveComponent[0] === component[0])])
     .map((component) => [...component, ...braveComponents.find((braveComponent) => braveComponent[0] === component[0])])
     // Filter out components with the same Brave versions as Google version
-    .filter((component) => component[1] !== component[3])
+    .filter((component) => component[1] !== component[4])
     // And reduce to a string that we print out
-    .reduce((result, component) => result + `Component: ${component[5]} (${component[0]})\nChrome store: ${component[1]}\nBrave store: ${component[3]}\n\n`, ''))
+    .reduce((result, [componentId, chromeVersion, chromeSHA256, componentId2, braveVersion, braveSHA256, componentName]) => result + `Component: ${componentName} (${componentId})\nChrome store: ${chromeVersion}\nBrave store: ${braveVersion}\nSHA 256: ${chromeSHA256}\n\n`, ''))
 
-  if (args.download) {
+  if (args.download || args.upload) {
     mkdir('out')
     console.log('Downloading...')
-    responseComponents.forEach(([componentId, componentVersion]) => {
+    responseComponents.forEach(([componentId, chromeVersion, chromeSHA256, componentId2, braveVersion, braveSHA256, componentName]) => {
       const dir = path.join('out', componentId)
-      const filename = `extension_${componentVersion.replace(/\./g,'_')}.crx`
+      const filename = `extension_${chromeVersion.replace(/\./g,'_')}.crx`
       mkdir(dir)
       const outputPath = path.join(dir, filename)
       var file = fs.createWriteStream(outputPath)
@@ -104,11 +127,21 @@ request.post({
         .on('finish', function () {
           console.log(`Downloaded ${outputPath} from Google's server`)
           if (args.upload) {
-            uploadFile(outputPath, componentId, filename).then(() => {
-              console.log(`Uploaded ${outputPath} to s3`)
-            })
+            verifyFileSHA(outputPath, chromeSHA256)
+              .then(uploadFile.bind(null, outputPath, componentId, filename))
+              .then(() => console.log(`Uploaded ${outputPath} to s3`))
           }
         });
     })
+    writeExtensionsManifest(
+      readExtensions().map(([braveComponentId, braveVersion, braveSHA256, braveComponentName]) => {
+        const chromeComponent = responseComponents.find((chromeComponent) => braveComponentId === chromeComponent[0])
+        return [
+          braveComponentId,
+          chromeComponent ? chromeComponent[1] : braveVersion,
+          chromeComponent ? chromeComponent[2] : braveSHA256,
+          braveComponentName
+        ]
+      }))
   }
 })

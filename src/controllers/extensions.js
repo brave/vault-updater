@@ -36,7 +36,7 @@ const getResponseComponents = (responseXML) => {
   }
   const extensions = doc.childrenNamed('app')
       .map((app) => {
-        return [app.attr.appid, app.descendantWithPath('updatecheck.manifest').attr.version]
+        return [app.attr.appid, app.descendantWithPath('updatecheck.manifest').attr.version, app.descendantWithPath('updatecheck.manifest.packages.package').attr.hash_sha256]
       })
   return extensions
 }
