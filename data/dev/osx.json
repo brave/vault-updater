@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.12.15",
+    "name": "Brave 0.12.15",
+    "pub_date": "2016-12-14T19:34:17.844Z",
+    "notes": "Join community.brave.com for help and feature requests. Added Yandex, Quant, and Scholastic Scholar search engines. Various fixes and updates. More details: https://github.com/brave/browser-laptop/releases/tag/v0.12.15dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.12.15/osx/Brave-0.12.15.zip"
+  },
+  {
     "version": "0.12.14",
     "name": "Brave 0.12.14",
     "pub_date": "2016-12-10T05:05:33.103Z",
