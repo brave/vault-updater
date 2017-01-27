@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.13.0",
+    "name": "Brave 0.13.0",
+    "pub_date": "2017-01-27T17:15:10.532Z",
+    "notes": "Added WebTorrent support. Added nicer payment history statements. Fixed blocking of YouTube ads. Fixed performance on tab switching. Fixed various UI issues.  More details: https://github.com/brave/browser-laptop/releases/tag/v0.13.0dev"
+  },
+  {
     "version": "0.12.15",
     "name": "Brave 0.12.15",
     "pub_date": "2016-12-14T19:34:17.844Z",
