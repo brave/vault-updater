@@ -26,7 +26,7 @@ const args = require('yargs')
     .argv
 
 const googleUpdateServerBaseUrl = 'https://clients2.google.com/service/update2'
-const getRequestBody = (componentId, chromiumVersion, components) =>
+const getRequestBody = (chromiumVersion, components) =>
   `<?xml version="1.0" encoding="UTF-8"?>
   <request protocol="3.0" version="chrome-${chromiumVersion}" prodversion="${chromiumVersion}" requestid="{b4f77b70-af29-462b-a637-8a3e4be5ecd9}" lang="" updaterchannel="stable" prodchannel="stable" os="mac" arch="x64" nacl_arch="x86-64">
     <hw physmemory="16"/>
@@ -55,7 +55,7 @@ const components = braveComponents
   // Skip PDFJS since we maintain our own and Google doesn't know anything about it
   .filter((component) => component[0] !== 'jdbefljfgobbmcidnmpjamcbhnbphjnb')
 
-const body = getRequestBody('niloccemoadcdkdjlinkgdfekeahmflj', args.chromium, components)
+const body = getRequestBody(args.chromium, components)
 const mkdir = (path) => !fs.existsSync(path) && fs.mkdirSync(path)
 
 const getSHA = (filePath) => {
