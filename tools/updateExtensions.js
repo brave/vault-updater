@@ -8,6 +8,8 @@
  *   node tools/updateExtensions.js --chromium=55.0.2883.87
  * Check Brave servers to get a list of updates against what we have locally, also this is useful as a verification check to ensure 0 updates.
  *   node tools/updateExtensions.js --chromium=55.0.2883.87 --server=brave
+ * Check Brave servers to get a list of updates against what we have locally with verbose logging
+ *   node tools/updateExtensions.js --chromium=55.0.2883.87 --server=brave --v=2
  * Upload an individual chrome extension and update the manifest from  local data (We do this for our own maintained extensions like PDFJS)
  *   node tools/updateExtensions.js --chromium=55.0.2883.87 --id jdbefljfgobbmcidnmpjamcbhnbphjnb --path ~/Downloads/pdfjs.crx --version 1.5.444
  */
@@ -19,7 +21,7 @@ const fs = require('fs')
 const crypto = require('crypto')
 const path = require('path')
 const args = require('yargs')
-    .usage('node $0 --chromium=X.X.X.X [--download] [--upload] [--server=<server>] [--id=<componentId> --path=<path> --version=<version>]')
+    .usage('node $0 --chromium=X.X.X.X [--download] [--upload] [--server=<server>] [--v=<v>] [--id=<componentId> --path=<path> --version=<version>]')
     .demand(['chromium'])
     // Whether or not to download from the chromium server when it is outdated
     .default('download', false)
@@ -27,6 +29,8 @@ const args = require('yargs')
     .default('upload', false)
     // Only brave is treated as a special value
     .default('server', 'google')
+    // Default log level to 1
+    .default('v', 1)
     .argv
 
 const googleUpdateServerBaseUrl = 'https://clients2.google.com/service/update2'
@@ -43,7 +47,9 @@ const getExtensionServerBaseURL = () => {
   return googleUpdateServerBaseUrl
 }
 
-console.log('Using server:', getExtensionServerBaseURL())
+const vlog = (v, ...vargs) => args.v >= v && console.log(...vargs)
+
+vlog(1, 'Using server:', getExtensionServerBaseURL())
 
 const getRequestBody = (chromiumVersion, components) =>
   `<?xml version="1.0" encoding="UTF-8"?>
@@ -92,7 +98,7 @@ const verifyFileSHA = (filePath, expectedSHA256) => {
   return new Promise((resolve) => {
     getSHA(filePath).then((calculatedSHA256) => {
       if (calculatedSHA256 === expectedSHA256) {
-        console.log(`Verified SHA for ${filePath}`)
+        vlog(1, `Verified SHA for ${filePath}`)
         resolve()
       } else {
         console.error('Bad SHA56:', calculatedSHA256, ', expected: ', expectedSHA256)
@@ -132,7 +138,7 @@ if (args.id && args.path && args.version) {
   const braveExtensions = readExtensions()
   const braveExtension = braveExtensions.find(([braveComponentId]) => braveComponentId === args.id)
   if (!braveExtension) {
-    console.log(`Could not find component ID: ${braveComponentId}`)
+    vlog(1, `Could not find component ID: ${braveComponentId}`)
     process.exit(1)
   }
   const filename = `extension_${args.version.replace(/\./g,'_')}.crx`
@@ -156,17 +162,19 @@ if (args.id && args.path && args.version) {
     if (err) {
       return console.error('failed:', err)
     }
+
+    vlog(2, 'Response body:', body)
     const responseComponents = getResponseComponents(body)
     if (responseComponents.length === 0) {
       console.error('No component information returned')
     }
 
-    console.log('Checked components:\n---------------------')
-    console.log(`${braveComponents.map((extension) => extension[3]).join(', ')}\n`)
+    vlog(1, 'Checked components:\n---------------------')
+    vlog(1, `${braveComponents.map((extension) => extension[3]).join(', ')}\n`)
 
     // Add in the Brave info for each component
-    console.log('Outdated components:\n--------------------')
-    console.log(responseComponents.map((component) => [...component, ...braveComponents.find((braveComponent) => braveComponent[0] === component[0])])
+    vlog(1, 'Outdated components:\n--------------------')
+    vlog(1, responseComponents.map((component) => [...component, ...braveComponents.find((braveComponent) => braveComponent[0] === component[0])])
       .map((component) => [...component, ...braveComponents.find((braveComponent) => braveComponent[0] === component[0])])
       // Filter out components with the same Brave versions as Google version
       .filter((component) => component[1] !== component[4])
@@ -175,7 +183,7 @@ if (args.id && args.path && args.version) {
 
     if (args.download || args.upload) {
       mkdir('out')
-      console.log('Downloading...')
+      vlog(1, 'Downloading...')
       responseComponents.forEach(([componentId, chromeVersion, chromeSHA256, componentId2, braveVersion, braveSHA256, componentName]) => {
         const dir = path.join('out', componentId)
         const filename = `extension_${chromeVersion.replace(/\./g,'_')}.crx`
@@ -186,11 +194,11 @@ if (args.id && args.path && args.version) {
         request(url)
           .pipe(fs.createWriteStream(outputPath))
           .on('finish', function () {
-            console.log(`Downloaded ${outputPath} from Google's server`)
+            vlog(1, `Downloaded ${outputPath} from Google's server`)
             if (args.upload) {
               verifyFileSHA(outputPath, chromeSHA256)
                 .then(uploadFile.bind(null, outputPath, componentId, filename))
-                .then(() => console.log(`Uploaded ${outputPath} to s3`))
+                .then(() => vlog(1, `Uploaded ${outputPath} to s3`))
             }
           });
       })
