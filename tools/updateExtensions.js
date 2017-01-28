@@ -6,6 +6,8 @@
  *   node tools/updateExtensions.js --chromium=55.0.2883.87 --download
  * Check Chrome servers to get a list of updates
  *   node tools/updateExtensions.js --chromium=55.0.2883.87
+ * Check Brave servers to get a list of updates against what we have locally, also this is useful as a verification check to ensure 0 updates.
+ *   node tools/updateExtensions.js --chromium=55.0.2883.87 --server=brave
  * Upload an individual chrome extension and update the manifest from  local data (We do this for our own maintained extensions like PDFJS)
  *   node tools/updateExtensions.js --chromium=55.0.2883.87 --id jdbefljfgobbmcidnmpjamcbhnbphjnb --path ~/Downloads/pdfjs.crx --version 1.5.444
  */
@@ -17,15 +19,32 @@ const fs = require('fs')
 const crypto = require('crypto')
 const path = require('path')
 const args = require('yargs')
-    .usage('node $0 --chromium=X.X.X.X [--download] [--upload] [--id=<componentId> --path=<path> --version=<version>]')
+    .usage('node $0 --chromium=X.X.X.X [--download] [--upload] [--server=<server>] [--id=<componentId> --path=<path> --version=<version>]')
     .demand(['chromium'])
     // Whether or not to download from the chromium server when it is outdated
     .default('download', false)
     // Whether or not to upload to brave's s3 when it is downloaded (download is implied)
     .default('upload', false)
+    // Only brave is treated as a special value
+    .default('server', 'google')
     .argv
 
 const googleUpdateServerBaseUrl = 'https://clients2.google.com/service/update2'
+const braveUpdateServerBaseUrl = 'https://laptop-updates.brave.com/extensions'
+const localUpdateServerBaseUrl = 'http://localhost:8192/extensions'
+
+const getExtensionServerBaseURL = () => {
+  switch (args.server) {
+    case 'brave':
+      return braveUpdateServerBaseUrl
+    case 'local':
+      return localUpdateServerBaseUrl
+  }
+  return googleUpdateServerBaseUrl
+}
+
+console.log('Using server:', getExtensionServerBaseURL())
+
 const getRequestBody = (chromiumVersion, components) =>
   `<?xml version="1.0" encoding="UTF-8"?>
   <request protocol="3.0" version="chrome-${chromiumVersion}" prodversion="${chromiumVersion}" requestid="{b4f77b70-af29-462b-a637-8a3e4be5ecd9}" lang="" updaterchannel="stable" prodchannel="stable" os="mac" arch="x64" nacl_arch="x86-64">
@@ -128,17 +147,22 @@ if (args.id && args.path && args.version) {
       .catch(process.exit.bind(null, 1))
 } else {
   request.post({
-    url: googleUpdateServerBaseUrl,
-    body: body
+    url: getExtensionServerBaseURL(),
+    body: body,
+    headers: {
+      'Content-Type': 'application/xml'
+    }
   }, function optionalCallback (err, httpResponse, body) {
     if (err) {
       return console.error('failed:', err)
     }
     const responseComponents = getResponseComponents(body)
     if (responseComponents.length === 0) {
-      console.log('All components up to date')
+      console.error('No component information returned')
     }
 
+    console.log('Checked components:\n---------------------')
+    console.log(`${braveComponents.map((extension) => extension[3]).join(', ')}\n`)
 
     // Add in the Brave info for each component
     console.log('Outdated components:\n--------------------')
@@ -158,7 +182,7 @@ if (args.id && args.path && args.version) {
         mkdir(dir)
         const outputPath = path.join(dir, filename)
         var file = fs.createWriteStream(outputPath)
-        const url = `${googleUpdateServerBaseUrl}/crx?response=redirect&prodversion=${args.chromium}&x=id%3D${componentId}%26uc`
+        const url = `${getExtensionServerBaseURL()}/crx?response=redirect&prodversion=${args.chromium}&x=id%3D${componentId}%26uc`
         request(url)
           .pipe(fs.createWriteStream(outputPath))
           .on('finish', function () {
