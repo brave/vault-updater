@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.13.1",
+    "name": "Brave 0.13.1",
+    "pub_date": "2017-02-01T05:25:13.162Z",
+    "notes": "Hotfix for Widevine on Windows and memory related crash. More details: https://github.com/brave/browser-laptop/releases/tag/v0.13.1dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.13.1/linux64/Brave.tar.bz2"
+  },
+  {
+    "version": "0.13.0",
+    "name": "Brave 0.13.0",
+    "pub_date": "2017-01-27T17:15:10.532Z",
+    "notes": "Added WebTorrent support. Added nicer payment history statements. Fixed blocking of YouTube ads. Fixed performance on tab switching. Fixed various UI issues.  More details: https://github.com/brave/browser-laptop/releases/tag/v0.13.0dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.13.0/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.12.15",
     "name": "Brave 0.12.15",
     "pub_date": "2016-12-14T19:34:17.844Z",
