@@ -4,7 +4,7 @@
   "description": "Auto-update server for Brave laptop browser",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "heroku local",
     "build": "babel src --out-dir dist --source-maps",
     "postinstall": "./node_modules/.bin/babel src --out-dir dist --source-maps",
     "lint": "standard",
