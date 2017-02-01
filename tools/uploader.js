@@ -71,13 +71,11 @@ var recipes = [
   ['dist/Brave.dmg', 'multi-channel/releases/CHANNEL/VERSION/osx', 'osx'],
 
   ['dist/x64/BraveSetup-x64.exe', 'multi-channel/releases/CHANNEL/VERSION/winx64', 'winx64'],
-  ['dist/x64/BraveSetup-x64.msi', 'multi-channel/releases/CHANNEL/VERSION/winx64', 'winx64'],
   ['dist/x64/BraveSetup-x64.exe', 'multi-channel/releases/CHANNEL/winx64', 'winx64'],
   ['dist/x64/RELEASES', 'multi-channel/releases/CHANNEL/winx64', 'winx64'],
   ['dist/x64/brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winx64', 'winx64'],
 
   ['dist/ia32/BraveSetup-ia32.exe', 'multi-channel/releases/CHANNEL/VERSION/winia32', 'winia32'],
-  ['dist/ia32/BraveSetup-ia32.msi', 'multi-channel/releases/CHANNEL/VERSION/winia32', 'winia32'],
   ['dist/ia32/BraveSetup-ia32.exe', 'multi-channel/releases/CHANNEL/winia32', 'winia32'],
   ['dist/ia32/RELEASES', 'multi-channel/releases/CHANNEL/winia32', 'winia32'],
   ['dist/ia32/brave-VERSION-full.nupkg', 'multi-channel/releases/CHANNEL/winia32', 'winia32']
