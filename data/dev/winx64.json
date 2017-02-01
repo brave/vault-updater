@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.13.1",
+    "name": "Brave 0.13.1",
+    "pub_date": "2017-02-01T05:25:13.162Z",
+    "notes": "Hotfix for Widevine on Windows and memory related crash. More details: https://github.com/brave/browser-laptop/releases/tag/v0.13.1dev"
+  },
+  {
     "version": "0.13.0",
     "name": "Brave 0.13.0",
     "pub_date": "2017-01-27T17:15:10.532Z",
