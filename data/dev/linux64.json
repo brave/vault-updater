@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.13.2",
+    "name": "Brave 0.13.2",
+    "pub_date": "2017-02-06T19:45:59.139Z",
+    "notes": "Added import recovery keys for Brave Wallet, fixed spellcheck on Linux, and fixed numerous UI and Wallet issues. More details: https://github.com/brave/browser-laptop/releases/tag/v0.13.2dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.13.2/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.13.1",
     "name": "Brave 0.13.1",
     "pub_date": "2017-02-01T05:25:13.162Z",
