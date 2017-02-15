@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.13.4",
+    "name": "Brave 0.13.4",
+    "pub_date": "2017-02-15T14:22:58.774Z",
+    "notes": "Hotfix for a crash which could happen when loading an invalid URL. More details: https://github.com/brave/browser-laptop/releases/tag/v0.13.4dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.13.4/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.13.3",
     "name": "Brave 0.13.3",
     "pub_date": "2017-02-15T05:56:18.151Z",
