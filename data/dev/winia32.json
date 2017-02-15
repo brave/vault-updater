@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.13.3",
+    "name": "Brave 0.13.3",
+    "pub_date": "2017-02-15T05:56:18.151Z",
+    "notes": "Added export for bookmarks, added new background images, fixed rapid tab switching, and many under-the-hood enhancements including Chromium 56.0.2924.87. More details: https://github.com/brave/browser-laptop/releases/tag/v0.13.3dev"
+  },
+  {
     "version": "0.13.2",
     "name": "Brave 0.13.2",
     "pub_date": "2017-02-06T19:45:59.139Z",
