@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.13.5",
+    "name": "Brave 0.13.5",
+    "pub_date": "2017-03-03T21:39:47.551Z",
+    "notes": "Added sync between computers, suppressible per-tab alert and confirm message dialogs, preference page for plugins, fixed wallet recovery, and fixed various UI issues. More details: https://github.com/brave/browser-laptop/releases/tag/v0.13.5dev"
+  },
+  {
     "version": "0.13.4",
     "name": "Brave 0.13.4",
     "pub_date": "2017-02-15T14:22:58.774Z",
