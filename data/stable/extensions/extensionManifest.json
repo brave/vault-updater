@@ -1,8 +1,8 @@
 [
   [
     "aomjjhallfgjeglblehebfpbcfeobpgk",
-    "4.6.2.90",
-    "de88f468ce16edf3b557a0b70a4ae1d60b415aa7b40cc76e0bd506c58b848a7d",
+    "4.6.3.90",
+    "554f90b9d297c75dc454e2f3bb0b0f11684ad8db00de50def98d47a72c551eeb",
     "1Password"
   ],
   [
@@ -19,26 +19,32 @@
   ],
   [
     "fdjamakpfbbddfjaooikfcpapjohcfmg",
-    "4.4.0",
-    "57a96b34310ce50d024ceb61391b65377f171f0ad80e4683018e487687ea6bce",
+    "4.5.5",
+    "c1f97f4ce4749c9480c13ffaa822805d2dbf3604ec1db54ce43c72a8d4b391a2",
     "Dashlane"
   ],
   [
     "hdokiejnpimakedhajhdlcegeplioahd",
-    "4.1.38.67",
-    "5cc976ce25cade525dba036b29fa5d6711be2df4f99744d6ac7ad3384e98ceeb",
+    "4.1.41.76",
+    "1d132cc3384cc8f4b3922b249469cdedb4dd3c10e486dd4219ae9d719e1140a4",
     "LastPass"
   ],
   [
     "niloccemoadcdkdjlinkgdfekeahmflj",
-    "2.1.17",
-    "847e22f6e0137ac217a2c78d627afd941a0530fccef1f8f6cdd526a7e2463c9a",
+    "2.1.26",
+    "c470372fcf9217ccb9603cd86d8df3cb2d4cd33d5a6bfb55eba943d472a9a763",
     "Pocket"
   ],
   [
     "kmcfomidfpdkfieipokbalgegidffkal",
-    "5.3.3",
-    "0e8ba2e03a4274936f68f16ab023980874045be47139bf2b568abaa841426652",
+    "5.4.0",
+    "8a68d9cf0a49a206cc037df30597f18a23977e0566b33479d62d729f1b9872cc",
     "Enpass"
+  ],
+  [
+    "dbepggeogbaibhgnhhndojpepiihcmeb",
+    "1.57",
+    "c0918b38a0856d628b86cab211a771ce04261134814c6994b86441a94a38dc58",
+    "Vimium"
   ]
 ]
