@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.14.1",
+    "name": "Brave 0.14.1",
+    "pub_date": "2017-04-01T06:00:15.036Z",
+    "notes": "Fixed a copy and paste issue, fixed the lion badge position, and improved security. More details: https://github.com/brave/browser-laptop/releases/tag/v0.14.1dev"
+  },
+  {
     "version": "0.14.0",
     "name": "Brave 0.14.0",
     "pub_date": "2017-03-30T21:14:32.496Z",
