@@ -43,8 +43,8 @@
   ],
   [
     "dbepggeogbaibhgnhhndojpepiihcmeb",
-    "1.58.2",
-    "8e060a76140c98267c00fc502f806cb5420f059b28319644c5efc285fff598d7",
+    "1.59",
+    "e5fe0d82f523ab9c12c2649d5953b93656ce3e7c7e2ec4f4a92d9c8c68ab14e5",
     "Vimium"
   ],
   [
@@ -52,5 +52,11 @@
     "1.10.0",
     "8b8516a88fd988c0dae0698362cc63c8f923078ffe29a3cce3c94f3442f09961",
     "bitwarden"
+  ],
+  [
+    "bmnlcjabgnpnenekpadlanbbkooimhnj",
+    "9.7.7",
+    "fabc87f12f8f11f96c9938d2465a8b9e1c093ba74bdc64669419669879a66357",
+    "Honey"
   ]
 ]
