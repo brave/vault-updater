@@ -10,7 +10,7 @@ var util = require('util')
 var channelData = require('../dist/common').channelData
 
 var args = require('yargs')
-    .usage('Update version files\n\nNote: Will not replace data files unless --overwrite flag set\n\nnode $0 --version=X.X.X --notes="release notes" --overwrite --channel=dev')
+    .usage('Update version files\n\nNote: Will not replace data files unless --overwrite flag set\n\nnode $0 --version=X.X.X --notes="release notes" --overwrite --channel=dev --preview')
     .demand(['version', 'notes', 'channel'])
     .default('overwrite', false)
     .argv
@@ -33,7 +33,8 @@ var winx64_entry = {
   version: args.version,
   name: 'Brave ' + args.version,
   pub_date: (new Date()).toISOString(),
-  notes: args.notes
+  notes: args.notes,
+  preview: !!args.preview
 }
 var winia32_entry = _.clone(winx64_entry)
 
@@ -73,6 +74,8 @@ if (args.overwrite) {
   fs.writeFileSync(path.join(__dirname, '..', 'data', args.channel, 'winx64.json'), JSON.stringify(winx64_json, null, 2))
   fs.writeFileSync(path.join(__dirname, '..', 'data', args.channel, 'osx.json'), JSON.stringify(osx_json, null, 2))
   fs.writeFileSync(path.join(__dirname, '..', 'data', args.channel, 'linux64.json'), JSON.stringify(linux64_json, null, 2))
+} else {
+  console.log("Warning: nothing written to disk. Use --overwrite flag to write changes.")
 }
   
 console.log("Done")

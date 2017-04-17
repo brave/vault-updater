@@ -47,7 +47,21 @@ let buildReleaseNotes = (potentials) => {
   return potentials.map((release) => release.notes).join('\n\n')
 }
 
-exports.setup = (runtime, releases) => {
+// Build list of releases potentially available for upgrade
+var potentialReleases = (releases, channel, platform, cv, accept_preview) => {
+  return _.filter(
+    releases[channel + ':' + platform],
+    (rel) => {
+      if (accept_preview === 'true') {
+        return rel.comparable_version > cv
+      } else {
+        return rel.comparable_version > cv && !rel.preview
+      }
+    }
+  )
+}
+
+var setup = (runtime, releases) => {
   /*
 
   Format similar to:
@@ -145,14 +159,17 @@ exports.setup = (runtime, releases) => {
         // Integer version for comparison
         let cv = common.comparableVersion(request.params.version)
         let channel = request.params.channel
-        
+
         // Build the usage record (for Mongo)
         let usage = buildUsage(request)
 
-        // Potential releases
-        let potentials = _.filter(
-          releases[channel + ':' + request.params.platform],
-          (rel) => rel.comparable_version > cv
+        // Array of potential releases
+        let potentials = potentialReleases(
+          releases,
+          request.params.channel,
+          request.params.platform,
+          cv,
+          request.query.accept_preview
         )
 
         let targetRelease = null
@@ -189,4 +206,9 @@ exports.setup = (runtime, releases) => {
     legacy_latest,
     latest
   ]
+}
+
+module.exports = {
+  setup,
+  potentialReleases
 }
