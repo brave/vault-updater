@@ -10,7 +10,7 @@ var util = require('util')
 var channelData = require('../dist/common').channelData
 
 var args = require('yargs')
-    .usage('Update version files\n\nNote: Will not replace data files unless --overwrite flag set\n\nnode $0 --version=X.X.X --notes="release notes" --overwrite --channel=dev --preview')
+    .usage('Update version files\n\nNote: Will not replace data files unless --overwrite flag set\n\nnode $0 --version=X.X.X --notes="release notes" --overwrite --channel=dev --release')
     .demand(['version', 'notes', 'channel'])
     .default('overwrite', false)
     .argv
@@ -20,8 +20,15 @@ if (!channelData[args.channel]) {
   throw new Error('Invalid channel ' + args.channel)
 }
 
+// check the version format
 if (!args.version.match(/^[0-9]+\.[0-9]+\.[0-9]+$/)) {
   throw "Invalid version format. Must be X.X.X"
+}
+
+// default preview to true (--release flag will override)
+var preview = true
+if (!!args.release) {
+  preview = false
 }
 
 const BASE_URL = process.env.BASE_URL || 'https://brave-download.global.ssl.fastly.net/multi-channel/releases'
@@ -34,7 +41,7 @@ var winx64_entry = {
   name: 'Brave ' + args.version,
   pub_date: (new Date()).toISOString(),
   notes: args.notes,
-  preview: !!args.preview
+  preview: preview
 }
 var winia32_entry = _.clone(winx64_entry)
 
