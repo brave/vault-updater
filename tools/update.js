@@ -6,6 +6,7 @@ var fs = require('fs')
 var path = require('path')
 var _ = require('underscore')
 var util = require('util')
+var semver = require('semver')
 
 var channelData = require('../dist/common').channelData
 
@@ -15,14 +16,19 @@ var args = require('yargs')
     .default('overwrite', false)
     .argv
 
+function nope (msg) {
+  console.log(msg)
+  process.exit(1)
+}
+
 // check the channel names
 if (!channelData[args.channel]) {
-  throw new Error('Invalid channel ' + args.channel)
+  nope('Invalid channel ' + args.channel)
 }
 
 // check the version format
-if (!args.version.match(/^[0-9]+\.[0-9]+\.[0-9]+$/)) {
-  throw "Invalid version format. Must be X.X.X"
+if (!semver.valid(args.version)) {
+  nope("Invalid version format, must be a numeric triple separated by periods (example - 0.4.2)")
 }
 
 // default preview to true (--release flag will override)
@@ -60,6 +66,17 @@ var winx64_json = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 
 var osx_json = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', args.channel, 'osx.json')))
 var linux64_json = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', args.channel, 'linux64.json')))
 
+// Check for valid version
+_.each(osx_json, function (metadata) {
+  if (semver.compare(metadata.version, args.version) === 0) {
+    nope("Error: requested version " + args.version + " already exists")
+  }
+})
+if (osx_json.length > 0 && semver.compare(args.version, osx_json[0].version) === -1) {
+  nope("Error: requested version " + args.version + " is lower than the current version " + osx_json[0].version)
+}
+
+// Add the new entries
 winia32_json.unshift(winia32_entry)
 winx64_json.unshift(winx64_entry)
 osx_json.unshift(osx_entry)
