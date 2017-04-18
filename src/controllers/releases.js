@@ -3,6 +3,8 @@ let Joi = require('joi')
 let common = require('../common')
 let _ = require('underscore')
 let qs = require('querystring')
+let semver = require('semver')
+let boom = require('boom')
 
 let channelData = require('../common').channelData
 let platformData = require('../common').platformData
@@ -14,14 +16,13 @@ let commonValidator = {
   params: {
     platform: Joi.valid(platforms),
     channel: Joi.string(),
-    version: Joi.string().regex(/[\d]+\.[\d]+\.[\d]+/)
+    version: Joi.string()
   }
 }
 
-// Modify the release to be returned to the client
+// Modify the release to be returned to the client (noop for now)
 let responseFormatter = (release) => {
   let response = _.clone(release)
-  delete response.comparable_version
   return response
 }
 
@@ -48,14 +49,14 @@ let buildReleaseNotes = (potentials) => {
 }
 
 // Build list of releases potentially available for upgrade
-var potentialReleases = (releases, channel, platform, cv, accept_preview) => {
+var potentialReleases = (releases, channel, platform, version, accept_preview) => {
   return _.filter(
     releases[channel + ':' + platform],
     (rel) => {
       if (accept_preview === 'true') {
-        return rel.comparable_version > cv
+        return semver.gt(rel.version, version)
       } else {
-        return rel.comparable_version > cv && !rel.preview
+        return semver.gt(rel.version, version) && !rel.preview
       }
     }
   )
@@ -156,9 +157,12 @@ var setup = (runtime, releases) => {
           request.params.platform = 'unknown'
         }
 
-        // Integer version for comparison
-        let cv = common.comparableVersion(request.params.version)
         let channel = request.params.channel
+        let platform = request.params.platform
+        let version = request.params.version
+
+        if (!semver.valid(version)) return reply(boom.badRequest("Invalid version " + version))
+        if (!channelData[channel]) return reply(boom.badRequest("Invalid channel " + channel))
 
         // Build the usage record (for Mongo)
         let usage = buildUsage(request)
@@ -166,19 +170,16 @@ var setup = (runtime, releases) => {
         // Array of potential releases
         let potentials = potentialReleases(
           releases,
-          request.params.channel,
-          request.params.platform,
-          cv,
+          channel,
+          platform,
+          version,
           request.query.accept_preview
         )
 
         let targetRelease = null
         if (!_.isEmpty(potentials)) {
           // Most current release
-          targetRelease = _.clone(_.max(
-            potentials,
-            (rel) => rel.comparable_version
-          ))
+          targetRelease = _.clone(potentials[0])
           // Concatenate the release notes for all potential updates
           targetRelease.notes = buildReleaseNotes(potentials)
         }

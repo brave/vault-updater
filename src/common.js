@@ -15,6 +15,9 @@ exports.root = {
  * For 4 component versions, this is only guaranteed to work with
  * versions of the form: 9007.1992.5474.0991 and lower because
  * Number.MAX_SAFE_INTEGER is 9007199254740991
+ *
+ * Note: This is still required for four numeric digits extensions,
+ * as semver is defined as a three element tuple separated by periods.
  */
 exports.comparableVersion = (version) =>
   version.split('.')
@@ -37,8 +40,8 @@ exports.platformData = {
   'debian64': {},
   'fedora64': {},
   'openSUSE64': {},
-  'redhat64' :{},
-  'mint64' :{},
+  'redhat64': {},
+  'mint64': {},
   'undefined': {},
   'linux': {}
 }
