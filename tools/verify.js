@@ -68,7 +68,7 @@ contents.forEach((json) => {
       var parsed = url.parse(json[0].url)
       var urlPath = parsed.path.split('/')
       urlPath = urlPath.slice(0, urlPath.length - 1).join('/')
-      verifyUrl(parsed.protocol + '//' + parsed.hostname + urlPath + '/Brave.dmg', 'Brave.dmg not found')
+      verifyUrl(parsed.protocol + '//' + parsed.hostname + urlPath + '/Brave-' + json[0].version + '.dmg', 'Brave dmg not found')
     }
   }
 })
