@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.15.0",
+    "name": "Brave 0.15.0",
+    "pub_date": "2017-04-27T05:28:58.067Z",
+    "notes": "Added tear-off tabs, Widevine for Amazon, an easy to use extensions preference pane, and a lot of fixes. Upgraded to Chromium 58.0.3029.81. More details: https://github.com/brave/browser-laptop/releases/tag/v0.15.0dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.15.0/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.14.1",
     "name": "Brave 0.14.1",
     "pub_date": "2017-04-01T06:00:15.036Z",
