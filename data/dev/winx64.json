@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.15.1",
+    "name": "Brave 0.15.1",
+    "pub_date": "2017-04-30T03:43:32.490Z",
+    "notes": "Hotfix to alleviate crashes due to PDF loading or visiting particular sites. More details: https://github.com/brave/browser-laptop/releases/tag/v0.15.1dev"
+  },
+  {
     "version": "0.15.0",
     "name": "Brave 0.15.0",
     "pub_date": "2017-04-27T05:28:58.067Z",
