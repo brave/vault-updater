@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.15.2",
+    "name": "Brave 0.15.2",
+    "pub_date": "2017-05-04T19:18:05.055Z",
+    "notes": "Update to Chromium 58.0.3029.96. More details: https://github.com/brave/browser-laptop/releases/tag/v0.15.2dev",
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.15.2/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.15.1",
     "name": "Brave 0.15.1",
     "pub_date": "2017-04-30T03:43:32.490Z",
