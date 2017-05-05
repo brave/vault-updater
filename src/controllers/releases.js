@@ -62,6 +62,13 @@ var potentialReleases = (releases, channel, platform, version, accept_preview) =
   )
 }
 
+// filter out preview releases
+function releasesWithoutPreviews (releases) {
+  return _.filter(releases, (release) => {
+    return !release.preview
+  })
+}
+
 var setup = (runtime, releases) => {
   /*
 
@@ -112,10 +119,12 @@ var setup = (runtime, releases) => {
       handler: function(request, reply) {
         var channel = request.params.channel
         var platform = request.params.platform
+        var filteredReleases
         if (platformLatest[platform] && channelData[channel]) {
-          if (releases[channel + ':' + platform][0]) {
+          filteredReleases = releasesWithoutPreviews(releases[channel + ':' + platform])
+          if (filteredReleases.length) {
             let url = platformLatest[platform]
-            let version = releases[channel + ':' + platform][0].version
+            let version = filteredReleases[0].version
             url = url.replace('CHANNEL', channel)
             url = url.replace(new RegExp('VERSION', 'g'), version)
             console.log(`Redirect: ` + url)
@@ -211,5 +220,6 @@ var setup = (runtime, releases) => {
 
 module.exports = {
   setup,
-  potentialReleases
+  potentialReleases,
+  releasesWithoutPreviews
 }

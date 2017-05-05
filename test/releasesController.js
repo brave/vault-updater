@@ -48,5 +48,8 @@ tap.test('preview', function (t) {
   )
   t.equal(rel.length, 2, 'two potential releases accepted')
   t.equal(rel[0].version, '0.14.2', 'correct potential release accepted')
+
+  t.equal(releasesController.releasesWithoutPreviews(releases['dev:osx'])[0].version, '0.14.1', 'previews filtered out of releases')
+
   t.end()
 })
