@@ -1,8 +1,8 @@
 [
   [
     "aomjjhallfgjeglblehebfpbcfeobpgk",
-    "4.6.5.90",
-    "0725d6a9fce000273c76730749457d538a4ba822a9ebc19ea844f25464f62632",
+    "4.6.3.90",
+    "554f90b9d297c75dc454e2f3bb0b0f11684ad8db00de50def98d47a72c551eeb",
     "1Password"
   ],
   [
@@ -19,8 +19,8 @@
   ],
   [
     "fdjamakpfbbddfjaooikfcpapjohcfmg",
-    "4.6.6",
-    "1cea4482eb54f048ca44702a0420105e78f293634be7c072769bafddb863f66e",
+    "4.6.3",
+    "31086966f2aea787f8819ea8f8af9e12fe39bbe37ddc055f387e28a496baec1e",
     "Dashlane"
   ],
   [
@@ -31,14 +31,14 @@
   ],
   [
     "niloccemoadcdkdjlinkgdfekeahmflj",
-    "2.1.33",
-    "16d774d06f15e567498a2743c135e0097708c63e98abaa380e4fd27b4e7eabe4",
+    "2.1.32",
+    "1dd96219c85ec10fd3ab3eae026fd29a2dd6443f514c49d7f84f976faff4fcbd",
     "Pocket"
   ],
   [
     "kmcfomidfpdkfieipokbalgegidffkal",
-    "5.4.2",
-    "e55a6925273bb2aed0f052e87eb1b8f3c2d3099ce09c53886946ad89d0b26fa2",
+    "5.4.1",
+    "71da9ab9df14725649a8ed116d27650b0e0d5a046f966cf8562921b50da064fe",
     "Enpass"
   ],
   [
@@ -49,14 +49,14 @@
   ],
   [
     "nngceckbapebfimnlniiiahkandclblb",
-    "1.12.2",
-    "4ac8809fa2e89df548e1eebb67d71e407b4ddece15a56a1df87f7a57a3208b07",
+    "1.10.0",
+    "8b8516a88fd988c0dae0698362cc63c8f923078ffe29a3cce3c94f3442f09961",
     "bitwarden"
   ],
   [
     "bmnlcjabgnpnenekpadlanbbkooimhnj",
-    "9.8.6",
-    "bebc254eca3268d9002811fdbd5749819511e02c2b448853fd5f36289fafbbe0",
+    "9.7.7",
+    "fabc87f12f8f11f96c9938d2465a8b9e1c093ba74bdc64669419669879a66357",
     "Honey"
   ]
 ]
