@@ -4,7 +4,7 @@
 
 var tap = require('tap')
 var _ = require('underscore')
-var common = require('../dist/common')
+var common = require('../src/common')
 
 tap.test('retrieve IP address', function (t) {
   var requestMock

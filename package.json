@@ -1,12 +1,10 @@
 {
   "name": "vault-updater",
-  "version": "0.0.4",
+  "version": "1.0.1",
   "description": "Auto-update server for Brave laptop browser",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "build": "babel src --out-dir dist --source-maps",
-    "postinstall": "./node_modules/.bin/babel src --out-dir dist --source-maps",
+    "start": "./node_modules/.bin/babel-node src/index.js",
     "lint": "standard",
     "verify": "node tools/verify.js",
     "test": "tap test/*.js"
@@ -26,7 +24,6 @@
     "hapi-set-header": "^1.0.0",
     "inert": "^3.2.0",
     "joi": "^7.0.1",
-    "kerberos": "0.0.17",
     "logfmt": "^1.2.0",
     "moment": "^2.11.1",
     "mongodb": "^2.1.4",

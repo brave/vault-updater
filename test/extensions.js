@@ -1,6 +1,10 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 var tap = require('tap')
 
-var {getRequestedExtensions, getExtensionsWithUpdates} = require('../dist/controllers/extensions')
+var {getRequestedExtensions, getExtensionsWithUpdates} = require('../src/controllers/extensions')
 
 const request = (appId) => (version) => `
 <?xml version="1.0" encoding="UTF-8"?>

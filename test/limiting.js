@@ -1,6 +1,10 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 var tap = require('tap')
 
-var ipLimit = require('../dist/IPLimit')
+var ipLimit = require('../src/IPLimit')
 const IPa = '1.1.1.1'
 const IPb = '2.2.2.2'
 

@@ -1,7 +1,7 @@
 var tap = require('tap')
 var rewire = require('rewire')
-var common = require('../dist/common')
-var releasesController = rewire('../dist/controllers/releases')
+var common = require('../src/common')
+var releasesController = rewire('../src/controllers/releases')
 
 var releases = {
   'dev:osx': [

@@ -1,6 +1,6 @@
 var tap = require('tap')
 var _ = require('underscore')
-var ios = require('../dist/controllers/ios')
+var ios = require('../src/controllers/ios')
 
 var query = {
   daily: 'true',

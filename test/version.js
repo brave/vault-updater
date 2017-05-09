@@ -1,7 +1,11 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 var tap = require('tap')
 var _ = require('underscore')
 
-var common = require('../dist/common')
+var common = require('../src/common')
 
 tap.ok(common.comparableVersion('0.10.1') > common.comparableVersion('0.9.0'), 'version compare correctly')
 tap.ok(common.comparableVersion('2.0.0') > common.comparableVersion('0.0.3'), 'More significant cmponent compares correctly')
