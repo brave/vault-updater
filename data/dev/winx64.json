@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.15.314",
+    "name": "Brave 0.15.314",
+    "pub_date": "2017-06-01T20:18:26.088Z",
+    "notes": "Hotfix for latest release which fixes password updates, popups for logins, and autocomplete search terms. More details: https://github.com/brave/browser-laptop/releases/tag/v0.15.314dev",
+    "preview": false
+  },
+  {
     "version": "0.15.310",
     "name": "Brave 0.15.310",
     "pub_date": "2017-05-26T21:24:34.352Z",
