@@ -1,5 +1,13 @@
 [
   {
+    "version": "0.16.6",
+    "name": "Brave 0.16.6",
+    "pub_date": "2017-06-09T01:48:20.227Z",
+    "notes": "Added various performance improvements, fixed bookmark manager drag & drop for folders and bookmarks, and upgraded to Chromium 59.0.3071.86. More details: https://github.com/brave/browser-laptop/releases/tag/v0.16.6dev",
+    "preview": false,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.16.6/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.15.314",
     "name": "Brave 0.15.314",
     "pub_date": "2017-06-01T20:18:26.088Z",
