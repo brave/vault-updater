@@ -1,5 +1,13 @@
 [
   {
+    "version": "0.16.8",
+    "name": "Brave 0.16.8",
+    "pub_date": "2017-06-09T22:21:02.551Z",
+    "notes": "Hotfix for login crash. More details: https://github.com/brave/browser-laptop/releases/tag/v0.16.8dev",
+    "preview": false,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.16.8/osx/Brave-0.16.8.zip"
+  },
+  {
     "version": "0.16.6",
     "name": "Brave 0.16.6",
     "pub_date": "2017-06-09T01:48:20.227Z",
