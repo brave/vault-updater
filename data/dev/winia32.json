@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.16.9",
+    "name": "Brave 0.16.9",
+    "pub_date": "2017-06-10T07:19:40.738Z",
+    "notes": "Hotfix for crash on login or other input. Fixed ability to scroll to latest bookmark as well. More details: https://github.com/brave/browser-laptop/releases/tag/v0.16.9dev",
+    "preview": false
+  },
+  {
     "version": "0.16.6",
     "name": "Brave 0.16.6",
     "pub_date": "2017-06-09T01:48:20.227Z",
