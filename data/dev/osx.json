@@ -1,5 +1,13 @@
 [
   {
+    "version": "0.17.1",
+    "name": "Brave 0.17.1",
+    "pub_date": "2017-06-13T20:52:30.437Z",
+    "notes": "NOTE: This is a preview build. Added Honey extension, compact bravery panel, bitward password manager, and new welcome screen. Many perf, style, and build fixes. More details: https://github.com/brave/browser-laptop/releases/tag/v0.17.1dev.",
+    "preview": true,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.17.1/osx/Brave-0.17.1.zip"
+  },
+  {
     "version": "0.16.9",
     "name": "Brave 0.16.9",
     "pub_date": "2017-06-10T07:19:40.738Z",
