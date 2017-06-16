@@ -28,10 +28,12 @@ exports.setup = (runtime) => {
     path: '/1/usage/android',
     config: {
       handler: function (request, reply) {
-        var ipAddress = common.ipAddressFrom(request)
-        if (!ipLimit.shouldRecord(ipAddress)) {
-          console.log('*** cache hit, not recording')
-          return reply({ ts: (new Date()).getTime(), status: 'ok' })
+        if (process.env.IPLIMIT) {
+          var ipAddress = common.ipAddressFrom(request)
+          if (!ipLimit.shouldRecord(ipAddress)) {
+            console.log('*** cache hit, not recording')
+            return reply({ ts: (new Date()).getTime(), status: 'ok' })
+          }
         }
         var usage = buildUsage(request)
         runtime.mongo.models.insertAndroidUsage(usage, (err, results) => {
