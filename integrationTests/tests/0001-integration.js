@@ -136,6 +136,49 @@ tap.test("Integration", function (t) {
     })
   }
 
+  function insertWinx64Release (cb) {
+    var options = common.standardOptions()
+    options.url = options.url + '/dev/winx64'
+    options.method = "POST"
+    options.body = {
+      notes: "notes",
+      version: "0.6.0",
+      url: "http://localhost/",
+      preview: false
+    }
+    r(options, function (err, results, body) {
+      t.equal(results.statusCode, 200, "200 returned")
+      t.equal(body.version, '0.6.0', "dev/winx64 object returned")
+      cb(err)
+    })
+  }
+
+  function checkReleasesForChannel (cb) {
+    options = common.standardOptions()
+    options.url = options.url + '/dev'
+    r(options, function (err, results, body) {
+      t.equal(results.statusCode, 200, "200 returned")
+      t.ok(_.isArray(body.osx), 'osx found')
+      t.equal(body.osx.length, 2, 'two osx releases found')
+      t.ok(_.isArray(body.winx64), 'winx64 found')
+      t.equal(body.winx64.length, 1, 'one winx64 release found')
+      cb(err)
+    })
+  }
+
+  function checkLatestReleasesForChannel (cb) {
+    options = common.standardOptions()
+    options.url = options.url + '/dev/latest'
+    r(options, function (err, results, body) {
+      t.equal(results.statusCode, 200, "200 returned")
+      t.ok(_.isObject(body.osx), 'osx found')
+      t.equal(body.osx.version, '0.6.0', 'correct version found')
+      t.ok(_.isObject(body.winx64), 'winx64 found')
+      t.equal(body.winx64.version, '0.6.0', 'correct version found')
+      cb(err)
+    })
+  }
+
   async.series([
     insertFirstRelease,
     insertNewChannelRelease,
@@ -149,7 +192,11 @@ tap.test("Integration", function (t) {
     checkForNonExistentRelease,
     promotePreview,
     refresh,
-    checkForUpdatePostPromote
+    checkForUpdatePostPromote,
+    insertWinx64Release,
+    refresh,
+    checkReleasesForChannel,
+    checkLatestReleasesForChannel
   ], function (err) {
     t.end()
   })

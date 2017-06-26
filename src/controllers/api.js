@@ -15,6 +15,10 @@ let channelPlatformParms = {
   channel: Joi.string().required()
 }
 
+let channelParams = {
+  channel: Joi.string().required()
+}
+
 let channelPlatformVersionParms = {
   platform: Joi.valid(platformNames).required(),
   channel: Joi.valid(channelNames).required(),
@@ -114,5 +118,31 @@ export function setup(runtime) {
     }
   }
 
-  return [get, put_refresh, post_releases, put_promote, put_promote_all_platforms]
+  let get_all = {
+    method: 'GET',
+    path: '/api/1/releases/{channel}',
+    config: {
+      handler: function (request, reply) {
+        reply(releasesAccess.allForChannel(request.params.channel))
+      },
+      validate: {
+        params: channelParams
+      }
+    }
+  }
+
+  let get_latest_for_channel = {
+    method: 'GET',
+    path: '/api/1/releases/{channel}/latest',
+    config: {
+      handler: function (request, reply) {
+        reply(releasesAccess.latestForChannel(request.params.channel))
+      },
+      validate: {
+        params: channelParams
+      }
+    }
+  }
+
+  return [put_refresh, post_releases, put_promote, put_promote_all_platforms, get_all, get, get_latest_for_channel]
 }
