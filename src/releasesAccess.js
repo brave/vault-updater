@@ -17,6 +17,30 @@ function all () {
   return rawReleases
 }
 
+function allForChannel (channel) {
+  var channels = {}
+  var releaseChannel, releasePlatform
+  _.each(all(), function (v, k) {
+    [releaseChannel, releasePlatform] = k.split(':')
+    if (channel === releaseChannel) {
+      channels[releasePlatform] = v
+    }
+  })
+  return channels
+}
+
+function latestForChannel (channel) {
+  var channels = {}
+  var releaseChannel, releasePlatform
+  _.each(all(), function (v, k) {
+    [releaseChannel, releasePlatform] = k.split(':')
+    if (channel === releaseChannel) {
+      channels[releasePlatform] = v[0]
+    }
+  })
+  return channels
+}
+
 function readReleasesFromDatabase (cb) {
   pg.query('SELECT channel, platform, version, name, pub_date, notes, preview, url FROM releases ORDER BY channel, platform', [], (err, results) => {
     if (err) return cb(err, null)
@@ -92,5 +116,7 @@ module.exports = {
   readReleasesFromDatabase,
   insert,
   promote,
-  promoteAllPlatforms
+  promoteAllPlatforms,
+  allForChannel,
+  latestForChannel
 }
