@@ -9,6 +9,8 @@ let boom = require('boom')
 let channelData = require('../common').channelData
 let platformData = require('../common').platformData
 
+let releasesAccess = require('../releasesAccess')
+
 // Valid platform identifiers
 let platforms = _.keys(platformData)
 
@@ -69,7 +71,7 @@ function releasesWithoutPreviews (releases) {
   })
 }
 
-var setup = (runtime, releases) => {
+var setup = (runtime) => {
   /*
 
   Format similar to:
@@ -121,7 +123,7 @@ var setup = (runtime, releases) => {
         var platform = request.params.platform
         var filteredReleases
         if (platformLatest[platform] && channelData[channel]) {
-          filteredReleases = releasesWithoutPreviews(releases[channel + ':' + platform])
+          filteredReleases = releasesWithoutPreviews(releasesAccess.all()[channel + ':' + platform])
           if (filteredReleases.length) {
             let url = platformLatest[platform]
             let version = filteredReleases[0].version
@@ -178,7 +180,7 @@ var setup = (runtime, releases) => {
 
         // Array of potential releases
         let potentials = potentialReleases(
-          releases,
+          releasesAccess.all(),
           channel,
           platform,
           version,
