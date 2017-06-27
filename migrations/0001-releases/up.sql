@@ -12,5 +12,5 @@ CREATE TABLE releases (
 );
 
 ALTER TABLE releases ADD CONSTRAINT version_format CHECK ( version ~ '^\d+\.\d+\.\d+$' );
-ALTER TABLE releases ADD CONSTRAINT valid_platforms CHECK ( platform IN ( 'osx', 'winx64', 'winia32', 'linux' ) );
+ALTER TABLE releases ADD CONSTRAINT valid_platforms CHECK ( platform IN ( 'osx', 'winx64', 'winia32', 'linux64' ) );
 ALTER TABLE releases ADD CONSTRAINT valid_channels CHECK ( channel IN ( 'dev', 'beta', 'stable' ) );
