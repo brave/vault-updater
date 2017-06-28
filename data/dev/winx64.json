@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.17.12",
+    "name": "Brave 0.17.12",
+    "pub_date": "2017-06-28T17:45:40.170Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.17.12dev",
+    "preview": true
+  },
+  {
     "version": "0.17.11",
     "name": "Brave 0.17.11",
     "pub_date": "2017-06-27T07:44:11.422Z",
