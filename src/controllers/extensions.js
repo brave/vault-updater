@@ -12,13 +12,14 @@ const braveBaseExtensionUrl = process.env['BRAVE_BASE_EXTENSION_URL'] || 'https:
  */
 const getRequestedExtensions = (requestXML) => {
   const doc = new xmldoc.XmlDocument(requestXML)
-  if (doc.attr.protocol !== '3.0') {
-    console.error('Only protocol v3 is supproted')
+  const version = doc.attr.protocol
+  if (version !== '3.0' && version !== '3.1') {
+    console.error('Only protocol v3.0 or v3.1 is supported')
     return undefined
   }
-  const extensions = doc.childrenNamed('app')
+  const requestedExtensions = doc.childrenNamed('app')
       .map((app) => [app.attr.appid, app.attr.version])
-  return extensions
+  return { requestedExtensions, version }
 }
 
 /**
@@ -57,10 +58,10 @@ const getExtensionsWithUpdates = (availableExtensions, requestedExtensions) =>
     return resultExtensions
   }, [])
 
-const getExtensionsResponse = (baseCRXUrl, extensions) => {
+const getExtensionsResponse = (baseCRXUrl, extensions, version) => {
   const doc = builder
     .create('response')
-      .att('protocol', '3.0')
+      .att('protocol', version)
       .att('server', 'prod')
   extensions.forEach(([extensionId, extensionVersion, extensionSHA256]) => {
     doc.ele('app')
@@ -92,9 +93,9 @@ const setup = (runtime, availableExtensions) => {
     path: '/extensions',
     config: {
       handler: function (request, reply) {
-        const requestedExtensions = getRequestedExtensions(request.payload.toString())
+        const {requestedExtensions, version} = getRequestedExtensions(request.payload.toString())
         const extensionsWithUpdates = getExtensionsWithUpdates(availableExtensions, requestedExtensions)
-        reply(getExtensionsResponse(braveBaseExtensionUrl, extensionsWithUpdates))
+        reply(getExtensionsResponse(braveBaseExtensionUrl, extensionsWithUpdates, version))
           .type('application/xml')
       },
       payload: {
