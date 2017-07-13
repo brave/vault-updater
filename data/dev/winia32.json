@@ -3,8 +3,8 @@
     "version": "0.17.16",
     "name": "Brave 0.17.16",
     "pub_date": "2017-07-12T07:13:05.994Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.17.16dev",
-    "preview": true
+    "notes": "Fixed sync issues, fixed a URL bar issue, and upgraded Chromium to 59.0.3071.115. More details: https://github.com/brave/browser-laptop/releases/tag/v0.17.16dev",
+    "preview": false
   },
   {
     "version": "0.17.15",
