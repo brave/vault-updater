@@ -20,9 +20,23 @@ let commonValidator = {
   }
 }
 
-// Modify the release to be returned to the client (noop for now)
-let responseFormatter = (release) => {
+// Default download location
+let BASE_URL = process.env.BASE_URL || 'https://brave-download.global.ssl.fastly.net/multi-channel/releases'
+
+// Default Windows URL pattern
+var windowsDownloadURLPattern = BASE_URL + '/CHANNEL/VERSION/PLATFORM/'
+
+// Modify the release to be returned to the client
+let responseFormatter = (release, channel, platform) => {
   let response = _.clone(release)
+  if (platform && platform.match(/^win/)) {
+    // define a URL to the folder containing the RELEASES file for Windows
+    // the key is defined as braveURL to not conflict in the future with 'url' attribute
+    response.braveURL = windowsDownloadURLPattern
+      .replace('CHANNEL', channel)
+      .replace('VERSION', response.version)
+      .replace('PLATFORM', platform)
+  }
   return response
 }
 
@@ -83,7 +97,6 @@ var setup = (runtime, releases) => {
 
   */
 
-  let BASE_URL = process.env.BASE_URL || 'https://brave-download.global.ssl.fastly.net/multi-channel/releases'
   console.log(`Base URL: ${BASE_URL}`)
 
   // Redirect URLs for latest installer files
@@ -198,8 +211,9 @@ var setup = (runtime, releases) => {
           assert.equal(err, null)
           request.log([], 'get')
           if (targetRelease) {
-            console.log(responseFormatter(targetRelease))
-            reply(responseFormatter(targetRelease))
+            var response = responseFormatter(targetRelease, channel, platform)
+            console.log(response)
+            reply(response)
           } else {
             let response = reply('No Content')
             response.code(204)
