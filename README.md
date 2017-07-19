@@ -15,9 +15,28 @@ GET /1/release/{platform}/{version} - get latest release meta-data if newer than
 GET /latest/osx - redirect to the latest OSx dmg installer
 GET /latest/winx64 - redirect to the latest Windows setup file
 
-## Start
+## Starting locally
 
-`npm run build && npm start`
+You will want rabbitmq and mongodb installed 
+
+`npm start`
+
+
+## Starting with docker-compose
+
+Install docker compose with
+
+```
+pip install docker-compose
+```
+
+then just type
+```
+docker-compose up
+```
+
+To bring up the server. It will run on 8192
+
 
 ## Update and verification steps
 
