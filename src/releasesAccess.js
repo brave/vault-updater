@@ -62,26 +62,26 @@ function readReleasesFromDatabase (cb) {
   })
 }
 
-function promote (channel, platform, version, cb) {
+function promote (channel, platform, version, notes, cb) {
   pg.query("SELECT * FROM releases WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, version], (selectErr, results) => {
     if (selectErr) return cb(selectErr, null)
     if (results.rows.length === 0) return cb(new Error("release not found", null))
     var release = results.rows[0]
     if (!release.preview) return cb(new Error("release already promoted"), null)
-    pg.query("UPDATE releases SET preview = false WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, version], (updateErr, results) => {
+    pg.query("UPDATE releases SET preview = false, notes = COALESCE($4, notes) WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, version, notes], (updateErr, results) => {
       if (updateErr) return cb(selectErr, null)
       cb(null, "ok")
     })
   })
 }
 
-function promoteAllPlatforms (channel, version, cb) {
+function promoteAllPlatforms (channel, version, notes, cb) {
   pg.query("SELECT * FROM releases WHERE channel = $1 AND version = $2", [channel, version], (selectErr, results) => {
     if (selectErr) return cb(selectErr, null)
     if (results.rows.length === 0) return cb(new Error("releases not found", null))
     var release = results.rows[0]
     if (!release.preview) return cb(new Error("releases already promoted"), null)
-    pg.query("UPDATE releases SET preview = false WHERE channel = $1 AND version = $2", [channel, version], (updateErr, results) => {
+    pg.query("UPDATE releases SET preview = false, notes = COALESCE($3, notes) WHERE channel = $1 AND version = $2", [channel, version, notes], (updateErr, results) => {
       if (updateErr) return cb(selectErr, null)
       cb(null, "ok")
     })

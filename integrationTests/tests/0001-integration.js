@@ -115,10 +115,13 @@ tap.test("Integration", function (t) {
     })
   }
 
-  function promotePreview (cb) {
+  function promotePreviewWithNotes (cb) {
     var options = common.standardOptions()
     options.url = options.url + '/dev/0.6.0/promote'
     options.method = "PUT"
+    options.body = {
+      notes: "foo the bar"
+    }
     r(options, function (err, results, body) {
       t.equal(results.statusCode, 200, "200 returned")
       t.equal(body, "ok", "ok returned")
@@ -126,12 +129,12 @@ tap.test("Integration", function (t) {
     })
   }
 
-  function checkForUpdatePostPromote (cb) {
+  function checkForUpdatePostPromoteWithNotes (cb) {
     options = common.standardOptions()
     options.url = 'http://localhost:9000/1/releases/dev/0.1.0/osx'
     r(options, function (err, results, body) {
       t.equal(results.statusCode, 200, "200 returned")
-      t.equal(body.version, '0.6.0', 'promoted version returned')
+      t.ok(body.notes.match(/foo the bar/), 'promoted notes returned')
       cb(err)
     })
   }
@@ -190,9 +193,9 @@ tap.test("Integration", function (t) {
     checkForUpdateNoPreview,
     checkForUpdatePreview,
     checkForNonExistentRelease,
-    promotePreview,
+    promotePreviewWithNotes,
     refresh,
-    checkForUpdatePostPromote,
+    checkForUpdatePostPromoteWithNotes,
     insertWinx64Release,
     refresh,
     checkReleasesForChannel,

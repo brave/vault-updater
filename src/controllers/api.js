@@ -51,7 +51,7 @@ export function setup(runtime) {
     config: {
       auth: 'simple',
       handler: function (request, reply) {
-        releasesAccess.promote(request.params.channel, request.params.platform, request.params.version, (err, result) => {
+        releasesAccess.promote(request.params.channel, request.params.platform, request.params.version, request.payload.notes, (err, result) => {
           if (err) return reply(boom.create(400, 'release could not be promoted: ' + err.toString()))
           reply(result)
         })
@@ -68,7 +68,7 @@ export function setup(runtime) {
     config: {
       auth: 'simple',
       handler: function (request, reply) {
-        releasesAccess.promoteAllPlatforms(request.params.channel, request.params.version, (err, result) => {
+        releasesAccess.promoteAllPlatforms(request.params.channel, request.params.version, request.payload.notes, (err, result) => {
           if (err) return reply(boom.create(400, 'releases could not be promoted: ' + err.toString()))
           reply(result)
         })
