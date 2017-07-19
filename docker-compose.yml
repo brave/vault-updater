@@ -14,3 +14,5 @@ services:
       - S3_CRASH_KEY=fake
       - S3_CRASH_SECRET=fake
       - MONGOLAB_URI=mongodb://mongodb
+    ports:
+      - 8192:8192
