@@ -3,8 +3,8 @@
     "version": "0.17.19",
     "name": "Brave 0.17.19",
     "pub_date": "2017-07-19T18:04:38.555Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.17.19\ndev",
-    "preview": true
+    "notes": "Numerous performance improvements, fixed tab display when closing tabs, fixed history listings and fixed a security issue for WebTorrent. More details: https://github.com/brave/browser-laptop/releases/tag/v0.17.19dev",
+    "preview": false
   },
   {
     "version": "0.17.18",
