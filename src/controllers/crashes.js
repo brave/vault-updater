@@ -9,7 +9,7 @@ exports.setup = (runtime) => {
     config: {
       handler: function (request, reply) {
         console.log('Crash report start of processing')
-        reply('OK')
+        reply('OK00000000000000')
         const payload = request.payload
         payload.ts = (new Date()).getTime()
         runtime.mongo.models.insertCrash(payload, (err, results) => {
