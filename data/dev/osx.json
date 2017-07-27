@@ -3,8 +3,8 @@
     "version": "0.18.14",
     "name": "Brave 0.18.14",
     "pub_date": "2017-07-27T19:58:16.744Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.18.14\ndev",
-    "preview": true,
+    "notes": "Added a welcome screen for first time users, added an option to disable 'Top Sites' in autocomplete, fixed URL display on error pages, and numerous fixes for Sync, extensions, and performance. More details: https://github.com/brave/browser-laptop/releases/tag/v0.18.14dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.18.14/osx/Brave-0.18.14.zip"
   },
   {
