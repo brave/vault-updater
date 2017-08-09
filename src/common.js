@@ -26,9 +26,11 @@ exports.comparableVersion = (version) =>
       Math.pow(10, 4) * prevValue + currentValue, 0)
 
 exports.channelData = {
-  'dev': {},
-  'beta': {},
-  'stable': {}
+  dev: {},
+  beta: {},
+  stable: {},
+  developer: {},
+  nightly: {}
 }
 
 exports.platformData = {
