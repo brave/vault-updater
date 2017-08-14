@@ -5,4 +5,6 @@ dropdb $TEST_DATABASE_NAME
 createdb $TEST_DATABASE_NAME
 echo Running migrations
 psql $TEST_DATABASE_NAME < migrations/0001-releases/up.sql
+psql $TEST_DATABASE_NAME < migrations/0002-extensions/up.sql
+psql $TEST_DATABASE_NAME < migrations/0003-pause-resume/up.sql
 NODE_ENV=test npm run start

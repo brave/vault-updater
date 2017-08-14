@@ -41,25 +41,29 @@ function latestForChannel (channel) {
   return channels
 }
 
-function readReleasesFromDatabase (cb) {
-  pg.query('SELECT channel, platform, version, name, pub_date, notes, preview, url FROM releases ORDER BY channel, platform', [], (err, results) => {
-    if (err) return cb(err, null)
-    var releases = _.groupBy(results.rows, (row) => {
-      return row.channel + ':' + row.platform
-    })
-    _.each(_.keys(releases), (k) => {
-      releases[k] = releases[k].map((release) => {
-        var modifiedRelease = _.pick(release, ['version', 'name', 'pub_date', 'notes', 'preview', 'url'])
-        if (!modifiedRelease.url) delete modifiedRelease.url
-        return modifiedRelease
-      }).sort(function (a, b) {
-        return semver.compare(b.version, a.version)
-      })
-    })
-    rawReleases = releases
-    console.log('Releases read from database')
-    cb(null, releases)
+async function readReleasesFromDatabase () {
+  var QUERY = `SELECT releases.channel, platform, version, name, pub_date, notes, preview, url, channels.status
+    FROM
+      releases JOIN
+      channels ON releases.channel = channels.channel
+    WHERE channels.status = 'active'
+    ORDER BY releases.channel, releases.platform
+    `
+  var results = await pg.query(QUERY, [])
+  var releases = _.groupBy(results.rows, (row) => {
+    return row.channel + ':' + row.platform
   })
+  _.each(_.keys(releases), (k) => {
+    releases[k] = releases[k].map((release) => {
+      var modifiedRelease = _.pick(release, ['version', 'name', 'pub_date', 'notes', 'preview', 'url'])
+      if (!modifiedRelease.url) delete modifiedRelease.url
+      return modifiedRelease
+    }).sort(function (a, b) {
+      return semver.compare(b.version, a.version)
+    })
+  })
+  rawReleases = releases
+  return releases
 }
 
 function promote (channel, platform, version, notes, cb) {
@@ -72,6 +76,22 @@ function promote (channel, platform, version, notes, cb) {
       if (updateErr) return cb(selectErr, null)
       cb(null, "ok")
     })
+  })
+}
+
+function revert (channel, platform, version, cb) {
+  pg.query("DELETE FROM releases WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, version], (deleteErr, results) => {
+    if (deleteErr) return cb(selectErr, null)
+    if (results.rowCount === 0) return cb(new Error("release not found", null))
+    cb(null, "ok")
+  })
+}
+
+function revertAllPlatforms (channel, version, cb) {
+  pg.query("DELETE FROM releases WHERE channel = $1 AND version = $3", [channel, version], (deleteErr, results) => {
+    if (deleteErr) return cb(selectErr, null)
+    if (results.rowCount === 0) return cb(new Error("release not found", null))
+    cb(null, "ok")
   })
 }
 
@@ -110,6 +130,50 @@ function insert (channel, platform, release, cb) {
   pg.query('INSERT INTO releases (channel, platform, version, name, pub_date, notes, preview, url ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', params, cb)
 }
 
+async function pause (cb) {
+  try {
+    await pg.query("UPDATE channels SET status = 'paused'")
+    await readReleasesFromDatabase()
+    cb(null, 'ok')
+  } catch (e) {
+    cb(e, null)
+  }
+}
+
+async function resume (cb) {
+  try {
+    await pg.query("UPDATE channels SET status = 'active'")
+    await readReleasesFromDatabase()
+    cb(null, 'ok')
+  } catch (e) {
+    cb(e, null)
+  }
+}
+
+async function pauseChannel (channel, cb) {
+  console.log(0.5)
+  try {
+    console.log(1)
+    await pg.query("UPDATE channels SET status = 'paused' WHERE channel = $1", [channel])
+    console.log(2)
+    await readReleasesFromDatabase()
+    console.log(3)
+    cb(null, 'ok')
+  } catch (e) {
+    cb(e, null)
+  }
+}
+
+async function resumeChannel (channel, cb) {
+  try {
+    await pg.query("UPDATE channels SET status = 'active' WHERE channel = $1", [channel])
+    await readReleasesFromDatabase()
+    cb(null, 'ok')
+  } catch (e) {
+    cb(e, null)
+  }
+}
+
 module.exports = {
   setup,
   all,
@@ -118,5 +182,11 @@ module.exports = {
   promote,
   promoteAllPlatforms,
   allForChannel,
-  latestForChannel
+  latestForChannel,
+  revert,
+  revertAllPlatforms,
+  pause,
+  resume,
+  pauseChannel,
+  resumeChannel
 }

@@ -1,4 +1,8 @@
 
+function standardURL () {
+  return "http://localhost:9000"
+}
+
 function standardOptions () {
   return {
     method: "GET",
@@ -20,5 +24,6 @@ function refreshOptions () {
 
 module.exports = {
   standardOptions: standardOptions,
-  refreshOptions: refreshOptions
+  refreshOptions: refreshOptions,
+  standardURL: standardURL
 }

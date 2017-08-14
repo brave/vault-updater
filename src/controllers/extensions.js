@@ -2,6 +2,7 @@ const builder = require('xmlbuilder')
 const xmldoc = require('xmldoc')
 const {comparableVersion} = require('../common')
 const braveBaseExtensionUrl = process.env['BRAVE_BASE_EXTENSION_URL'] || 'https://s3.amazonaws.com/brave-extensions/release'
+const extensionsAccess = require('../extensionsAccess')
 
 /**
  * Extracts an array of requested extensions along with their version
@@ -87,12 +88,13 @@ const getExtensionsResponse = (baseCRXUrl, extensions, version) => {
   return doc.toString({ pretty: true })
 }
 
-const setup = (runtime, availableExtensions) => {
+const setup = (runtime) => {
   let extensionsRoute = {
     method: ['POST'],
     path: '/extensions',
     config: {
       handler: function (request, reply) {
+        var availableExtensions = extensionsAccess.allForChannel('stable')
         const {requestedExtensions, version} = getRequestedExtensions(request.payload.toString())
         const extensionsWithUpdates = getExtensionsWithUpdates(availableExtensions, requestedExtensions)
         reply(getExtensionsResponse(braveBaseExtensionUrl, extensionsWithUpdates, version))
