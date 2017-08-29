@@ -29,6 +29,25 @@ function allForChannel (channel) {
   return channels
 }
 
+async function livePreview () {
+  var channels = {}
+  var releaseChannel, releasePlatform
+  console.log(releasesFromDatabase())
+  var releases = await releasesFromDatabase()
+  _.each(releases, function (v, k) {
+    [releaseChannel, releasePlatform] = k.split(':')
+    channels[releaseChannel] = channels[releaseChannel] || {}
+    channels[releaseChannel][releasePlatform] = {}
+    var mostRecent = v.sort((a, b) => { return b.pub_date - a.pub_date })[0]
+    var mostRecentLive = v.filter((release) => { return !release.preview }).sort((a, b) => { return b.pub_date.localeCompare(a.pub_date) })[0]
+    var mostRecentPreview = v.filter((release) => { return release.preview }).sort((a, b) => { return b.pub_date.localeCompare(a.pub_date) })[0]
+    channels[releaseChannel][releasePlatform].recent = mostRecent
+    channels[releaseChannel][releasePlatform].live = mostRecentLive
+    channels[releaseChannel][releasePlatform].preview = mostRecentPreview
+  })
+  return channels
+}
+
 function latestForChannel (channel) {
   var channels = {}
   var releaseChannel, releasePlatform
@@ -41,8 +60,15 @@ function latestForChannel (channel) {
   return channels
 }
 
-async function readReleasesFromDatabase () {
-  var QUERY = `SELECT releases.channel, platform, version, name, pub_date, notes, preview, url, channels.status
+async function foo () {
+
+}
+
+// Read release info from database and optionally apply chanel/platform
+// pauses. This method does NOT install the releases in the package
+// variable 'rawReleases'
+async function releasesFromDatabase (applyPauses) {
+  var QUERY = `SELECT releases.channel AS channel, platform, version, name, pub_date, notes, preview, url, channels.status
     FROM
       releases JOIN
       channels ON releases.channel = channels.channel
@@ -53,28 +79,42 @@ async function readReleasesFromDatabase () {
   var releases = _.groupBy(results.rows, (row) => {
     return row.channel + ':' + row.platform
   })
+
+  if (applyPauses) {
+    // remove channels and platforms that are explicitly paused
+    var channelPlatformPauses = (await pg.query("SELECT channel, platform FROM channel_platform_pauses", [])).rows || []
+    _.each(channelPlatformPauses, (channelPlatformPause) => {
+      delete releases[channelPlatformPause.channel + ':' + channelPlatformPause.platform]
+    })
+  }
   _.each(_.keys(releases), (k) => {
     releases[k] = releases[k].map((release) => {
-      var modifiedRelease = _.pick(release, ['version', 'name', 'pub_date', 'notes', 'preview', 'url'])
+      var modifiedRelease = _.pick(release, ['version', 'name', 'pub_date', 'notes', 'preview', 'url', 'channel'])
       if (!modifiedRelease.url) delete modifiedRelease.url
       return modifiedRelease
     }).sort(function (a, b) {
       return semver.compare(b.version, a.version)
     })
   })
+  return releases
+}
+
+async function readReleasesFromDatabase () {
+  var releases = await releasesFromDatabase(true)
   rawReleases = releases
   return releases
 }
 
-function promote (channel, platform, version, notes, cb) {
+async function promote (channel, platform, version, notes, cb) {
   pg.query("SELECT * FROM releases WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, version], (selectErr, results) => {
     if (selectErr) return cb(selectErr, null)
     if (results.rows.length === 0) return cb(new Error("release not found", null))
     var release = results.rows[0]
     if (!release.preview) return cb(new Error("release already promoted"), null)
-    pg.query("UPDATE releases SET preview = false, notes = COALESCE($4, notes) WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, version, notes], (updateErr, results) => {
+    pg.query("UPDATE releases SET preview = false, notes = COALESCE($4, notes) WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, version, notes], async (updateErr, results) => {
       if (updateErr) return cb(selectErr, null)
-      cb(null, "ok")
+      var release = await pg.query("SELECT * FROM releases WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, version])
+      cb(null, release)
     })
   })
 }
@@ -88,28 +128,24 @@ function revert (channel, platform, version, cb) {
 }
 
 function revertAllPlatforms (channel, version, cb) {
-  pg.query("DELETE FROM releases WHERE channel = $1 AND version = $3", [channel, version], (deleteErr, results) => {
-    if (deleteErr) return cb(selectErr, null)
+  pg.query("DELETE FROM releases WHERE channel = $1 AND version = $2", [channel, version], (deleteErr, results) => {
+    if (deleteErr) return cb(deleteErr, null)
     if (results.rowCount === 0) return cb(new Error("release not found", null))
     cb(null, "ok")
   })
 }
 
-function promoteAllPlatforms (channel, version, notes, cb) {
-  pg.query("SELECT * FROM releases WHERE channel = $1 AND version = $2", [channel, version], (selectErr, results) => {
-    if (selectErr) return cb(selectErr, null)
-    if (results.rows.length === 0) return cb(new Error("releases not found", null))
-    var release = results.rows[0]
-    if (!release.preview) return cb(new Error("releases already promoted"), null)
-    pg.query("UPDATE releases SET preview = false, notes = COALESCE($3, notes) WHERE channel = $1 AND version = $2", [channel, version, notes], (updateErr, results) => {
-      if (updateErr) return cb(selectErr, null)
-      cb(null, "ok")
-    })
-  })
+async function promoteAllPlatforms (channel, version, notes) {
+  var results = await pg.query("SELECT * FROM releases WHERE channel = $1 AND version = $2", [channel, version])
+  if (results.rows.length === 0) return cb(new Error("releases not found", null))
+  var release = results.rows[0]
+  if (!release.preview) return cb(new Error("releases already promoted"), null)
+  results = await pg.query("UPDATE releases SET preview = false, notes = COALESCE($3, notes) WHERE channel = $1 AND version = $2", [channel, version, notes])
+  var rows = (await pg.query("SELECT * FROM releases WHERE channel = $1 AND version = $2", [channel, version])).rows
+  return rows
 }
 
-function insert (channel, platform, release, cb) {
-  console.log(release)
+async function insert (channel, platform, release, cb) {
   // validation
   var releases = rawReleases[channel + ':' + platform]
   if (releases) {
@@ -127,7 +163,9 @@ function insert (channel, platform, release, cb) {
     release.preview,
     release.url
   ]
-  pg.query('INSERT INTO releases (channel, platform, version, name, pub_date, notes, preview, url ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', params, cb)
+  var result = await pg.query('INSERT INTO releases (channel, platform, version, name, pub_date, notes, preview, url ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', params)
+  var release = (await pg.query("SELECT * FROM releases WHERE channel = $1 AND platform = $2 AND version = $3", [channel, platform, release.version])).rows[0]
+  return release
 }
 
 async function pause (cb) {
@@ -151,14 +189,24 @@ async function resume (cb) {
 }
 
 async function pauseChannel (channel, cb) {
-  console.log(0.5)
   try {
-    console.log(1)
     await pg.query("UPDATE channels SET status = 'paused' WHERE channel = $1", [channel])
-    console.log(2)
     await readReleasesFromDatabase()
-    console.log(3)
-    cb(null, 'ok')
+    var channelRow = (await pg.query("SELECT * FROM channels WHERE channel = $1", [channel])).rows[0]
+    cb(null, channelRow)
+  } catch (e) {
+    cb(e, null)
+  }
+}
+
+async function pauseChannelPlatform (channel, platform, cb) {
+  console.log("HERE 2")
+  try {
+    console.log(channel, platform)
+    await pg.query("INSERT INTO channel_platform_pauses ( channel, platform ) VALUES ($1, $2)", [channel, platform])
+    await readReleasesFromDatabase()
+    var row = (await pg.query("SELECT * FROM channel_platform_pauses WHERE channel = $1 AND platform = $2", [channel, platform])).rows[0]
+    cb(null, row)
   } catch (e) {
     cb(e, null)
   }
@@ -168,10 +216,36 @@ async function resumeChannel (channel, cb) {
   try {
     await pg.query("UPDATE channels SET status = 'active' WHERE channel = $1", [channel])
     await readReleasesFromDatabase()
-    cb(null, 'ok')
+    var channelRow = (await pg.query("SELECT * FROM channels WHERE channel = $1", [channel])).rows[0]
+    cb(null, channelRow)
   } catch (e) {
     cb(e, null)
   }
+}
+
+async function resumeChannelPlatform (channel, platform, cb) {
+  try {
+    var results = await pg.query("DELETE FROM channel_platform_pauses WHERE channel = $1 AND platform = $2", [channel, platform])
+    await readReleasesFromDatabase()
+    if (results.rowCount !== 1) throw new Error("Channel platform pause was not removed")
+    cb(null, {})
+  } catch (e) {
+    cb(e, null)
+  }
+}
+
+async function channelPlatformPauses (cb) {
+  try {
+    var rows = (await pg.query("SELECT channel, platform  from channel_platform_pauses ORDER BY channel, platform", {})).rows
+    cb(null, rows)
+  } catch (e) {
+    cb(e, null)
+  }
+}
+
+async function history (channelId, platformId) {
+  var releases = await pg.query("SELECT * FROM releases WHERE channel = $1 AND platform = $2 ORDER BY pub_date DESC", [channelId, platformId])
+  return releases.rows
 }
 
 module.exports = {
@@ -188,5 +262,10 @@ module.exports = {
   pause,
   resume,
   pauseChannel,
-  resumeChannel
+  pauseChannelPlatform,
+  resumeChannel,
+  resumeChannelPlatform,
+  livePreview,
+  channelPlatformPauses,
+  history
 }

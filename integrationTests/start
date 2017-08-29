@@ -7,4 +7,5 @@ echo Running migrations
 psql $TEST_DATABASE_NAME < migrations/0001-releases/up.sql
 psql $TEST_DATABASE_NAME < migrations/0002-extensions/up.sql
 psql $TEST_DATABASE_NAME < migrations/0003-pause-resume/up.sql
+psql $TEST_DATABASE_NAME < migrations/0004-pause-resume-channel-platform//up.sql
 NODE_ENV=test npm run start

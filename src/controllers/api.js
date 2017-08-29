@@ -56,7 +56,7 @@ export function setup(runtime) {
 
   let put_promote = {
     method: 'PUT',
-    path: '/api/1/releases/{channel}/{platform}/{version}/promote',
+    path: '/api/1/control/releases/promote/{channel}/{platform}/{version}',
     config: {
       auth: 'simple',
       handler: function (request, reply) {
@@ -73,14 +73,16 @@ export function setup(runtime) {
 
   let put_promote_all_platforms = {
     method: 'PUT',
-    path: '/api/1/releases/{channel}/{version}/promote',
+    path: '/api/1/control/releases/promote/{channel}/{version}',
     config: {
       auth: 'simple',
-      handler: function (request, reply) {
-        releasesAccess.promoteAllPlatforms(request.params.channel, request.params.version, request.payload.notes, (err, result) => {
-          if (err) return reply(boom.create(400, 'releases could not be promoted: ' + err.toString()))
-          reply(result)
-        })
+      handler: async function (request, reply) {
+        try {
+          var rows = await releasesAccess.promoteAllPlatforms(request.params.channel, request.params.version, request.payload.notes)
+          reply(rows)
+        } catch (err) {
+          reply(boom.create(400, 'releases could not be promoted: ' + err.toString()))
+        }
       },
       validate: {
         params: channelVersionParams
@@ -90,7 +92,7 @@ export function setup(runtime) {
 
   let delete_release = {
     method: 'DELETE',
-    path: '/api/1/releases/{channel}/{platform}/{version}',
+    path: '/api/1/control/releases/{channel}/{platform}/{version}',
     config: {
       auth: 'simple',
       handler: function (request, reply) {
@@ -107,7 +109,7 @@ export function setup(runtime) {
 
   let delete_release_all_platforms = {
     method: 'DELETE',
-    path: '/api/1/releases/{channel}/{version}',
+    path: '/api/1/control/releases/{channel}/{version}',
     config: {
       auth: 'simple',
       handler: function (request, reply) {
@@ -127,14 +129,20 @@ export function setup(runtime) {
     path: '/api/1/releases/{channel}/{platform}',
     config: {
       auth: 'simple',
-      handler: function (request, reply) {
+      handler: async function (request, reply) {
         request.payload.name = 'Brave ' + request.payload.version,
         request.payload.pub_date = (new Date()).toISOString()
         request.payload.url = request.payload.url || null
-        releasesAccess.insert(request.params.channel, request.params.platform, request.payload, (err, results) => {
+        try {
+          var release = await releasesAccess.insert(
+            request.params.channel,
+            request.params.platform,
+            request.payload
+          )
+          reply(release)
+        } catch (err) {
           if (err) return reply(boom.create(400, 'Release could not be inserted: ' + err.toString()))
-          reply(request.payload)
-        })
+        }
       },
       validate: {
         params: channelPlatformParams,
@@ -183,6 +191,27 @@ export function setup(runtime) {
       },
       validate: {
         params: channelParams
+      }
+    }
+  }
+
+  let get_releases_history_for_channel_platform = {
+    method: 'GET',
+    path: '/api/1/control/releases/history/{channel}/{platform}',
+    config: {
+      handler: async function (request, reply) {
+        var history = await releasesAccess.history(request.params.channel, request.params.platform)
+        reply(history)
+      }
+    }
+  }
+
+  let get_live_preview_by_channel_platform = {
+    method: 'GET',
+    path: '/api/1/releases/live_preview',
+    config: {
+      handler: function (request, reply) {
+        reply(releasesAccess.livePreview())
       }
     }
   }
@@ -245,6 +274,23 @@ export function setup(runtime) {
     }
   }
 
+  let put_pause_channel_platform = {
+    method: "PUT",
+    path: '/api/1/control/releases/pause/{channel}/{platform}',
+    config: {
+      auth: 'simple',
+      handler: async (request, reply) => {
+        releasesAccess.pauseChannelPlatform(request.params.channel, request.params.platform, (err, results) => {
+          if (err) return reply(boom.create(400, err))
+          reply(results)
+        })
+      },
+      validate: {
+        params: channelPlatformParams
+      }
+    }
+  }
+
   let put_resume = {
     method: "PUT",
     path: '/api/1/control/releases/resume',
@@ -276,6 +322,37 @@ export function setup(runtime) {
     }
   }
 
+  let put_resume_channel_platform = {
+    method: "PUT",
+    path: '/api/1/control/releases/resume/{channel}/{platform}',
+    config: {
+      auth: 'simple',
+      handler: async (request, reply) => {
+        releasesAccess.resumeChannelPlatform(request.params.channel, request.params.platform, (err, results) => {
+          if (err) return reply(boom.create(400, err))
+          reply(results)
+        })
+      },
+      validate: {
+        params: channelPlatformParams
+      }
+    }
+  }
+
+  let get_channel_platform_pauses = {
+    method: "GET",
+    path: '/api/1/control/releases/channel_platform_pauses',
+    config: {
+      auth: 'simple',
+      handler: async (request, reply) => {
+        releasesAccess.channelPlatformPauses((err, results) => {
+          if (err) return reply(boom.create(400, err))
+          reply(results)
+        })
+      }
+    }
+  }
+
   let get_status = {
     method: "GET",
     path: '/api/1/control/status',
@@ -285,7 +362,6 @@ export function setup(runtime) {
         var statuses = {}
         _.each(channelNames, (channelName) => {
           var releases = releasesAccess.latestForChannel(channelName)
-          console.log(channelName, releases)
           statuses[channelName] = Object.keys(releases).length === 0 ? 'paused' : 'active'
         })
         var response = {
@@ -296,5 +372,5 @@ export function setup(runtime) {
     }
   }
 
-  return [put_pause, put_resume, get_status, put_refresh, post_releases, put_promote, put_promote_all_platforms, get_all, get, get_latest_for_channel, put_extension, delete_release, delete_release_all_platforms, put_pause_channel, put_resume_channel]
+  return [put_pause, put_resume, get_status, put_refresh, post_releases, put_promote, put_promote_all_platforms, get_all, get, get_latest_for_channel, put_extension, delete_release, delete_release_all_platforms, put_pause_channel, put_resume_channel, get_live_preview_by_channel_platform, put_resume_channel_platform, put_pause_channel_platform, get_channel_platform_pauses, get_releases_history_for_channel_platform]
 }

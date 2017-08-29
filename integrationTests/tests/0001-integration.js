@@ -19,16 +19,49 @@ options.body = {
   preview: false
 }
 
-tap.test("Integration", function (t) {
-  function insertFirstRelease (cb) {
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.equal(body.version, '0.5.0', "object returned")
-      cb(err)
+tap.test("Integration", async function (ot) {
+  // utility functions
+  async function pr (options) {
+    return new Promise((resolve, reject) => {
+      r(options, (err, response, body) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(response)
+        }
+      })
     })
   }
 
-  function insertNewChannelRelease (cb) {
+  // simple GET to URL (Promised)
+  async function prg (url) {
+    return new Promise((resolve, reject) => {
+      r.get(url, (err, response, body) => {
+        if (response.body) {
+          response.body = JSON.parse(body)
+        }
+        if (err) {
+          reject(err)
+        } else {
+          resolve(response)
+        }
+      })
+    })
+  }
+
+  async function refresh () {
+    await pr(common.refreshOptions())
+  }
+
+  // tests start here
+  ot.test("Insert first release", async function (t) {
+    var results = await pr(options)
+    t.equal(results.statusCode, 200, "200 returned")
+    t.equal(results.body.version, '0.5.0', "object returned")
+    t.end()
+  })
+
+  ot.test("Insert new channel release", async function (t) {
     var options = common.standardOptions()
     options.url = options.url + '/beta/winia32'
     options.method = "POST"
@@ -38,31 +71,24 @@ tap.test("Integration", function (t) {
       url: "http://localhost/",
       preview: false
     }
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.equal(body.version, '0.4.0', "beta/winia32 object returned")
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.equal(response.body.version, '0.4.0', "beta/winia32 object returned")
+    t.end()
+  })
 
-  function refresh (cb) {
-    r(common.refreshOptions(), function (err, results, body) {
-      t.equal(results.statusCode, 200, '200 returned')
-      cb(err)
-    })
-  }
 
-  function readFirstRelease (cb) {
+  ot.test("Read first release", async (t) => {
     options = common.standardOptions()
     options.url = options.url + '/dev/osx'
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.equal(body.length, 1, "One release returned")
-      cb(err)
-    })
-  }
+    await refresh()
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.equal(response.body.length, 1, "One release returned")
+    t.end()
+  })
 
-  function insertPreviewRelease (cb) {
+  ot.test("Insert preview release", async (t) => {
     var options = common.standardOptions()
     options.url = options.url + '/dev/osx'
     options.method = "POST"
@@ -72,75 +98,71 @@ tap.test("Integration", function (t) {
       url: "http://localhost/",
       preview: true
     }
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.end()
+  })
 
-  function readSecondRelease (cb) {
+  ot.test("Read second release", async (t) => {
     options = common.standardOptions()
     options.url = options.url + '/dev/osx'
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.equal(body.length, 2, "Two releases returned")
-      cb(err)
-    })
-  }
+    await refresh()
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.equal(response.body.length, 2, "Two releases returned")
+    t.end()
+  })
 
-  function checkForUpdateNoPreview (cb) {
+  ot.test("Check for update without preview", async (t) => {
     options = common.standardOptions()
     options.url = 'http://localhost:9000/1/releases/dev/0.1.0/osx'
-    r(options, function (err, results, body) {
-      t.equal(body.version, '0.5.0', 'Live release returned')
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.body.version, '0.5.0', 'Live release returned')
+    t.end()
+  })
 
-  function checkForUpdatePreview (cb) {
+  ot.test("Check for update with preview", async (t) => {
     options = common.standardOptions()
     options.url = 'http://localhost:9000/1/releases/dev/0.1.0/osx?accept_preview=true'
-    r(options, function (err, results, body) {
-      t.equal(body.version, '0.6.0', 'Preview release returned')
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.body.version, '0.6.0', 'Preview release returned')
+    t.end()
+  })
 
-  function checkForNonExistentRelease (cb) {
+  ot.test("Check for non-existent release", async (t) => {
     options = common.standardOptions()
     options.url = 'http://localhost:9000/1/releases/dev/0.7.0/osx'
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 204, "204 returned")
-      t.ok(body === undefined, "No release found")
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.statusCode, 204, "204 returned")
+    t.ok(response.body === undefined, "No release found")
+    t.end()
+  })
 
-  function promotePreviewWithNotes (cb) {
+  ot.test("Promote preview with notes", async (t) => {
     var options = common.standardOptions()
-    options.url = options.url + '/dev/0.6.0/promote'
+    options.url = common.standardURL() + '/api/1/control/releases/promote/dev/0.6.0'
     options.method = "PUT"
     options.body = {
       notes: "foo the bar"
     }
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.equal(body, "ok", "ok returned")
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.equal(response.body.length, 1, "One release returned")
+    t.equal(response.body[0].preview, false, "returned release is promoted")
+    t.end()
+  })
 
-  function checkForUpdatePostPromoteWithNotes (cb) {
+  ot.test("Check for update post promote with notes", async (t) => {
     options = common.standardOptions()
     options.url = 'http://localhost:9000/1/releases/dev/0.1.0/osx'
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.ok(body.notes.match(/foo the bar/), 'promoted notes returned')
-      cb(err)
-    })
-  }
+    await refresh()
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.ok(response.body.notes.match(/foo the bar/), 'promoted notes returned')
+    t.end()
+  })
 
-  function insertWinx64Release (cb) {
+  ot.test("Insert winx64 release", async (t) => {
     var options = common.standardOptions()
     options.url = options.url + '/dev/winx64'
     options.method = "POST"
@@ -150,180 +172,159 @@ tap.test("Integration", function (t) {
       url: "http://localhost/",
       preview: false
     }
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.equal(body.version, '0.6.0', "dev/winx64 object returned")
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.equal(response.body.version, '0.6.0', "dev/winx64 object returned")
+    t.end()
+  })
 
-  function checkReleasesForChannel (cb) {
+  ot.test("Check releases for channel", async (t) => {
     options = common.standardOptions()
     options.url = options.url + '/dev'
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.ok(_.isArray(body.osx), 'osx found')
-      t.equal(body.osx.length, 2, 'two osx releases found')
-      t.ok(_.isArray(body.winx64), 'winx64 found')
-      t.equal(body.winx64.length, 1, 'one winx64 release found')
-      cb(err)
-    })
-  }
+    await refresh()
+    var response = await pr(options)
+    var body = response.body
+    t.equal(response.statusCode, 200, "200 returned")
+    t.ok(_.isArray(body.osx), 'osx found')
+    t.equal(body.osx.length, 2, 'two osx releases found')
+    t.ok(_.isArray(body.winx64), 'winx64 found')
+    t.equal(body.winx64.length, 1, 'one winx64 release found')
+    t.end()
+  })
 
-  function checkLatestReleasesForChannel (cb) {
+  ot.test("Check latest releases for channel", async (t) => {
     options = common.standardOptions()
     options.url = options.url + '/dev/latest'
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 200, "200 returned")
-      t.ok(_.isObject(body.osx), 'osx found')
-      t.equal(body.osx.version, '0.6.0', 'correct version found')
-      t.ok(_.isObject(body.winx64), 'winx64 found')
-      t.equal(body.winx64.version, '0.6.0', 'correct version found')
-      cb(err)
-    })
-  }
+    await refresh()
+    var response = await pr(options)
+    var body = response.body
+    t.equal(response.statusCode, 200, "200 returned")
+    t.ok(_.isObject(body.osx), 'osx found')
+    t.equal(body.osx.version, '0.6.0', 'correct version found')
+    t.ok(_.isObject(body.winx64), 'winx64 found')
+    t.equal(body.winx64.version, '0.6.0', 'correct version found')
+    t.end()
+  })
 
-  function revertWinx64Release (cb) {
-    var options = common.standardOptions()
-    options.url = options.url + '/dev/winx64/0.5.12'
+  ot.test("Revert winx64 release", async (t) => {
+    var options, response, opts
+    options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/dev/winx64/0.5.12'
     options.method = "DELETE"
-    r(options, function (err, results, body) {
-      t.equal(results.statusCode, 400, "revert - 400 returned")
-      var opts = common.standardOptions()
-      opts.url = opts.url + '/dev/winx64/0.6.0'
-      opts.method = "DELETE"
-      r(opts, function (err, results, body) {
-        t.equal(results.statusCode, 200, "revert - 200 returned")
-        refresh((refreshErr) => {
-          options = common.standardOptions()
-          options.url = options.url + '/dev/latest'
-          r(options, function (err, results, body) {
-            t.equal(results.statusCode, 200, "200 returned")
-            t.ok(body.winx64 == null, 'winx64 version removed')
-            cb(err)
-          })
-        })
-      })
-    })
-  }
+    response = await pr(options)
+    t.equal(response.statusCode, 400, "revert not found - 400 returned")
+    opts = common.standardOptions()
+    opts.url = common.standardURL() + '/api/1/control/releases/dev/winx64/0.6.0'
+    opts.method = "DELETE"
+    response = await pr(opts)
+    t.equal(response.statusCode, 200, "revert - 200 returned")
+    await refresh()
+    options = common.standardOptions()
+    options.url = options.url + '/dev/latest'
+    response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.ok(response.body.winx64 == null, 'winx64 version removed')
+    t.end()
+  })
 
-  async function pr (options) {
-    return new Promise((resolve, reject) => {
-      r(options, (err, response, body) => {
-        if (err) reject(err)
-        else resolve([response, body])
-      })
-    })
-  }
-
-  async function latestReleases (channel) {
-    return new Promise((resolve, reject) => {
-      var options = common.standardOptions()
-      options.url += '/' + channel + '/latest'
-      options.method = 'GET'
-      r(options, function (err, results, body) {
-        if (err) return reject(err)
-        resolve(body)
-      })
-    })
+  async function latestReleasesForChannel (channel) {
+    var options = common.standardOptions()
+    options.url += '/' + channel + '/latest'
+    options.method = 'GET'
+    var response = await pr(options)
+    return response.body
   }
 
   async function currentStatus () {
-    return new Promise((resolve, reject) => {
-      var options = common.standardOptions()
-      options.url = "http://localhost:9000/api/1/control/status"
-      options.method = 'GET'
-      r(options, function (err, results, body) {
-        if (err) return reject(err)
-        resolve(body)
-      })
-    })
+    var options = common.standardOptions()
+    options.url = "http://localhost:9000/api/1/control/status"
+    options.method = 'GET'
+    var response = await pr(options)
+    return response.body
   }
 
-  async function pauseResume (cb) {
-    var latest = await latestReleases('dev')
+  ot.test("Global pause / resume", async (t) => {
+    await refresh()
+    var latest = await latestReleasesForChannel('dev')
     t.ok(Object.keys(latest).length > 0, 'latest releases available')
     var status = await currentStatus()
     t.equal(status.statuses.dev, 'active', 'active status')
     var options = common.standardOptions()
     options.url = "http://localhost:9000/api/1/control/releases/pause",
     options.method = 'PUT'
-    r(options, async function (err, results, body) {
-      t.equal(results.statusCode, 200, 'pause returned 200')
-      t.equal(body, 'ok', 'pause returned ok in body')
-      status = await currentStatus()
-      t.equal(status.statuses.dev, 'paused', 'paused status')
-      t.equal(Object.keys(status.statuses).filter((channel) => { return status.statuses[channel] === 'active' }).length, 0, 'all channels paused')
-      latest = await latestReleases('dev')
-      t.equal(Object.keys(latest).length, 0, 'no latest releases')
-      options = common.standardOptions()
-      options.url = "http://localhost:9000/api/1/control/releases/resume",
-      options.method = 'PUT'
-      r(options, async function (err, results, body) {
-        t.equal(results.statusCode, 200, 'resume returned 200')
-        t.equal(body, 'ok', 'resume returned ok in body')
-        status = await currentStatus()
-        t.equal(status.statuses.dev, 'active', 'status reset to active')
-        latest = await latestReleases('dev')
-        t.equal(Object.keys(latest).length, 1, 'latest releases available after resume')
-        cb(err)
-      })
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, 'pause returned 200')
+    t.equal(response.body, 'ok', 'pause returned ok in body')
+    status = await currentStatus()
+    t.equal(status.statuses.dev, 'paused', 'paused status')
+    t.equal(Object.keys(status.statuses).filter((channel) => { return status.statuses[channel] === 'active' }).length, 0, 'all channels paused')
+    latest = await latestReleasesForChannel('dev')
+    t.equal(Object.keys(latest).length, 0, 'no latest releases')
+    options = common.standardOptions()
+    options.url = "http://localhost:9000/api/1/control/releases/resume",
+    options.method = 'PUT'
+    response = await pr(options)
+    t.equal(response.statusCode, 200, 'resume returned 200')
+    t.equal(response.body, 'ok', 'resume returned ok in body')
+    status = await currentStatus()
+    t.equal(status.statuses.dev, 'active', 'status reset to active')
+    latest = await latestReleasesForChannel('dev')
+    t.equal(Object.keys(latest).length, 1, 'latest releases available after resume')
+    t.end()
+  })
 
-  async function pauseSingleChannel (channel) {
+  async function pauseSingleChannel (channel, t) {
     var response, body
     var options = common.standardOptions()
     options.url = "http://localhost:9000/api/1/control/releases/pause/" + channel,
     options.method = 'PUT'
     try {
-      [response, body] = await pr(options)
+      response = await pr(options)
       t.equal(response.statusCode, 200, 'pause channel returned 200')
-      t.equal(body, 'ok', 'pause channel ok')
-      return [response, body]
+      t.equal(response.body.status, 'paused', 'pause channel ok')
+      return response.body
     } catch (err) {
+      console.log(err)
       process.exit("error:" + err)
     }
   }
 
-  async function resumeSingleChannel (channel) {
+  async function resumeSingleChannel (channel, t) {
     var response, body
     var options = common.standardOptions()
     options.url = "http://localhost:9000/api/1/control/releases/resume/" + channel,
     options.method = 'PUT'
     try {
-      [response, body] = await pr(options)
+      response = await pr(options)
       t.equal(response.statusCode, 200, 'resume channel returned 200')
-      t.equal(body, 'ok', 'resume channel ok')
-      return [response, body]
+      t.equal(response.body.status, 'active', 'resume channel ok')
+      return response.body
     } catch (err) {
+      console.log(err)
       process.exit("error:" + err)
     }
   }
 
-  async function pauseResumeChannel (cb) {
+  ot.test("Pause / resume single channel", async (t) => {
     var response, body
-    var latest = await latestReleases('dev')
+    var latest = await latestReleasesForChannel('dev')
     t.ok(Object.keys(latest).length > 0, 'latest releases available')
     var status = await currentStatus()
     t.equal(status.statuses.dev, 'active', 'active status for single channel')
-
-    [response, body] = await pauseSingleChannel('dev')
+    response = await pauseSingleChannel('dev', t)
     status = await currentStatus()
-    latest = await latestReleases('dev')
+    latest = await latestReleasesForChannel('dev')
     t.ok(Object.keys(latest).length === 0, 'dev channel paused from latest')
-    latest = await latestReleases('beta')
+    latest = await latestReleasesForChannel('beta')
     t.ok(Object.keys(latest).length > 0, 'beta channel unaffected')
     t.equal(status.statuses.dev, 'paused', 'paused status for single channel')
-
-    [response, body] = await resumeSingleChannel('dev')
+    response = await resumeSingleChannel('dev', t)
     status = await currentStatus()
-    latest = await latestReleases('dev')
+    latest = await latestReleasesForChannel('dev')
     t.ok(Object.keys(latest).length > 0, 'dev channel resumed from latest')
     t.equal(status.statuses.dev, 'active', 'active status for single channel')
-
-    cb(null)
-  }
+    t.end()
+  })
 
   var standardExtension = {
     id: 'abcd',
@@ -332,19 +333,19 @@ tap.test("Integration", function (t) {
     name: 'Test extension'
   }
 
-  function addInitialExtension (cb) {
+  ot.test("Add initial extension", async (t) => {
     var options = common.standardOptions()
     options.url = common.standardURL() + '/api/1/extensions/stable'
     options.method = 'PUT'
     options.json = true
     options.body = standardExtension
-    r(options, function (err, response, body) {
-      t.ok(response.statusCode === 200, '200 returned')
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.ok(response.statusCode === 200, '200 returned')
+    t.equal(response.body.id, 'abcd', 'Extension returned in body')
+    t.end()
+  })
 
-  function checkExtension (cb) {
+  ot.test("Check extension", async (t) => {
     var xml = `<?xml version="1.0" encoding="UTF-8"?>
       <request protocol="3.0" version="chrome-55.0.2883.87" prodversion="55.0.2883.87" requestid="{b4f77b70-af29-462b-a637-8a3e4be5ecd9}" lang="" updaterchannel="stable" prodchannel="stable" os="mac" arch="x64" nacl_arch="x86-64">
         <hw physmemory="16"/>
@@ -354,96 +355,187 @@ tap.test("Integration", function (t) {
           <ping rd="-2" ping_freshness="" />
         </app>
       </request>`
-    r.post({
+    await refresh()
+    var response = await pr({
+      method: 'POST',
       url: common.standardURL() + '/extensions',
       body: xml,
       headers: {
         'Content-Type': 'application/xml'
       }
-    }, 
-      function (err, results, body) {
-        if (err) console.log(err)
-        const doc = new xmldoc.XmlDocument(body)
-        var appid = doc.descendantWithPath('app').attr.appid
-        var version = doc.descendantWithPath('app.updatecheck.manifest').attr.version
-        t.equal(appid, standardExtension.id, 'id matches')
-        t.equal(version, standardExtension.version, 'version matches')
-        cb(err)
-      }
-    )
-  }
+    })
+    var body = response.body
+    const doc = new xmldoc.XmlDocument(body)
+    var appid = doc.descendantWithPath('app').attr.appid
+    var version = doc.descendantWithPath('app.updatecheck.manifest').attr.version
+    t.equal(appid, standardExtension.id, 'id matches')
+    t.equal(version, standardExtension.version, 'version matches')
+    t.end()
+  })
 
-  function updateInitialExtension (cb) {
+  ot.test("Update initial extension", async (t) => {
     var options = common.standardOptions()
     options.url = common.standardURL() + '/api/1/extensions/stable'
     options.method = 'PUT'
     options.json = true
     standardExtension.name = 'new name'
     options.body = standardExtension
-    r(options, function (err, response, body) {
-      t.ok(response.statusCode === 200, '200 returned')
-      t.equal(body.name, 'new name', 'extension updated with same version')
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.ok(response.statusCode === 200, '200 returned')
+    t.equal(response.body.name, 'new name', 'extension updated with same version')
+    t.end()
+  })
 
-  function updateInitialExtensionWithLowerVersion (cb) {
+  ot.test("Update initial extension with lower version number", async (t) => {
     var options = common.standardOptions()
     options.url = common.standardURL() + '/api/1/extensions/stable'
     options.method = 'PUT'
     options.json = true
     options.body = _.clone(standardExtension)
     options.body.version = '0.9.9.9'
-    r(options, function (err, response, body) {
-      t.equal(response.statusCode, 400, '400 returned')
-      t.equal(body.message, 'Version is less than current', 'rejected because version is less than current')
-      cb(err)
-    })
-  }
+    var response = await pr(options)
+    t.equal(response.statusCode, 400, '400 returned')
+    t.equal(response.body.message, 'Version is less than current', 'rejected because version is less than current')
+    t.end()
+  })
 
-  function insertExtensionWithInvalidData (cb) {
+  ot.test("Insert extension with invalid data", async (t) => {
     var options = common.standardOptions()
     options.url = common.standardURL() + '/api/1/extensions/stable'
     options.method = 'PUT'
     options.json = true
     options.body = _.clone(standardExtension)
     options.body.hash = '@#$!'
-    r(options, function (err, response, body) {
-      t.equal(response.statusCode, 400, '400 returned')
-      cb(err)
-    })
-  }
-
-  async.series([
-    insertFirstRelease,
-    insertNewChannelRelease,
-    refresh,
-    readFirstRelease,
-    insertPreviewRelease,
-    refresh,
-    readSecondRelease,
-    checkForUpdateNoPreview,
-    checkForUpdatePreview,
-    checkForNonExistentRelease,
-    promotePreviewWithNotes,
-    refresh,
-    checkForUpdatePostPromoteWithNotes,
-    insertWinx64Release,
-    refresh,
-    checkReleasesForChannel,
-    checkLatestReleasesForChannel,
-    revertWinx64Release,
-    pauseResume,
-    refresh,
-    pauseResumeChannel,
-    addInitialExtension,
-    refresh,
-    checkExtension,
-    updateInitialExtension,
-    refresh,
-    updateInitialExtensionWithLowerVersion,
-    insertExtensionWithInvalidData
-  ], function (err) {
+    var response = await pr(options)
+    t.equal(response.statusCode, 400, '400 returned')
     t.end()
   })
+
+  ot.test("Install a nightly release", async (t) => {
+    var options = common.standardOptions()
+    options.url = options.url + '/nightly/osx'
+    options.method = "POST"
+    options.body = {
+      notes: "notes",
+      version: "0.6.0",
+      url: "http://localhost/",
+      preview: false
+    }
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.equal(response.body.channel, 'nightly', 'nightly channel embedded in returned structure')
+    t.end()
+  })
+
+  ot.test("Install a nightly / winx64 release", async (t) => {
+    var options = common.standardOptions()
+    options.url = options.url + '/nightly/winx64'
+    options.method = "POST"
+    options.body = {
+      notes: "notes",
+      version: "0.6.0",
+      url: "http://localhost/",
+      preview: false
+    }
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, "200 returned")
+    t.equal(response.body.channel, 'nightly', 'nightly channel embedded in returned structure')
+    t.end()
+  })
+
+  ot.test("Retrieve channel / platform history", async (t) => {
+    var response
+    await refresh()
+    var options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/history/dev/osx'
+    var response = await pr(options)
+    t.equal(response.statusCode, 200, '200 returned')
+    t.equal(response.body.length, 2, '2 releases returned')
+    t.end()
+  })
+
+  ot.test("Pause a platform on a channel", async (t) => {
+    var response
+    await refresh()
+    response = await prg(common.standardURL() + '/1/releases/dev/0.4.0/osx')
+    t.equal(response.body.version, '0.6.0', "dev/osx release returned")
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/osx')
+    t.equal(response.body.version, '0.6.0', "nightly/osx release returned")
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/winx64')
+    t.equal(response.body.version, '0.6.0', "nightly/winx64 release returned")
+
+    let options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/channel_platform_pauses'
+    options.method = 'GET'
+    var response = await pr(options)
+    t.equal(response.body.length, 0, "initally no channel platform pauses defined")
+
+    // install a channel pause
+    options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/pause/dev/osx'
+    options.method = 'PUT'
+    response = await pr(options)
+    t.same(response.body, { channel: 'dev', platform: 'osx' }, 'expected response')
+
+    options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/channel_platform_pauses'
+    options.method = 'GET'
+    response = await pr(options)
+    t.equal(response.body.length, 1, "one channel platform pause defined")
+    t.same(response.body, [ { channel: 'dev', platform: 'osx' } ], "body format is correct")
+
+    await refresh()
+    response = await prg(common.standardURL() + '/1/releases/dev/0.4.0/osx')
+    t.equal(response.statusCode, 204, "dev/osx release NOT returned - 204 status code - paused!")
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/osx')
+    t.equal(response.body.version, '0.6.0', "nightly/osx release returned")
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/winx64')
+    t.equal(response.body.version, '0.6.0', "nightly/winx64 release returned")
+
+    // remove a channel pause
+    options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/resume/dev/osx'
+    options.method = 'PUT'
+    response = await pr(options)
+    t.same(response.body, {}, 'expected response')
+
+    options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/channel_platform_pauses'
+    options.method = 'GET'
+    response = await pr(options)
+    t.equal(response.body.length, 0, "zero channel platform pause defined")
+
+    await refresh()
+    response = await prg(common.standardURL() + '/1/releases/dev/0.4.0/osx')
+    t.equal(response.body.version, '0.6.0', "dev/osx release returned")
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/osx')
+    t.equal(response.body.version, '0.6.0', "nightly/osx release returned")
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/winx64')
+    t.equal(response.body.version, '0.6.0', "nightly/winx64 release returned")
+
+    t.end()
+  })
+
+  ot.test("Revert all releases on a channel for a version", async (t) => {
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/osx')
+    t.equal(response.body.version, '0.6.0', "nightly/osx release returned")
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/winx64')
+    t.equal(response.body.version, '0.6.0', "nightly/winx64 release returned")
+
+    var options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/nightly/0.6.0'
+    options.method = 'DELETE'
+
+    var response = await pr(options)
+    t.equal(response.body, 'ok', 'revert returned ok')
+
+    await refresh()
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/osx')
+    t.equal(response.statusCode, 204, "nightly/osx release not returned")
+    response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/winx64')
+    t.equal(response.statusCode, 204, "nightly/winx64 release not returned")
+    t.end()
+  })
+
+  ot.end()
 })
