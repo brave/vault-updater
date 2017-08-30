@@ -248,6 +248,11 @@ async function history (channelId, platformId) {
   return releases.rows
 }
 
+async function auditHistory (n) {
+  var entries = await pg.query("SELECT * FROM audit_entries ORDER BY ts DESC LIMIT $1", [n])
+  return entries.rows
+}
+
 module.exports = {
   setup,
   all,
@@ -267,5 +272,6 @@ module.exports = {
   resumeChannelPlatform,
   livePreview,
   channelPlatformPauses,
-  history
+  history,
+  auditHistory
 }

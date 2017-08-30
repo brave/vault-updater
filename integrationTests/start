@@ -4,8 +4,8 @@ echo Setting up database $TEST_DATABASE_NAME
 dropdb $TEST_DATABASE_NAME
 createdb $TEST_DATABASE_NAME
 echo Running migrations
-psql $TEST_DATABASE_NAME < migrations/0001-releases/up.sql
-psql $TEST_DATABASE_NAME < migrations/0002-extensions/up.sql
-psql $TEST_DATABASE_NAME < migrations/0003-pause-resume/up.sql
-psql $TEST_DATABASE_NAME < migrations/0004-pause-resume-channel-platform//up.sql
+for d in migrations/*/ ; do
+  echo "$d"
+  psql $TEST_DATABASE_NAME < "$d"up.sql
+done
 NODE_ENV=test npm run start

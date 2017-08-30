@@ -53,11 +53,23 @@ tap.test("Integration", async function (ot) {
     await pr(common.refreshOptions())
   }
 
+  async function auditHistory () {
+    var options = common.standardOptions()
+    options.url = common.standardURL() + '/api/1/control/releases/audit_history'
+    var response = await pr(options)
+    return response.body
+  }
+
   // tests start here
   ot.test("Insert first release", async function (t) {
     var results = await pr(options)
     t.equal(results.statusCode, 200, "200 returned")
     t.equal(results.body.version, '0.5.0', "object returned")
+    var audit = await auditHistory()
+    t.equal(audit.length, 1, 'single entry in audit history')
+    t.equal(audit[0].operation, 'insert', 'audit operation is insert')
+    t.equal(audit[0].type, 'release', 'audit type is release')
+    t.equal(audit[0].data.channel, 'dev', 'audit channel is dev')
     t.end()
   })
 
@@ -74,9 +86,13 @@ tap.test("Integration", async function (ot) {
     var response = await pr(options)
     t.equal(response.statusCode, 200, "200 returned")
     t.equal(response.body.version, '0.4.0', "beta/winia32 object returned")
+    var audit = await auditHistory()
+    t.equal(audit[0].operation, 'insert', 'audit operation is insert')
+    t.equal(audit[0].type, 'release', 'audit type is release')
+    t.equal(audit[0].data.channel, 'beta', 'audit channel is beta')
+    t.equal(audit[0].data.preview, false, 'audit preview is false')
     t.end()
   })
-
 
   ot.test("Read first release", async (t) => {
     options = common.standardOptions()
@@ -100,6 +116,11 @@ tap.test("Integration", async function (ot) {
     }
     var response = await pr(options)
     t.equal(response.statusCode, 200, "200 returned")
+    var audit = await auditHistory()
+    t.equal(audit[0].operation, 'insert', 'audit operation is insert')
+    t.equal(audit[0].type, 'release', 'audit type is release')
+    t.equal(audit[0].data.platform, 'osx', 'audit platform is osx')
+    t.equal(audit[0].data.preview, true, 'audit preview is true')
     t.end()
   })
 
@@ -149,6 +170,10 @@ tap.test("Integration", async function (ot) {
     t.equal(response.statusCode, 200, "200 returned")
     t.equal(response.body.length, 1, "One release returned")
     t.equal(response.body[0].preview, false, "returned release is promoted")
+    var audit = await auditHistory()
+    t.equal(audit[0].operation, 'promote', 'audit operation is promote')
+    t.equal(audit[0].type, 'release', 'audit type is release')
+    t.equal(audit[0].data.notes, 'foo the bar', 'notes modified')
     t.end()
   })
 
@@ -224,6 +249,9 @@ tap.test("Integration", async function (ot) {
     response = await pr(options)
     t.equal(response.statusCode, 200, "200 returned")
     t.ok(response.body.winx64 == null, 'winx64 version removed')
+    var audit = await auditHistory()
+    t.equal(audit[0].operation, 'revert', 'audit operation is revert')
+    t.equal(audit[0].type, 'release', 'audit type is release')
     t.end()
   })
 
@@ -282,6 +310,10 @@ tap.test("Integration", async function (ot) {
       response = await pr(options)
       t.equal(response.statusCode, 200, 'pause channel returned 200')
       t.equal(response.body.status, 'paused', 'pause channel ok')
+      var audit = await auditHistory()
+      t.equal(audit[0].operation, 'pause', 'audit operation is pause')
+      t.equal(audit[0].type, 'channel_pause', 'audit type channel_pause')
+      t.equal(audit[0].data.channel, channel, 'correct channel paused')
       return response.body
     } catch (err) {
       console.log(err)
@@ -298,6 +330,10 @@ tap.test("Integration", async function (ot) {
       response = await pr(options)
       t.equal(response.statusCode, 200, 'resume channel returned 200')
       t.equal(response.body.status, 'active', 'resume channel ok')
+      var audit = await auditHistory()
+      t.equal(audit[0].operation, 'resume', 'audit operation is resume')
+      t.equal(audit[0].type, 'channel_pause', 'audit type channel_pause')
+      t.equal(audit[0].data.channel, channel, 'correct channel resumed')
       return response.body
     } catch (err) {
       console.log(err)
@@ -476,6 +512,11 @@ tap.test("Integration", async function (ot) {
     options.method = 'PUT'
     response = await pr(options)
     t.same(response.body, { channel: 'dev', platform: 'osx' }, 'expected response')
+    var audit = await auditHistory()
+    t.equal(audit[0].operation, 'pause', 'audit operation is pause')
+    t.equal(audit[0].type, 'channel_platform_pause', 'audit type channel_platform_pause')
+    t.equal(audit[0].data.channel, 'dev', 'correct channel paused')
+    t.equal(audit[0].data.platform, 'osx', 'correct platform paused')
 
     options = common.standardOptions()
     options.url = common.standardURL() + '/api/1/control/releases/channel_platform_pauses'
@@ -498,6 +539,11 @@ tap.test("Integration", async function (ot) {
     options.method = 'PUT'
     response = await pr(options)
     t.same(response.body, {}, 'expected response')
+    var audit = await auditHistory()
+    t.equal(audit[0].operation, 'resume', 'audit operation is resume')
+    t.equal(audit[0].type, 'channel_platform_pause', 'audit type channel_platform_pause')
+    t.equal(audit[0].data.channel, 'dev', 'correct channel paused')
+    t.equal(audit[0].data.platform, 'osx', 'correct platform paused')
 
     options = common.standardOptions()
     options.url = common.standardURL() + '/api/1/control/releases/channel_platform_pauses'
@@ -528,6 +574,11 @@ tap.test("Integration", async function (ot) {
 
     var response = await pr(options)
     t.equal(response.body, 'ok', 'revert returned ok')
+    var audit = await auditHistory()
+    t.equal(audit[0].operation, 'revert', 'audit operation is revert')
+    t.equal(audit[0].type, 'release', 'audit type releases')
+    t.equal(audit[1].operation, 'revert', 'audit operation is revert')
+    t.equal(audit[1].type, 'release', 'audit type releases')
 
     await refresh()
     response = await prg(common.standardURL() + '/1/releases/nightly/0.4.0/osx')

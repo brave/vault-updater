@@ -206,6 +206,21 @@ export function setup(runtime) {
     }
   }
 
+  let get_audit_history = {
+    method: 'GET',
+    path: '/api/1/control/releases/audit_history',
+    config: {
+      handler: async function (request, reply) {
+        var n = request.query.n || 20
+        var history = await releasesAccess.auditHistory(n)
+        _.each(history, (item) => {
+          if (item.data) item.data = JSON.parse(item.data)
+        })
+        reply(history)
+      }
+    }
+  }
+
   let get_live_preview_by_channel_platform = {
     method: 'GET',
     path: '/api/1/releases/live_preview',
@@ -372,5 +387,5 @@ export function setup(runtime) {
     }
   }
 
-  return [put_pause, put_resume, get_status, put_refresh, post_releases, put_promote, put_promote_all_platforms, get_all, get, get_latest_for_channel, put_extension, delete_release, delete_release_all_platforms, put_pause_channel, put_resume_channel, get_live_preview_by_channel_platform, put_resume_channel_platform, put_pause_channel_platform, get_channel_platform_pauses, get_releases_history_for_channel_platform]
+  return [put_pause, put_resume, get_status, put_refresh, post_releases, put_promote, put_promote_all_platforms, get_all, get, get_latest_for_channel, put_extension, delete_release, delete_release_all_platforms, put_pause_channel, put_resume_channel, get_live_preview_by_channel_platform, put_resume_channel_platform, put_pause_channel_platform, get_channel_platform_pauses, get_releases_history_for_channel_platform, get_audit_history]
 }
