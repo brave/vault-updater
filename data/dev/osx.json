@@ -3,8 +3,8 @@
     "version": "0.18.29",
     "name": "Brave 0.18.29",
     "pub_date": "2017-09-06T16:41:44.507Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.18.29\ndev",
-    "preview": true,
+    "notes": "Fixed Netflix by adding VMP support, optimized page loads and fixed tab behaviour (detaching, moving and dead tabs). More details: https://github.com/brave/browser-laptop/releases/tag/v0.18.29dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.18.29/osx/Brave-0.18.29.zip"
   },
   {
