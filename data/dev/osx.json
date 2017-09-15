@@ -3,8 +3,8 @@
     "version": "0.18.36",
     "name": "Brave 0.18.36",
     "pub_date": "2017-09-14T22:13:07.021Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.18.36\ndev",
-    "preview": true,
+    "notes": "Added MacBook trackpad pinch to zoom gesture support. Upgraded to Chromium 61. More details: https://github.com/brave/browser-laptop/releases/tag/v0.18.36dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.18.36/osx/Brave-0.18.36.zip"
   },
   {
