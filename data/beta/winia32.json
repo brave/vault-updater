@@ -7,48 +7,6 @@
     "preview": false
   },
   {
-    "version": "0.19.42",
-    "name": "Brave 0.19.42",
-    "pub_date": "2017-10-11T16:15:42.809Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.42\nbeta",
-    "preview": false
-  },
-  {
-    "version": "0.19.41",
-    "name": "Brave 0.19.41",
-    "pub_date": "2017-10-11T14:12:32.348Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.41\nbeta",
-    "preview": false
-  },
-  {
-    "version": "0.19.39",
-    "name": "Brave 0.19.39",
-    "pub_date": "2017-10-11T05:32:40.030Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.39\nbeta",
-    "preview": false
-  },
-  {
-    "version": "0.19.38",
-    "name": "Brave 0.19.38",
-    "pub_date": "2017-10-10T23:06:13.844Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.38\nbeta",
-    "preview": false
-  },
-  {
-    "version": "0.19.37",
-    "name": "Brave 0.19.37",
-    "pub_date": "2017-10-10T07:31:09.452Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.37\nbeta",
-    "preview": false
-  },
-  {
-    "version": "0.19.36",
-    "name": "Brave 0.19.36",
-    "pub_date": "2017-10-09T08:55:28.989Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.36\nbeta",
-    "preview": false
-  },
-  {
     "version": "0.19.34",
     "name": "Brave 0.19.34",
     "pub_date": "2017-10-07T03:03:20.397Z",
