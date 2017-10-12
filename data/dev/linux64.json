@@ -3,8 +3,8 @@
     "version": "0.19.48",
     "name": "Brave 0.19.48",
     "pub_date": "2017-10-12T16:05:13.719Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.48\ndev",
-    "preview": true,
+    "notes": "Launched Brave Payments with BAT (Mercury), import passwords, several optimization improvements, and Bitwarden password manager. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.48dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.19.48/linux64/Brave.tar.bz2"
   },
   {
