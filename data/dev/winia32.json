@@ -3,8 +3,8 @@
     "version": "0.19.53",
     "name": "Brave 0.19.53",
     "pub_date": "2017-10-16T21:27:57.749Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.53\ndev",
-    "preview": true
+    "notes": "Added support for MetaMask, notification when detecting a Dapp, several BAT (Mercury) fixes. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.53dev",
+    "preview": false
   },
   {
     "version": "0.19.52",
