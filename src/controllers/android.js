@@ -15,7 +15,9 @@ let buildUsage = (request) => {
       platform: 'android',
       version: request.query.version || 'unknown',
       first: request.query.first === 'true',
-      channel: request.query.channel || 'unknown'
+      channel: request.query.channel || 'unknown',
+      woi: request.query.woi || '2016-01-04',
+      ref: request.query.ref || 'none'
     }
   } else {
     return null
@@ -28,18 +30,11 @@ exports.setup = (runtime) => {
     path: '/1/usage/android',
     config: {
       handler: function (request, reply) {
-        if (process.env.IPLIMIT) {
-          var ipAddress = common.ipAddressFrom(request)
-          if (!ipLimit.shouldRecord(ipAddress)) {
-            console.log('*** cache hit, not recording')
-            return reply({ ts: (new Date()).getTime(), status: 'ok' })
-          }
-        }
         var usage = buildUsage(request)
         runtime.mongo.models.insertAndroidUsage(usage, (err, results) => {
           if (err) {
             console.log(err.toString())
-            reply({ ts: (new Date()).getTime(), status: 'error' }).code(500)
+            reply({ ts: (new Date()).getTime(), status: 'error', message: err }).code(500)
           } else {
             reply({ ts: (new Date()).getTime(), status: 'ok' })
           }

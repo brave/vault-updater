@@ -15,7 +15,9 @@ let buildUsage = (request) => {
       platform: 'ios',
       version: request.query.version || 'unknown',
       first: request.query.first === 'true',
-      channel: request.query.channel || 'unknown'
+      channel: request.query.channel || 'unknown',
+      woi: request.query.woi || '2016-01-04',
+      ref: request.query.ref || 'none'
     }
   } else {
     return null
@@ -28,11 +30,6 @@ exports.setup = (runtime) => {
     path: '/1/usage/ios',
     config: {
       handler: function (request, reply) {
-        var ipAddress = common.ipAddressFrom(request)
-        if (!ipLimit.shouldRecord(ipAddress)) {
-          console.log('*** cache hit, not recording')
-          return reply({ ts: (new Date()).getTime(), status: 'ok' })
-        }
         var usage = buildUsage(request)
         runtime.mongo.models.insertIOSUsage(usage, (err, results) => {
           if (err) {

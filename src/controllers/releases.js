@@ -50,7 +50,9 @@ let buildUsage = (request) => {
       platform: request.params.platform || 'unknown',
       version: request.params.version || 'unknown',
       first: request.query.first === 'true',
-      channel: request.params.channel || 'unknown'
+      channel: request.params.channel || 'unknown',
+      woi: request.query.woi || '2016-01-04',
+      ref: request.query.ref || 'none'
     }
   } else {
     return null
