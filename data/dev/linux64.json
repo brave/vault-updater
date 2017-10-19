@@ -1,5 +1,21 @@
 [
   {
+    "version": "0.19.53",
+    "name": "Brave 0.19.53",
+    "pub_date": "2017-10-16T21:27:57.749Z",
+    "notes": "Added support for MetaMask, notification when detecting a Dapp, several BAT (Mercury) fixes. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.53dev",
+    "preview": false,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.19.53/linux64/Brave.tar.bz2"
+  },
+  {
+    "version": "0.19.52",
+    "name": "Brave 0.19.52",
+    "pub_date": "2017-10-16T17:03:49.023Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.52\ndev",
+    "preview": true,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.19.52/linux64/Brave.tar.bz2"
+  },
+  {
     "version": "0.19.49",
     "name": "Brave 0.19.49",
     "pub_date": "2017-10-13T06:50:28.314Z",
