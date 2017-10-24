@@ -66,14 +66,13 @@ let buildReleaseNotes = (potentials) => {
 
 // This function checks for the following conditions:
 //
-//  * Browser is winx64 or winia32
 //  * The currently installed release is a preview build
 //  * Assumes that accept_preview=false checked already
 //
-var specialWindowsPreviewUpgrade = (releases, version, channel, platform) => {
-  if (platform.match(/^win/)) {
-    var release = releases[channel + ':' + platform].find((rel) => { return rel.version === version })
-    return release && release.preview
+var specialPreviewUpgrade = (releases, version, channel, platform) => {
+  var release = releases[channel + ':' + platform].find((rel) => { return rel.version === version })
+  if (release) {
+    return release.preview
   }
   return false
 }
@@ -87,7 +86,7 @@ var potentialReleases = (releases, channel, platform, version, accept_preview) =
         return semver.gt(rel.version, version)
       } else {
         return (semver.gt(rel.version, version) && !rel.preview) ||
-               (semver.gt(rel.version, version) && specialWindowsPreviewUpgrade(releases, version, channel, platform))
+               (semver.gt(rel.version, version) && specialPreviewUpgrade(releases, version, channel, platform))
       }
     }
   )
