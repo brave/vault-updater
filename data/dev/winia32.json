@@ -3,8 +3,8 @@
     "version": "0.19.80",
     "name": "Brave 0.19.80",
     "pub_date": "2017-11-02T04:44:58.890Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.80\ndev",
-    "preview": true
+    "notes": "Added multi language spell check. Fixed several BAT Payments issues. Upgraded to Chromium 62.0.3202.75. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.80dev",
+    "preview": false
   },
   {
     "version": "0.19.75",
