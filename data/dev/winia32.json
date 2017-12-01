@@ -3,8 +3,8 @@
     "version": "0.19.105",
     "name": "Brave 0.19.105",
     "pub_date": "2017-12-01T01:47:17.876Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.105\ndev",
-    "preview": true
+    "notes": "Fixed several isuses when opening and closing tabs, payment improvements. Optimized fingerprint tracking. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.105dev",
+    "preview": false
   },
   {
     "version": "0.19.104",
