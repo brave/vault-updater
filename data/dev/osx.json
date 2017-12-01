@@ -3,7 +3,7 @@
     "version": "0.19.105",
     "name": "Brave 0.19.105",
     "pub_date": "2017-12-01T01:47:17.876Z",
-    "notes": "Fixed several isuses when opening and closing tabs, payment improvements. Optimized fingerprint tracking. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.105dev",
+    "notes": "Fixed several issues when opening and closing tabs, payment improvements. Optimized fingerprint tracking. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.105dev",
     "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.19.105/osx/Brave-0.19.105.zip"
   },
