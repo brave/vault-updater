@@ -3,8 +3,8 @@
     "version": "0.19.116",
     "name": "Brave 0.19.116",
     "pub_date": "2017-12-14T14:58:00.554Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.116\ndev",
-    "preview": true
+    "notes": "Added the ability to use DuckDuckGo as a separate default search engine for private tabs. Fixed several Payments issues. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.116dev",
+    "preview": false
   },
   {
     "version": "0.19.115",
