@@ -3,8 +3,8 @@
     "version": "0.19.121",
     "name": "Brave 0.19.121",
     "pub_date": "2017-12-19T18:30:46.901Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.121\ndev",
-    "preview": true,
+    "notes": "Upgraded to Chromium 63.0.3239.108. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.121dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.19.121/linux64/Brave.tar.bz2"
   },
   {
