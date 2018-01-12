@@ -3,8 +3,8 @@
     "version": "0.19.134",
     "name": "Brave 0.19.134",
     "pub_date": "2018-01-12T21:13:13.267Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.134\ndev",
-    "preview": true,
+    "notes": "Fixed backup key corruption when restoring wallets, muted media being autoplayed and several password management improvements. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.134dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.19.134/linux64/Brave.tar.bz2"
   },
   {
