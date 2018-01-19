@@ -1,3 +1,5 @@
+const r = require('request')
+
 exports.root = {
   method: 'GET',
   path: '/',
@@ -55,4 +57,23 @@ exports.ipAddressFrom = function (request) {
   if (request.headers['X-Forwarded-For']) return request.headers['X-Forwarded-For'].split(',')[0]
   if (request.info.remoteAddress) return request.info.remoteAddress
   return
+}
+
+exports.userAgentFrom = function (request) {
+  return request.headers['user-agent']
+}
+
+// promisified request
+exports.prequest = function (url) {
+  return new Promise((resolve, reject) => {
+    r(url, (err, results, body) => {
+      if (err) return reject(err)
+      else return resolve(body)
+    })
+  })
+}
+
+exports.nope = function (msg) {
+  console.log(msg)
+  process.exit(1)
 }
