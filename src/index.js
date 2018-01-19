@@ -16,6 +16,7 @@ let Inert = require('inert')
 let assert = require('assert')
 let setGlobalHeader = require('hapi-set-header')
 let _ = require('underscore')
+let h2o2 = require('h2o2')
 
 let profile = process.env.NODE_ENV || 'development'
 let config = require('../config/config.' + profile + '.js')
@@ -51,6 +52,9 @@ mq.setup((sender) => {
     let androidRoutes = require('./controllers/android').setup(runtime)
     let iosRoutes = require('./controllers/ios').setup(runtime)
 
+    // promotional proxy
+    let promoProxy = require('./controllers/promo').setup(runtime)
+
     let server = null
 
     // Output request headers to aid in osx crash storage issue
@@ -69,6 +73,11 @@ mq.setup((sender) => {
       host: config.host,
       port: config.port
     })
+
+    server.register({ register: h2o2 }, function (err) {
+      console.log("h2o2 registered")
+    })
+    server.register(require('blipp'), function () {})
 
     // Output request headers to aid in osx crash storage issue
     if (process.env.LOG_HEADERS) {
@@ -90,7 +99,7 @@ mq.setup((sender) => {
     server.route(
       [
         common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes)
+      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, promoProxy)
     )
 
     server.start((err) => {
