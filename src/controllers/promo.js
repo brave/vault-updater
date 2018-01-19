@@ -9,6 +9,7 @@ const SERVICES_PROTOCOL = process.env.SERVICES_PROTOCOL || 'http'
 const Boom = require('boom')
 const Joi = require('joi')
 const uap = require('user-agent-parser')
+const semver = require('semver')
 
 const common = require('../common')
 
@@ -19,15 +20,23 @@ if (!process.env.S3_DOWNLOAD_KEY || !process.env.S3_DOWNLOAD_SECRET) {
   throw new Error('S3_DOWNLOAD_KEY and S3_DOWNLOAD_SECRET should be set to the S3 account credentials for storing crash reports')
 }
 
-const OSX_DOWNLOAD_KEY = process.env.OSX_DOWNLOAD_KEY || common.nope('OSX_DOWNLOAD_KEY required')
-const WINX64_DOWNLOAD_KEY = process.env.WINX64_DOWNLOAD_KEY || common.nope('WINX64_DOWNLOAD_KEY required')
-const WINIA32_DOWNLOAD_KEY = process.env.WINIA32_DOWNLOAD_KEY || common.nope('WINIA32_DOWNLOAD_KEY required')
+var DOWNLOAD_TEMPLATES = {
+  osx: 'multi-channel/releases/dev/VERSION/osx/Brave-VERSION.dmg',
+  winx64: 'multi-channel/releases/dev/VERSION/winx64/BraveSetup-x64.exe',
+  winia32: 'multi-channel/releases/dev/VERSION/winia32/BraveSetup-ia32.exe'
+}
 
 const parseUserAgent = (ua) => {
   return uap(ua)
 }
 
-exports.setup = (runtime) => {
+exports.setup = (runtime, releases) => {
+
+  let latestVersionNumber = releases['dev:winx64']
+    .filter((rel) => { return !rel.preview })
+    .sort((a, b) => { semver.compare(a.version, b.version) })[0].version
+  console.log("Serving promo download for version: " + latestVersionNumber)
+
   // method, local uri, remote uri, description
   const proxyForwards = [
     ['PUT', '/promo/initialize/nonua', '/api/1/promo/initialize/nonua', 'Called on first connection with browser'],
@@ -137,12 +146,12 @@ exports.setup = (runtime) => {
           let ua = parseUserAgent(request.headers['user-agent'])
           let k
           if (ua.os.name.match(/^Mac/)) {
-            k = process.env.OSX_DOWNLOAD_KEY
+            k = DOWNLOAD_TEMPLATES.osx.replace(/VERSION/g, latestVersionNumber)
           } else {
             if (ua.cpu.architecture.match(/64/)) {
-              k = process.env.WINX64_DOWNLOAD_KEY
+              k = DOWNLOAD_TEMPLATES.winx64.replace(/VERSION/g, latestVersionNumber)
             } else {
-              k = process.env.WINIA32_DOWNLOAD_KEY
+              k = DOWNLOAD_TEMPLATES.winia32.replace(/VERSION/g, latestVersionNumber)
             }
           }
           return Promise.resolve(k)

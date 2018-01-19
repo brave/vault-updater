@@ -53,7 +53,7 @@ mq.setup((sender) => {
     let iosRoutes = require('./controllers/ios').setup(runtime)
 
     // promotional proxy
-    let promoProxy = require('./controllers/promo').setup(runtime)
+    let promoProxy = require('./controllers/promo').setup(runtime, releases)
 
     let server = null
 
@@ -74,9 +74,7 @@ mq.setup((sender) => {
       port: config.port
     })
 
-    server.register({ register: h2o2 }, function (err) {
-      console.log("h2o2 registered")
-    })
+    server.register({ register: h2o2 }, function (err) {})
     server.register(require('blipp'), function () {})
     server.register(require('hapi-serve-s3'), function () {})
 
