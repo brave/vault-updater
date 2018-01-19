@@ -6,6 +6,27 @@ const SERVICES_HOST = process.env.SERVICES_HOST || 'localhost'
 const SERVICES_PORT = process.env.SERVICES_PORT || 8194
 const SERVICES_PROTOCOL = process.env.SERVICES_PROTOCOL || 'http'
 
+const Boom = require('boom')
+const Joi = require('joi')
+const uap = require('user-agent-parser')
+
+const common = require('../common')
+
+const S3_DOWNLOAD_BUCKET = process.env.S3_DOWNLOAD_BUCKET || 'brave-download-staging'
+const S3_DOWNLOAD_REGION = process.env.S3_DOWNLOAD_REGION || 'us-east-1'
+
+if (!process.env.S3_DOWNLOAD_KEY || !process.env.S3_DOWNLOAD_SECRET) {
+  throw new Error('S3_DOWNLOAD_KEY and S3_DOWNLOAD_SECRET should be set to the S3 account credentials for storing crash reports')
+}
+
+const OSX_DOWNLOAD_KEY = process.env.OSX_DOWNLOAD_KEY || common.nope('OSX_DOWNLOAD_KEY required')
+const WINX64_DOWNLOAD_KEY = process.env.WINX64_DOWNLOAD_KEY || common.nope('WINX64_DOWNLOAD_KEY required')
+const WINIA32_DOWNLOAD_KEY = process.env.WINIA32_DOWNLOAD_KEY || common.nope('WINIA32_DOWNLOAD_KEY required')
+
+const parseUserAgent = (ua) => {
+  return uap(ua)
+}
+
 exports.setup = (runtime) => {
   // method, local uri, remote uri, description
   const proxyForwards = [
@@ -30,5 +51,134 @@ exports.setup = (runtime) => {
     }
   })
 
-  return proxyRoutes
+  const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.brave.browser&hl=en'
+
+  const android_download_get = {
+    method: 'GET',
+    path: '/download/android/{referral_code}',
+    config: {
+      description: "Redirect download to Play store",
+      tags: ['api'],
+      handler: async function (request, reply) {
+        reply().redirect(PLAY_URL)
+      },
+      validate: {
+        params: {
+          referral_code: Joi.string().required()
+        }
+      }
+    }
+  }
+
+  const APP_STORE_URL = 'https://itunes.apple.com/us/app/brave-browser-fast-adblocker/id1052879175?mt=8'
+
+  const ios_download_get = {
+    method: 'GET',
+    path: '/download/ios/{referral_code}',
+    config: {
+      description: "Redirect download to App Store",
+      tags: ['api'],
+      handler: async function (request, reply) {
+        try {
+        const ip_address = common.ipAddressFrom(request)
+        const user_agent = common.userAgentFrom(request) || 'unknown'
+        const body = {
+          ip_address: ip_address,
+          user_agent: user_agent,
+          referral_code: request.params.referral_code,
+          platform: "ios"
+        }
+        let results = await common.prequest({
+          method: 'POST',
+          uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/download`,
+          json: true,
+          body: body
+        })
+        reply().redirect(APP_STORE_URL)
+        } catch (e) {
+          console.log(e.toString())
+          reply(new Boom(e.toString()))
+        }
+      },
+      validate: {
+        params: {
+          referral_code: Joi.string().required()
+        }
+      }
+    }
+  }
+
+  const streaming_download = {
+    method: 'GET',
+    path: '/download/desktop/{referral_code}',
+    config: {
+      description: "Download a promo renamed desktop binary for platform",
+    },
+    handler: {
+      s3: {
+        bucket: S3_DOWNLOAD_BUCKET,
+        mode: 'attachment',
+        accessKeyId: process.env.S3_DOWNLOAD_KEY,
+        secretAccessKey: process.env.S3_DOWNLOAD_SECRET,
+        region: S3_DOWNLOAD_REGION,
+        sslEnabled: true,
+        filename: function(request) {
+          let ua = parseUserAgent(request.headers['user-agent'])
+          let filename
+          if (ua.os.name.match(/^Mac/)) {
+            filename = `Brave-${request.params.referral_code}.pkg`
+          } else {
+            filename = `BraveSetup-${request.params.referral_code}.exe`
+          }
+          return Promise.resolve(filename)
+        },
+        key: function(request) {
+          let ua = parseUserAgent(request.headers['user-agent'])
+          let k
+          if (ua.os.name.match(/^Mac/)) {
+            k = process.env.OSX_DOWNLOAD_KEY
+          } else {
+            if (ua.cpu.architecture.match(/64/)) {
+              k = process.env.WINX64_DOWNLOAD_KEY
+            } else {
+              k = process.env.WINIA32_DOWNLOAD_KEY
+            }
+          }
+          return Promise.resolve(k)
+        }
+      }
+    }
+  }
+
+  const redirect_get = {
+    method: 'GET',
+    path: '/download/{referral_code}',
+    config: {
+      tags: ['api'],
+      description: "Redirect to platform specific download handler",
+      handler: async function (request, reply) {
+        let referral_code = request.params.referral_code
+        let ua = parseUserAgent(common.userAgentFrom(request))
+        if (ua.os.name.match(/iOS/)) {
+          return reply().redirect(`/download/ios/${referral_code}`)
+        }
+        if (ua.os.name.match(/Android/)) {
+          return reply().redirect(`/download/android/${referral_code}`)
+        }
+        return reply().redirect(`/download/desktop/${referral_code}`)
+      },
+      validate: {
+        params: {
+          referral_code: Joi.string().required()
+        }
+      }
+    }
+  }
+
+  return proxyRoutes.concat([
+    android_download_get,
+    streaming_download,
+    ios_download_get,
+    redirect_get
+  ])
 }

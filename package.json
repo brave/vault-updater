@@ -27,6 +27,7 @@
     "glob": "^6.0.1",
     "h2o2": "^6.0.0",
     "hapi": "^11.1.2",
+    "hapi-serve-s3": "^2.0.1",
     "hapi-set-header": "^1.0.0",
     "inert": "^3.2.0",
     "joi": "^7.0.1",
@@ -38,6 +39,7 @@
     "rewire": "^2.5.2",
     "semver": "^5.3.0",
     "underscore": "^1.8.3",
+    "user-agent-parser": "^0.6.0",
     "xmldoc": "^0.5.1",
     "yargs": "^3.31.0"
   },
