@@ -94,6 +94,7 @@ exports.setup = (runtime) => {
           json: true,
           body: body
         })
+          console.log(results)
         reply().redirect(APP_STORE_URL)
         } catch (e) {
           console.log(e.toString())
