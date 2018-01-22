@@ -60,7 +60,7 @@ exports.setup = (runtime, releases) => {
     }
   })
 
-  const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.brave.browser&referrer=utm_source=other&utm_medium=urp&utm_campaign=REFERRAL_CODE'
+  const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.brave.browser&referrer=urpc%3DREFERRAL_CODE'
 
   const android_download_get = {
     method: 'GET',
