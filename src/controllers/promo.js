@@ -60,7 +60,7 @@ exports.setup = (runtime, releases) => {
     }
   })
 
-  const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.brave.browser&hl=en'
+  const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.brave.browser&referrer=utm_source=other&utm_medium=urp&utm_campaign=REFERRAL_CODE'
 
   const android_download_get = {
     method: 'GET',
@@ -69,7 +69,8 @@ exports.setup = (runtime, releases) => {
       description: "Redirect download to Play store",
       tags: ['api'],
       handler: async function (request, reply) {
-        reply().redirect(PLAY_URL)
+        const url = PLAY_URL.replace('REFERRAL_CODE', request.params.referral_code)
+        reply().redirect(url)
       },
       validate: {
         params: {
