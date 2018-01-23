@@ -41,7 +41,8 @@ exports.setup = (runtime, releases) => {
   const proxyForwards = [
     ['PUT', '/promo/initialize/nonua', '/api/1/promo/initialize/nonua', 'Called on first connection with browser'],
     ['PUT', '/promo/initialize/ua', '/api/1/promo/initialize/ua', 'Called on first connection with browser containing IP and UA'],
-    ['PUT', '/promo/activity', '/api/1/promo/activity', 'Called on periodic check-in and finalization from browser']
+    ['PUT', '/promo/activity', '/api/1/promo/activity', 'Called on periodic check-in and finalization from browser'],
+    ['GET', '/promo/publisher/{referral_code}', '/api/1/promo/publishers/{referral_code}', 'Retrieve details about publisher referral']
   ]
 
   const proxyRoutes = proxyForwards.map((definition) => {
@@ -91,10 +92,8 @@ exports.setup = (runtime, releases) => {
       handler: async function (request, reply) {
         try {
         const ip_address = common.ipAddressFrom(request)
-        const user_agent = common.userAgentFrom(request) || 'unknown'
         const body = {
           ip_address: ip_address,
-          user_agent: user_agent,
           referral_code: request.params.referral_code,
           platform: "ios"
         }
