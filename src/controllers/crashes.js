@@ -25,6 +25,7 @@ exports.setup = (runtime) => {
         const payload = request.payload
         payload.ts = (new Date()).getTime()
         payload.crash_id = crash_id
+        delete payload.guid
         runtime.mongo.models.insertCrash(payload, (err, results) => {
           console.log(`crash recorded for version ${payload.ver}`)
         })
