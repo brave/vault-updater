@@ -3,7 +3,7 @@
     "version": "0.19.147",
     "name": "Brave 0.19.147",
     "pub_date": "2018-01-26T05:39:50.624Z",
-    "notes": "Fixed several issues with crash reports. Upgraded to Chromium 64.0.3282.119. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.147dev",
+    "notes": "Fixed several issues with crash reporting. Upgraded to Chromium 64.0.3282.119. More details: https://github.com/brave/browser-laptop/releases/tag/v0.19.147dev",
     "preview": false
   },
   {
