@@ -95,6 +95,7 @@ exports.setup = (runtime, releases) => {
             ip_address: ip_address,
             api_key: request.payload.api_key
           }
+          console.log(ip_address)
           let results = await common.prequest({
             method: 'PUT',
             uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/initialize/ua`,
@@ -124,6 +125,7 @@ exports.setup = (runtime, releases) => {
       handler: async function (request, reply) {
         try {
           const ip_address = common.ipAddressFrom(request)
+          console.log(ip_address)
           const body = {
             ip_address: ip_address,
             referral_code: request.params.referral_code,
