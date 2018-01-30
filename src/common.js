@@ -50,13 +50,18 @@ exports.platformData = {
   'linux': {}
 }
 
-/*
-  return ip address from the request, taking into consideration the Heroku request headers
-*/
-exports.ipAddressFrom = function (request) {
-  if (request.headers['X-Forwarded-For']) return request.headers['X-Forwarded-For'].split(',')[0]
-  if (request.info.remoteAddress) return request.info.remoteAddress
-  return
+exports.ipAddressFrom = (request) => {
+  // https://en.wikipedia.org/wiki/X-Forwarded-For    X-Forwarded-For: client, proxy1, proxy2
+  // Since it is easy to forge an X-Forwarded-For field the given information should be used with care.
+  // The last IP address is always the IP address that connects to the last proxy, which means it is the most reliable source of information.
+
+  const forwardedFor = request.headers['x-forwarded-for']
+  if (forwardedFor) {
+    const forwardedIps = forwardedFor.split(',')
+    return forwardedIps[forwardedIps.length - 1].trim() || request.info.remoteAddress
+  } else {
+    return request.info.remoteAddress
+  }
 }
 
 exports.userAgentFrom = function (request) {
