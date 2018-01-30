@@ -40,7 +40,6 @@ exports.setup = (runtime, releases) => {
   // method, local uri, remote uri, description
   const proxyForwards = [
     ['PUT', '/promo/initialize/nonua', '/api/1/promo/initialize/nonua', 'Called on first connection with browser'],
-    ['PUT', '/promo/initialize/ua', '/api/1/promo/initialize/ua', 'Called on first connection with browser containing IP and UA'],
     ['PUT', '/promo/activity', '/api/1/promo/activity', 'Called on periodic check-in and finalization from browser'],
     ['GET', '/promo/publisher/{referral_code}', '/api/1/promo/publishers/{referral_code}', 'Retrieve details about publisher referral']
   ]
@@ -83,6 +82,39 @@ exports.setup = (runtime, releases) => {
 
   const APP_STORE_URL = 'https://itunes.apple.com/us/app/brave-browser-fast-adblocker/id1052879175?mt=8'
 
+  const ios_initialize_put = {
+    method: 'PUT',
+    path: '/promo/initialize/ua',
+    config: {
+      description: "Called on first connection with browser containing IP and UA",
+      tags: ['api'],
+      handler: async (request, reply) => {
+        try {
+          const ip_address = common.ipAddressFrom(request)
+          const body = {
+            ip_address: ip_address,
+            api_key: request.payload.api_key
+          }
+          let results = await common.prequest({
+            method: 'PUT',
+            uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/initialize/ua`,
+            json: true,
+            body: body
+          })
+          reply(results)
+        } catch (e) {
+          console.log(e.toString())
+          reply(new Boom(e.toString()))
+        }
+      },
+      validate: {
+        payload: {
+          api_key: Joi.string().required()
+        }
+      }
+    }
+  }
+
   const ios_download_get = {
     method: 'GET',
     path: '/download/ios/{referral_code}',
@@ -91,20 +123,19 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         try {
-        const ip_address = common.ipAddressFrom(request)
-        const body = {
-          ip_address: ip_address,
-          referral_code: request.params.referral_code,
-          platform: "ios"
-        }
-        let results = await common.prequest({
-          method: 'POST',
-          uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/download`,
-          json: true,
-          body: body
-        })
-          console.log(results)
-        reply().redirect(APP_STORE_URL)
+          const ip_address = common.ipAddressFrom(request)
+          const body = {
+            ip_address: ip_address,
+            referral_code: request.params.referral_code,
+            platform: "ios"
+          }
+          let results = await common.prequest({
+            method: 'POST',
+            uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/download`,
+            json: true,
+            body: body
+          })
+          reply().redirect(APP_STORE_URL)
         } catch (e) {
           console.log(e.toString())
           reply(new Boom(e.toString()))
@@ -189,6 +220,7 @@ exports.setup = (runtime, releases) => {
     android_download_get,
     streaming_download,
     ios_download_get,
-    redirect_get
+    redirect_get,
+    ios_initialize_put
   ])
 }
