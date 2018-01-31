@@ -10,10 +10,10 @@ tap.test('retrieve IP address', function (t) {
   var requestMock
   requestMock = {
     headers: {
-      'X-Forwarded-For': '1.1.1.1,2.2.2.2'
+      'x-forwarded-for': '1.1.1.1,2.2.2.2'
     }
   }
-  t.ok(common.ipAddressFrom(requestMock) === '1.1.1.1', 'retrieve forwarded ip address')
+  t.ok(common.ipAddressFrom(requestMock) === '2.2.2.2', 'retrieve forwarded ip address')
   requestMock = {
     headers: {},
     info: {
