@@ -3,8 +3,8 @@
     "version": "0.20.29",
     "name": "Brave 0.20.29",
     "pub_date": "2018-01-31T02:31:50.077Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.20.29\ndev",
-    "preview": true
+    "notes": "Major performance optimizations, third-party fingerprinting protection option added and enabled as default, 2-finger swipe navigation for macOS, encrypted cookies, and hundreds of other fixes. More details: https://github.com/brave/browser-laptop/releases/tag/v0.20.29dev",
+    "preview": false
   },
   {
     "version": "0.20.27",
