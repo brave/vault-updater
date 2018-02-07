@@ -208,7 +208,10 @@ exports.setup = (runtime, releases) => {
         if (ua.os.name.match(/Android/)) {
           return reply().redirect(`/download/android/${referral_code}`)
         }
-        return reply().redirect(`/download/desktop/${referral_code}`)
+        if (ua.os.name.match(/Windows/) || ua.os.name.match(/Mac/)) {
+          return reply().redirect(`/download/desktop/${referral_code}`)
+        }
+        return reply().redirect(`/latest/linux64`)
       },
       validate: {
         params: {
