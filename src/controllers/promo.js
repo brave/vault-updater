@@ -32,8 +32,12 @@ const parseUserAgent = (ua) => {
 
 exports.setup = (runtime, releases) => {
 
+  const previewFilter = process.env.TESTING ?
+    function (rel) { return true } :
+    function (rel) { return !rel.preview }
+
   let latestVersionNumber = releases['dev:winx64']
-    .filter((rel) => { return !rel.preview })
+    .filter(previewFilter)
     .sort((a, b) => { semver.compare(a.version, b.version) })[0].version
   console.log("Serving promo download for version: " + latestVersionNumber)
 
