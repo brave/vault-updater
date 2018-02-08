@@ -26,6 +26,14 @@ var DOWNLOAD_TEMPLATES = {
   winia32: 'multi-channel/releases/dev/VERSION/winia32/BraveSetup-ia32.exe'
 }
 
+let AWS = require('aws-sdk')
+AWS.config.update({
+  accessKeyId: process.env.S3_DOWNLOAD_KEY,
+  secretAccessKey: process.env.S3_DOWNLOAD_SECRET
+})
+AWS.config.region = S3_DOWNLOAD_REGION
+let s3 = new AWS.S3()
+
 const parseUserAgent = (ua) => {
   return uap(ua)
 }
@@ -153,45 +161,33 @@ exports.setup = (runtime, releases) => {
     }
   }
 
-  const streaming_download = {
+  const redirect_download = {
     method: 'GET',
     path: '/download/desktop/{referral_code}',
     config: {
-      description: "Download a promo renamed desktop binary for platform",
+      description: "Download a promo renamed desktop binary for a platform",
     },
-    handler: {
-      s3: {
-        bucket: S3_DOWNLOAD_BUCKET,
-        mode: 'attachment',
-        accessKeyId: process.env.S3_DOWNLOAD_KEY,
-        secretAccessKey: process.env.S3_DOWNLOAD_SECRET,
-        region: S3_DOWNLOAD_REGION,
-        sslEnabled: true,
-        filename: function(request) {
-          let ua = parseUserAgent(request.headers['user-agent'])
-          let filename
-          if (ua.os.name.match(/^Mac/)) {
-            filename = `Brave-${request.params.referral_code}.pkg`
-          } else {
-            filename = `BraveSetup-${request.params.referral_code}.exe`
-          }
-          return Promise.resolve(filename)
-        },
-        key: function(request) {
-          let ua = parseUserAgent(request.headers['user-agent'])
-          let k
-          if (ua.os.name.match(/^Mac/)) {
-            k = DOWNLOAD_TEMPLATES.osx.replace(/VERSION/g, latestVersionNumber)
-          } else {
-            if (ua.cpu.architecture.match(/64/)) {
-              k = DOWNLOAD_TEMPLATES.winx64.replace(/VERSION/g, latestVersionNumber)
-            } else {
-              k = DOWNLOAD_TEMPLATES.winia32.replace(/VERSION/g, latestVersionNumber)
-            }
-          }
-          return Promise.resolve(k)
+    handler: async function (request, reply) {
+      let ua = parseUserAgent(request.headers['user-agent'])
+      let filename, k
+      if (ua.os.name.match(/^Mac/)) {
+        filename = `Brave-${request.params.referral_code}.pkg`
+        k = DOWNLOAD_TEMPLATES.osx.replace(/VERSION/g, latestVersionNumber)
+      } else {
+        filename = `BraveSetup-${request.params.referral_code}.exe`
+        if (ua.cpu.architecture.match(/64/)) {
+          k = DOWNLOAD_TEMPLATES.winx64.replace(/VERSION/g, latestVersionNumber)
+        } else {
+          k = DOWNLOAD_TEMPLATES.winia32.replace(/VERSION/g, latestVersionNumber)
         }
       }
+      const url = s3.getSignedUrl('getObject', {
+        Bucket: S3_DOWNLOAD_BUCKET,
+        Key: 'multi-channel/releases/dev/0.20.33/osx/Brave-0.20.33.pkg',
+        Expires: 10,
+        ResponseContentDisposition: 'attachment; filename="' + filename + '"'
+      })
+      reply().redirect(url)
     }
   }
 
@@ -225,7 +221,7 @@ exports.setup = (runtime, releases) => {
 
   return proxyRoutes.concat([
     android_download_get,
-    streaming_download,
+    redirect_download,
     ios_download_get,
     redirect_get,
     ios_initialize_put
