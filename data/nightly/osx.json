@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "version": "0.22.2",
+    "name": "Brave 0.22.2",
+    "pub_date": "2018-02-08T05:37:37.636Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.2\nnightly",
+    "preview": false,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/nightly/0.22.2/osx/Brave-Nightly-0.22.2.zip"
+  }
+]
