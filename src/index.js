@@ -53,7 +53,11 @@ mq.setup((sender) => {
     let iosRoutes = require('./controllers/ios').setup(runtime)
 
     // promotional proxy
-    let promoProxy = require('./controllers/promo').setup(runtime, releases)
+    let promoProxy = []
+    if (process.env.FEATURE_REFERRAL_PROMO) {
+      console.log("Configuring promo proxy [FEATURE_REFERRAL_PROMO]")
+      promoProxy = require('./controllers/promo').setup(runtime, releases)
+    }
 
     let server = null
 
