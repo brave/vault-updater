@@ -174,11 +174,12 @@ exports.setup = (runtime, releases) => {
         filename = `Brave-${request.params.referral_code}.pkg`
         k = DOWNLOAD_TEMPLATES.osx.replace(/VERSION/g, latestVersionNumber)
       } else {
-        filename = `BraveSetup-${request.params.referral_code}.exe`
         if (ua.cpu.architecture.match(/64/)) {
           k = DOWNLOAD_TEMPLATES.winx64.replace(/VERSION/g, latestVersionNumber)
+          filename = `BraveSetup-x64-${request.params.referral_code}.exe`
         } else {
           k = DOWNLOAD_TEMPLATES.winia32.replace(/VERSION/g, latestVersionNumber)
+          filename = `BraveSetup-ia32-${request.params.referral_code}.exe`
         }
       }
       const url = s3.getSignedUrl('getObject', {
