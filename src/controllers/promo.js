@@ -183,7 +183,7 @@ exports.setup = (runtime, releases) => {
       }
       const url = s3.getSignedUrl('getObject', {
         Bucket: S3_DOWNLOAD_BUCKET,
-        Key: 'multi-channel/releases/dev/0.20.33/osx/Brave-0.20.33.pkg',
+        Key: k,
         Expires: 10,
         ResponseContentDisposition: 'attachment; filename="' + filename + '"'
       })
