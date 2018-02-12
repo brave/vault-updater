@@ -1,0 +1,18 @@
+version: "2"
+services:
+  rabbitmq:
+    image: rabbitmq:alpine
+  mongodb:
+    image: mongo:3.5.10
+  vault:
+    build: .
+    links:
+      - rabbitmq
+      - mongodb
+    environment:
+      - AMQP_URL=amqp://rabbitmq
+      - S3_CRASH_KEY=fake
+      - S3_CRASH_SECRET=fake
+      - MONGOLAB_URI=mongodb://mongodb
+    ports:
+      - 8192:8192
