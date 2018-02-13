@@ -52,7 +52,7 @@ exports.setup = (runtime, releases) => {
 
   // method, local uri, remote uri, description
   const proxyForwards = [
-    ['PUT', '/promo/initialize/nonua', '/api/1/promo/initialize/nonua', 'Called on first connection with browser'],
+//    ['PUT', '/promo/initialize/nonua', '/api/1/promo/initialize/nonua', 'Called on first connection with browser'],
     ['PUT', '/promo/activity', '/api/1/promo/activity', 'Called on periodic check-in and finalization from browser'],
     ['GET', '/promo/publisher/{referral_code}', '/api/1/promo/publishers/{referral_code}', 'Retrieve details about publisher referral']
   ]
@@ -131,6 +131,43 @@ exports.setup = (runtime, releases) => {
       validate: {
         payload: {
           api_key: Joi.string().required()
+        }
+      }
+    }
+  }
+
+  const nonua_initialize_put = {
+    method: 'PUT',
+    path: '/promo/initialize/nonua',
+    config: {
+      description: "Called on first connection with browser",
+      tags: ['api'],
+      handler: async (request, reply) => {
+        try {
+          const ip_address = common.ipAddressFrom(request)
+          const body = {
+            ip_address: ip_address,
+            api_key: request.payload.api_key,
+            referral_code: request.payload.referral_code,
+            platform: request.payload.platform
+          }
+          let results = await common.prequest({
+            method: 'PUT',
+            uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/initialize/nonua`,
+            json: true,
+            body: body
+          })
+          reply(results)
+        } catch (e) {
+          console.log(e.toString())
+          reply(new Boom(e.toString()))
+        }
+      },
+      validate: {
+        payload: {
+          api_key: Joi.string().required(),
+          referral_code: Joi.string().required(),
+          platform: Joi.string().required()
         }
       }
     }
@@ -238,6 +275,7 @@ exports.setup = (runtime, releases) => {
     redirect_download,
     ios_download_get,
     redirect_get,
-    ios_initialize_put
+    ios_initialize_put,
+    nonua_initialize_put
   ])
 }
