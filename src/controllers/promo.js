@@ -8,8 +8,9 @@ const SERVICES_PROTOCOL = process.env.SERVICES_PROTOCOL || 'http'
 
 const Boom = require('boom')
 const Joi = require('joi')
-const uap = require('user-agent-parser')
+const ProxyAgent = require('proxy-agent')
 const semver = require('semver')
+const uap = require('user-agent-parser')
 
 const common = require('../common')
 
@@ -57,7 +58,7 @@ exports.setup = (runtime, releases) => {
   ]
 
   const proxyRoutes = proxyForwards.map((definition) => {
-    return {
+    let route = {
       method: definition[0],
       path: definition[1],
       config: {
@@ -70,6 +71,10 @@ exports.setup = (runtime, releases) => {
         }
       }
     }
+    if (process.env.FIXIE_URL) {
+      route.config.handler.proxy.agent = new ProxyAgent(process.env.FIXIE_URL)
+    }
+    return route
   })
 
   const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.brave.browser&referrer=urpc%3DREFERRAL_CODE'
@@ -107,12 +112,16 @@ exports.setup = (runtime, releases) => {
             ip_address: ip_address,
             api_key: request.payload.api_key
           }
-          let results = await common.prequest({
+          const request_options = {
             method: 'PUT',
             uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/initialize/ua`,
             json: true,
             body: body
-          })
+          }
+          if (process.env.FIXIE_URL) {
+            request_options.proxy = process.env.FIXIE_URL
+          }
+          let results = await common.prequest(request_options)
           reply(results)
         } catch (e) {
           console.log(e.toString())
@@ -139,14 +148,18 @@ exports.setup = (runtime, releases) => {
           const body = {
             ip_address: ip_address,
             referral_code: request.params.referral_code,
-            platform: "ios"
+            platform: 'ios'
           }
-          let results = await common.prequest({
+          const request_options = {
             method: 'POST',
             uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/download`,
             json: true,
             body: body
-          })
+          }
+          if (process.env.FIXIE_URL) {
+            request_options.proxy = process.env.FIXIE_URL
+          }
+          let results = await common.prequest(request_options)
           reply().redirect(APP_STORE_URL)
         } catch (e) {
           console.log(e.toString())
