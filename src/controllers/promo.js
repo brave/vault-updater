@@ -227,7 +227,7 @@ exports.setup = (runtime, releases) => {
         filename = `Brave-${request.params.referral_code}.pkg`
         k = DOWNLOAD_TEMPLATES.osx.replace(/VERSION/g, latestVersionNumber)
       } else {
-        if (ua.cpu.architecture.match(/64/)) {
+        if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
           k = DOWNLOAD_TEMPLATES.winx64.replace(/VERSION/g, latestVersionNumber)
           filename = `BraveSetup-x64-${request.params.referral_code}.exe`
         } else {
