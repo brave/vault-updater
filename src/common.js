@@ -58,7 +58,11 @@ exports.ipAddressFrom = (request) => {
   const forwardedFor = request.headers['x-forwarded-for']
   if (forwardedFor) {
     const forwardedIps = forwardedFor.split(',')
-    return forwardedIps[forwardedIps.length - 1].trim() || request.info.remoteAddress
+    if (process.env.BEHIND_FASTLY) {
+      return forwardedIps[forwardedIps.length - 2].trim() || request.info.remoteAddress
+    } else {
+      return forwardedIps[forwardedIps.length - 1].trim() || request.info.remoteAddress
+    }
   } else {
     return request.info.remoteAddress
   }
