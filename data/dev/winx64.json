@@ -3,8 +3,8 @@
     "version": "0.20.42",
     "name": "Brave 0.20.42",
     "pub_date": "2018-02-14T20:13:27.588Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.20.42\ndev",
-    "preview": true
+    "notes": "Fixed websites being unpinned under Brave Payments. Fixed copying and pasting images, and fixed several keyboard shortcut issues. Upgraded to Chromium 64.0.3282.140. More details: https://github.com/brave/browser-laptop/releases/tag/v0.20.42dev",
+    "preview": false
   },
   {
     "version": "0.20.41",
