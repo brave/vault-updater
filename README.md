@@ -8,40 +8,29 @@ Clone the repo
 
 Install dependencies `npm install`
 
-## Endpoints
-
-GET /1/release/{platform}/{version} - get latest release meta-data if newer than installed version
-
-GET /latest/osx - redirect to the latest OSx dmg installer
-GET /latest/winx64 - redirect to the latest Windows setup file
-
 ## Start
 
-`npm run build && npm start`
-
-## Update and verification steps
-
-`node tools/update.js --version=X.X.X --notes="Release notes" --overwrite`
-`node tools/uploader.js --source=/path/to/browser-laptop --send`
-`npm run verify`
-
-## Test
-
-`npm run build && npm test`
+`npm start`
 
 ## Environment variables
 
-Required
+```
+MONGOLAB_URI:           URL to Mongo [required]
+RABBITMQ_BIGWIG_TX_URL: URL to RabbitMQ [required]
 
-```S3_CRASH_KEY - AWS provided credentials key
-S3_CRASH_SECRET - AS provided credentials secret
-MONGOLAB_URI - Mongo format connection URI```
+FIXIE_URL:              URL to fixie [optional]
+NEW_RELIC_APP_NAME:     Name or app [optional]
+NEW_RELIC_LICENSE_KEY:  New Relic key [optional]
+PAPERTRAIL_API_TOKEN:   Papertrail API token [optional]
 
-Defaults
+S3_CRASH_KEY:           S3 crash key [required]
+S3_CRASH_SECRET:        S3 crash secret [required]
+S3_CRASH_BUCKET:        S3 crash bucket name [default]
+S3_CRASH_REGION:        us-east-1 [default]
 
-```S3_CRASH_REGION - defaults to 'us-east-1'
-S3_CRASH_BUCKET - defaults to 'crashes'```
-
-Optional
-
-```IGNORE_S3 - If set, turns off S3 crash mini dump storage```
+FEATURE_REFERRAL_PROMO: If set request will be proxied to the referral promo for the download endpoints [optional]
+BEHIND_FASTLY:          If set the IP address sent to the referral promo will be in the second in the list rather than the first [optional]
+S3_DOWNLOAD_BUCKET:     S3 download bucket name [default]
+S3_DOWNLOAD_KEY:        S3 download key [required if FEATURE_REFERRAL_PROMO set]
+S3_DOWNLOAD_SECRET:     S3 download secret [required if FEATURE_REFERRAL_PROMO set]
+```
