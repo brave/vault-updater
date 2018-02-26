@@ -3,8 +3,8 @@
     "version": "0.20.46",
     "name": "Brave 0.20.46",
     "pub_date": "2018-02-25T06:40:43.723Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.20.46\ndev",
-    "preview": true
+    "notes": "Fixed YouTube videos lagging while playing, back and refresh buttons not working after long usage and general performance improvements. More details: https://github.com/brave/browser-laptop/releases/tag/v0.20.46dev",
+    "preview": false
   },
   {
     "version": "0.20.42",
