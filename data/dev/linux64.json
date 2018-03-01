@@ -3,8 +3,8 @@
     "version": "0.21.18",
     "name": "Brave 0.21.18",
     "pub_date": "2018-02-28T19:14:00.678Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.21.18\ndev",
-    "preview": true,
+    "notes": "Added the ability to pay Twitch publishers with BAT. More details: https://github.com/brave/browser-laptop/releases/tag/v0.21.18dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.21.18/linux64/Brave.tar.bz2"
   },
   {
