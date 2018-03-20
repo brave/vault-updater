@@ -3,8 +3,8 @@
     "version": "0.21.24",
     "name": "Brave 0.21.24",
     "pub_date": "2018-03-20T08:05:29.258Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.21.24\ndev",
-    "preview": true
+    "notes": "Fixed possible error when trying to save password, bugs with ledger session corruption and other bug fixes. Upgraded to Chromium 65.0.3325.162. More details: https://github.com/brave/browser-laptop/releases/tag/v0.21.24dev",
+    "preview": false
   },
   {
     "version": "0.21.23",
