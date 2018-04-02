@@ -3,8 +3,8 @@
     "version": "0.22.13",
     "name": "Brave 0.22.13",
     "pub_date": "2018-03-30T18:31:22.656Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.13\ndev",
-    "preview": true
+    "notes": "Fix printing on Windows, scrolling issues, several Payments issues, tab discarding, dialog fixes, Google cookie mismatch when importing, several tab style issues, and IME fixes for international users. Added EV Certificate status, U2F support for various websites, and a new look for preview tabs. Optimized opening new windows. Upgraded to Chromium 65.0.3325.181. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.13dev",
+    "preview": false
   },
   {
     "version": "0.22.12",
