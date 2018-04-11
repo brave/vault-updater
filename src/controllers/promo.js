@@ -53,6 +53,7 @@ exports.setup = (runtime, releases) => {
   // method, local uri, remote uri, description
   const proxyForwards = [
     ['PUT', '/promo/activity', '/api/1/promo/activity', 'Called on periodic check-in and finalization from browser'],
+    ['GET', '/promo/custom-headers', '/api/1/promo/custom-headers', 'Array of custom headers for publishers'],
     ['GET', '/promo/publisher/{referral_code}', '/api/1/promo/publishers/{referral_code}', 'Retrieve details about publisher referral']
   ]
 
@@ -77,6 +78,12 @@ exports.setup = (runtime, releases) => {
   })
 
   const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.brave.browser&referrer=urpc%3DREFERRAL_CODE'
+  const FF_PLAY_URL = 'market://details?id=com.brave.browser&referrer=urpc%3DREFERRAL_CODE'
+
+  const isFFOnAndroid = (ua) => {
+    return ua.engine && ua.engine.name === 'Gecko' &&
+      ua.browser && ua.browser.name === 'Firefox'
+  }
 
   const android_download_get = {
     method: 'GET',
@@ -85,7 +92,15 @@ exports.setup = (runtime, releases) => {
       description: "Redirect download to Play store",
       tags: ['api'],
       handler: async function (request, reply) {
-        const url = PLAY_URL.replace('REFERRAL_CODE', request.params.referral_code)
+        let url
+        const ua = parseUserAgent(common.userAgentFrom(request))
+        if (isFFOnAndroid(ua)) {
+          // FireFox on Android
+          url = FF_PLAY_URL.replace('REFERRAL_CODE', request.params.referral_code)
+        } else {
+          // all others
+          url = PLAY_URL.replace('REFERRAL_CODE', request.params.referral_code)
+        }
         reply().redirect(url)
       },
       validate: {
