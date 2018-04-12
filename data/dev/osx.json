@@ -3,8 +3,8 @@
     "version": "0.22.17",
     "name": "Brave 0.22.17",
     "pub_date": "2018-04-11T23:50:13.029Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.17\ndev",
-    "preview": true,
+    "notes": "Improvements to the referral program. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.17dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.17/osx/Brave-0.22.17.zip"
   },
   {
