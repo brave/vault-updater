@@ -3,8 +3,8 @@
     "version": "0.22.21",
     "name": "Brave 0.22.21",
     "pub_date": "2018-04-14T07:54:23.055Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.21\ndev",
-    "preview": true,
+    "notes": "Improvements to the referral program and reverted quarantine feature for macOS. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.21dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.21/osx/Brave-0.22.21.zip"
   },
   {
