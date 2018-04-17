@@ -1,5 +1,45 @@
 [
   {
+    "version": "0.22.21",
+    "name": "Brave 0.22.21",
+    "pub_date": "2018-04-14T07:54:23.055Z",
+    "notes": "Improvements to the referral program and reverted quarantine feature for macOS. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.21dev",
+    "preview": false,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.21/osx/Brave-0.22.21.zip"
+  },
+  {
+    "version": "0.22.20",
+    "name": "Brave 0.22.20",
+    "pub_date": "2018-04-13T21:18:10.361Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.20\ndev",
+    "preview": true,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.20/osx/Brave-0.22.20.zip"
+  },
+  {
+    "version": "0.22.19",
+    "name": "Brave 0.22.19",
+    "pub_date": "2018-04-13T05:56:11.421Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.19\ndev",
+    "preview": true,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.19/osx/Brave-0.22.19.zip"
+  },
+  {
+    "version": "0.22.18",
+    "name": "Brave 0.22.18",
+    "pub_date": "2018-04-12T06:22:24.641Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.18\ndev",
+    "preview": true,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.18/osx/Brave-0.22.18.zip"
+  },
+  {
+    "version": "0.22.17",
+    "name": "Brave 0.22.17",
+    "pub_date": "2018-04-11T23:50:13.029Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.17\ndev",
+    "preview": true,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.17/osx/Brave-0.22.17.zip"
+  },
+  {
     "version": "0.22.16",
     "name": "Brave 0.22.16",
     "pub_date": "2018-04-06T17:21:00.458Z",
