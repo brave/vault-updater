@@ -3,8 +3,8 @@
     "version": "0.22.22",
     "name": "Brave 0.22.22",
     "pub_date": "2018-04-18T02:40:52.218Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.22\ndev",
-    "preview": true,
+    "notes": "Fixed missing static variable on macOS for first-run referral program installs. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.22dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.22/linux64/Brave.tar.bz2"
   },
   {
