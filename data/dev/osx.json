@@ -3,8 +3,8 @@
     "version": "0.22.669",
     "name": "Brave 0.22.669",
     "pub_date": "2018-04-27T19:52:01.831Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.669\ndev",
-    "preview": true,
+    "notes": "Fixed crash when submitting online forms, several bugs on macOS (updates not always working, trying to use Brave when no windows are open). Several Brave Payment improvements. Upgraded to Chromium 66.0.3359.117. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.669dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.669/osx/Brave-0.22.669.zip"
   },
   {
