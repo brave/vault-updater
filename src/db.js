@@ -9,8 +9,8 @@ const Joi = require('joi')
 const MongoClient = require('mongodb').MongoClient
 const s3 = require('./s3')
 
-const mongoURL = process.env.MONGOLAB_URI
-if (!mongoURL) throw new Error('MONGOLAB_URI must be set in environment')
+const mongoURL = process.env.MLAB_URI
+if (!mongoURL) throw new Error('MLAB_URI must be set in environment')
 
 const usageSchema = Joi.object().keys({
   daily: Joi.boolean(),
