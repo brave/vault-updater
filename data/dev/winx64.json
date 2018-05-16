@@ -3,8 +3,8 @@
     "version": "0.22.714",
     "name": "Brave 0.22.714",
     "pub_date": "2018-05-15T21:26:07.627Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.714\ndev",
-    "preview": true
+    "notes": "Improved browser performance (especially with a high number of tabs open), several improvements for Brave Payments. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.714dev",
+    "preview": false
   },
   {
     "version": "0.22.712",
