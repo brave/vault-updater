@@ -3,8 +3,8 @@
     "version": "0.22.721",
     "name": "Brave 0.22.721",
     "pub_date": "2018-05-24T08:14:57.271Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.721\ndev",
-    "preview": true,
+    "notes": "Fixed tab rendering and unresponsiveness, fixed security indicator when toggling shield on some sites, fixed crash for extension background pages, fixed torrent download when extension disabled. Upgraded to Chromium 66.0.3359.170. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.721dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.721/linux64/Brave.tar.bz2"
   },
   {
