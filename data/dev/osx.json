@@ -3,8 +3,8 @@
     "version": "0.22.810",
     "name": "Brave 0.22.810",
     "pub_date": "2018-06-12T06:59:36.126Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.810\ndev",
-    "preview": true,
+    "notes": "Fixed CAPTCHA compatibility with Windows scaling (high-res monitors) and several other Brave Payments improvements. Upgraded to Chromium 67.0.3396.71. More details: https://github.com/brave/browser-laptop/releases/tag/v0.22.810dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.22.810/osx/Brave-0.22.810.zip"
   },
   {
