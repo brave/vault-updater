@@ -1,5 +1,13 @@
 [
   {
+    "version": "0.23.11",
+    "name": "Brave 0.23.11",
+    "pub_date": "2018-06-19T18:57:19.585Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.23.11\nbeta",
+    "preview": false,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/beta/0.23.11/osx/Brave-Beta-0.23.11.zip"
+  },
+  {
     "version": "0.23.8",
     "name": "Brave 0.23.8",
     "pub_date": "2018-06-08T19:59:51.733Z",
