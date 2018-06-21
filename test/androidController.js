@@ -22,7 +22,9 @@ var expected = {
   version: '1.2.3',
   first: true,
   channel: 'dev',
-  platform: 'android'
+  platform: 'android',
+  ref: 'none',
+  woi: '2016-01-04'
 }
 
 tap.test('Android Controller', function (t) {

@@ -33,6 +33,7 @@ exports.setup = (amqpSender, done) => {
     const usageCollection = connection.collection('usage')
     const androidUsageCollection = connection.collection('android_usage')
     const iosUsageCollection = connection.collection('ios_usage')
+    const braveCoreUsageCollection = connection.collection('brave_core_usage')
     const crashesCollection = connection.collection('crashes')
 
     // install a series of model data handlers on connection
@@ -75,6 +76,26 @@ exports.setup = (amqpSender, done) => {
             // store as a useful backup
             console.log(JSON.stringify(usage))
             androidUsageCollection.insertOne(usage, done)
+          }
+        } else {
+          // Null usage indicates no values passed
+          done(null, {})
+        }
+      },
+
+      // insert brave core usage record
+      insertBraveCoreUsage: (usage, done) => {
+        if (usage) {
+          const invalid = Joi.validate(usage, usageSchema)
+          if (invalid.error) {
+            done(invalid, null)
+          } else {
+            // store the current timestamp in epoch seconds
+            usage.ts = (new Date()).getTime()
+            usage.year_month_day = moment().format('YYYY-MM-DD')
+            // store as a useful backup
+            console.log(JSON.stringify(usage))
+            braveCoreUsageCollection.insertOne(usage, done)
           }
         } else {
           // Null usage indicates no values passed
