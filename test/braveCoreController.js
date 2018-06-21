@@ -1,6 +1,10 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 var tap = require('tap')
 var _ = require('underscore')
-var ios = require('../src/controllers/ios')
+var ctrl = require('../src/controllers/braveCore')
 
 var query = {
   daily: 'true',
@@ -8,7 +12,8 @@ var query = {
   monthly: 'true',
   version: '1.2.3',
   first: 'true',
-  channel: 'dev'
+  channel: 'dev',
+  platform: 'winia32-bc'
 }
 
 var expected = {
@@ -18,16 +23,16 @@ var expected = {
   version: '1.2.3',
   first: true,
   channel: 'dev',
-  platform: 'ios',
+  platform: 'winia32-bc',
   ref: 'none',
   woi: '2016-01-04'
 }
 
-tap.test('iOS Controller', function (t) {
+tap.test('Brave Core Controller', function (t) {
   var runtimeMock = {
     mongo: {
       models: {
-        insertIOSUsage: function (usage, cb) {
+        insertBraveCoreUsage: function (usage, cb) {
           t.ok(_.isObject(usage), 'usage is an object')
           t.same(usage, expected, 'usage built correctly')
           cb(null, 'ok')
@@ -41,11 +46,12 @@ tap.test('iOS Controller', function (t) {
   }
   var requestMock = {
     query: query,
-    headers: {
-      'X-Forwarded-For': '1.1.1.1'
-    }
+    info: {
+      remoteAddress: '1.1.1.1'
+    },
+    headers: {}
   }
-  var endpoints = ios.setup(runtimeMock)
+  var endpoints = ctrl.setup(runtimeMock)
   endpoints[0].config.handler(requestMock, replyMock)
   t.plan(4)
 })

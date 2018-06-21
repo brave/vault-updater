@@ -11,7 +11,7 @@
     "start": "./node_modules/.bin/babel-node src/index.js",
     "lint": "standard",
     "verify": "node tools/verify.js",
-    "test": "tap test/*.js"
+    "test": "BEHIND_FASTLY=1 tap test/*.js"
   },
   "author": "Brave",
   "license": "MPL-2.0",

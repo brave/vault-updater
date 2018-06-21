@@ -48,9 +48,10 @@ mq.setup((sender) => {
     let crashes = require('./controllers/crashes').setup(runtime)
     let monitoring = require('./controllers/monitoring').setup(runtime)
 
-    // GET /1/usage/[ios|android]
+    // GET /1/usage/[ios|android|brave-core]
     let androidRoutes = require('./controllers/android').setup(runtime)
     let iosRoutes = require('./controllers/ios').setup(runtime)
+    let braveCoreRoutes = require('./controllers/braveCore').setup(runtime)
 
     // promotional proxy
     let promoProxy = []
@@ -102,7 +103,7 @@ mq.setup((sender) => {
     server.route(
       [
         common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, promoProxy)
+      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy)
     )
 
     server.start((err) => {

@@ -57,15 +57,21 @@ const availableExtensions = [
 ]
 
 tap.test('Extracts extension information from requests', (test) => {
-  tap.same(getRequestedExtensions(onePasswordRequest('0.0.0.0')), [['aomjjhallfgjeglblehebfpbcfeobpgk', '0.0.0.0']])
-  tap.same(getRequestedExtensions(onePasswordRequest('4.5.9.90')), [['aomjjhallfgjeglblehebfpbcfeobpgk', '4.5.9.90']])
-  tap.same(getRequestedExtensions(onePasswordAndPDFJSRequest('4.5.9.90', '1.5.444')), [['aomjjhallfgjeglblehebfpbcfeobpgk', '4.5.9.90'], ['jdbefljfgobbmcidnmpjamcbhnbphjnb', '1.5.444']])
+  tap.same(getRequestedExtensions(onePasswordRequest('0.0.0.0')),
+    { requestedExtensions: [['aomjjhallfgjeglblehebfpbcfeobpgk', '0.0.0.0']], version: '3.0'}
+  )
+  tap.same(getRequestedExtensions(onePasswordRequest('4.5.9.90')),
+    { requestedExtensions: [['aomjjhallfgjeglblehebfpbcfeobpgk', '4.5.9.90']], version: '3.0'}
+  )
+  tap.same(getRequestedExtensions(onePasswordAndPDFJSRequest('4.5.9.90', '1.5.444')),
+    { requestedExtensions: [['aomjjhallfgjeglblehebfpbcfeobpgk', '4.5.9.90'], ['jdbefljfgobbmcidnmpjamcbhnbphjnb', '1.5.444']], version: '3.0' }
+  )
   tap.equal(getRequestedExtensions(unsupportedProtocolRequest), undefined)
   test.end()
 })
 
 tap.test('Initial update for an extension works', (test) => {
-  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(onePasswordRequest('0.0.0.0'))),
+  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(onePasswordRequest('0.0.0.0')).requestedExtensions),
     [
       ['aomjjhallfgjeglblehebfpbcfeobpgk', '4.5.9.90', 'f75d7808766429ec63ec41d948c1cb6a486407945d604961c6adf54fe3f459b7']
     ])
@@ -73,27 +79,27 @@ tap.test('Initial update for an extension works', (test) => {
 })
 
 tap.test('No updates returned for same version', (test) => {
-  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(onePasswordRequest('4.5.9.90'))), [])
+  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(onePasswordRequest('4.5.9.90')).requestedExtensions), [])
   test.end()
 })
 
 tap.test('No updates returned for unknown extension ID', (test) => {
-  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(unknownExtensionRequest('0.0.0.0'))), [])
+  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(unknownExtensionRequest('0.0.0.0')).requestedExtensions), [])
   test.end()
 })
 
 tap.test('No updates returned for newer extension ID', (test) => {
-  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(onePasswordRequest('9.5.9.90'))), [])
+  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(onePasswordRequest('9.5.9.90')).requestedExtensions), [])
   test.end()
 })
 
 tap.test('Blank update request returns no updates', (test) => {
-  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(noUpdatesRequest)), [])
+  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(noUpdatesRequest, []).requestedExtensions), [])
   test.end()
 })
 
 tap.test('Update for multiple extensions works', (test) => {
-  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(onePasswordAndPDFJSRequest('0.0.0.0', '0.0.0.0'))),
+  tap.same(getExtensionsWithUpdates(availableExtensions, getRequestedExtensions(onePasswordAndPDFJSRequest('0.0.0.0', '0.0.0.0')).requestedExtensions),
     [
       ['aomjjhallfgjeglblehebfpbcfeobpgk', '4.5.9.90', 'f75d7808766429ec63ec41d948c1cb6a486407945d604961c6adf54fe3f459b7'],
       ['jdbefljfgobbmcidnmpjamcbhnbphjnb', '1.5.444', '25689984431ca8a60f087c761f472e500a7fe8a9065a4a47e92559237bcd1d6d']
