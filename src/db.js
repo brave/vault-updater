@@ -25,7 +25,7 @@ const usageSchema = Joi.object().keys({
 })
 .with('daily', 'weekly', 'monthly')
 
-exports.setup = (amqpSender, done) => {
+exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
   MongoClient.connect(mongoURL, (err, connection) => {
     assert.equal(null, err)
     console.log(`connection to Mongo established at ${mongoURL}`)
@@ -124,13 +124,16 @@ exports.setup = (amqpSender, done) => {
       },
 
       // Insert crash record
-      insertCrash: (crash, done) => {
+      // product = {'muon', 'braveCore'}
+      insertCrash: (crash, product, done) => {
+        assert(product === 'muon' || product === 'braveCore')
         // Timestamp the crash
         crash.ts = (new Date()).getTime()
         crash.year_month_day = moment().format('YYYY-MM-DD')
         // Save the miniDump data for S3 storage
         var miniDump = crash.upload_file_minidump || null
         delete crash.upload_file_minidump
+
         // Insert into Mongo
         crashesCollection.insertOne(crash, (err, results) => {
           let id = results.ops[0]._id
@@ -142,15 +145,19 @@ exports.setup = (amqpSender, done) => {
             // Insert miniDump into S3
             s3.storeCrashReport(id, miniDump, function() {
               console.log('minidump stored in S3')
+              // check if this is coming from muon or brave core
+              let sender = product === 'muon' ?
+                amqpSender : amqpBraveCoreSender
               setTimeout(function () {
                 // Send rabbitmq message
-                amqpSender(crash)
+                sender(crash)
                 done(null)
               }, 500)
             })
           }
         })
       }
+
     }
     done(connection)
   })

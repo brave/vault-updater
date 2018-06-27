@@ -4,7 +4,19 @@
 var amqp = require('amqplib/callback_api')
 
 const MQ_QUEUE = process.env.MQ_QUEUE || 'crashes'
+const MQ_BC_QUEUE = process.env.MQ_BC_QUEUE || 'crashes-bc'
 const MQ_URL = process.env.RABBITMQ_BIGWIG_TX_URL || process.env.AMQP_URL || 'amqp://localhost:5672'
+
+let buildSender = exports.buildSender = (channel, queueName) => {
+  return (msg) => {
+    console.log(`Message sent to queue ${queueName}`)
+    channel.sendToQueue(
+      queueName,
+      Buffer(JSON.stringify(msg)),
+      { persistent: true }
+    )
+  }
+}
 
 // Initiate connection to RabbitMQ
 exports.setup = (done) => {
@@ -21,16 +33,14 @@ exports.setup = (done) => {
         throw new Error(err)
       }
       ch.assertQueue(MQ_QUEUE)
+      ch.assertQueue(MQ_BC_QUEUE)
+
       // Builder function used to send messages
-      var sender = (msg) => {
-        console.log(`Message sent to queue`)
-        ch.sendToQueue(
-          MQ_QUEUE,
-          Buffer(JSON.stringify(msg)),
-          { persistent: true }
-        )
+      var senders = {
+        muon: buildSender(ch, MQ_QUEUE),
+        braveCore: buildSender(ch, MQ_BC_QUEUE)
       }
-      done(sender)
+      done(senders)
     }
     conn.createChannel(on_open)
   })

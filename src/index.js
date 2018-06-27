@@ -35,11 +35,15 @@ if (process.env.DEBUG) {
 }
 
 // setup connection to MongoDB
-mq.setup((sender) => {
-  db.setup(sender, (mongo) => {
+mq.setup((senders) => {
+  // message queue senders for each product
+  let muonSender = senders.muon
+  let braveCoreSender = senders.braveCore
+
+  db.setup(muonSender, braveCoreSender, (mongo) => {
     let runtime = {
       'mongo': mongo,
-      'sender': sender
+      'sender': muonSender
     }
 
     // POST, DEL and GET /1/releases/{platform}/{version}
