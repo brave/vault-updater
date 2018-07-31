@@ -3,8 +3,8 @@
     "version": "0.23.73",
     "name": "Brave 0.23.73",
     "pub_date": "2018-07-27T17:14:32.619Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.23.73\ndev",
-    "preview": true,
+    "notes": "Fixed extension popup appearing transparent on first click and several Tor crashes. Updated to Chromium 68.0.3440.75. More details: https://github.com/brave/browser-laptop/releases/tag/v0.23.73dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.23.73/osx/Brave-0.23.73.zip"
   },
   {
