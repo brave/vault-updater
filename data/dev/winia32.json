@@ -3,8 +3,8 @@
     "version": "0.23.79",
     "name": "Brave 0.23.79",
     "pub_date": "2018-08-09T07:28:08.710Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.23.79\ndev",
-    "preview": true
+    "notes": "Fixed crash when discarding tabs. Improved fingerprinting protection. More details: https://github.com/brave/browser-laptop/releases/tag/v0.23.79dev",
+    "preview": false
   },
   {
     "version": "0.23.77",
