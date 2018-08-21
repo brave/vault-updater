@@ -5,6 +5,7 @@
 var tap = require('tap')
 
 var {getRequestedExtensions, getExtensionsWithUpdates} = require('../src/controllers/extensions')
+var {readExtensions} = require('../src/setup.js')
 
 const request = (appId) => (version) => `
 <?xml version="1.0" encoding="UTF-8"?>
@@ -107,3 +108,7 @@ tap.test('Update for multiple extensions works', (test) => {
   test.end()
 })
 
+tap.test('Extensions manifest is valid', (test) => {
+  tap.ok(readExtensions())
+  test.end()
+})
