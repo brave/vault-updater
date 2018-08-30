@@ -3,8 +3,8 @@
     "version": "0.23.105",
     "name": "Brave 0.23.105",
     "pub_date": "2018-08-29T16:39:21.989Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.23.105\ndev",
-    "preview": true
+    "notes": "Fixed Windows crash and issues with extensions (LastPass, Bitwarden, and DashLane). More details: https://github.com/brave/browser-laptop/releases/tag/v0.23.105dev",
+    "preview": false
   },
   {
     "version": "0.23.104",
