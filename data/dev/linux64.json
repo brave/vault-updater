@@ -3,8 +3,8 @@
     "version": "0.24.0",
     "name": "Brave 0.24.0",
     "pub_date": "2018-09-18T18:27:16.908Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.24.0\ndev",
-    "preview": true,
+    "notes": "Fixed several about:blank tab issues, swipe navigation on macOS. Updated to Chromium 69.0.3497.100 and Tor 0.3.4 series. More details: https://github.com/brave/browser-laptop/releases/tag/v0.24.0dev",
+    "preview": false,
     "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/dev/0.24.0/linux64/Brave.tar.bz2"
   },
   {
