@@ -3,8 +3,8 @@
     "version": "0.25.2",
     "name": "Brave 0.25.2",
     "pub_date": "2018-10-08T16:48:55.801Z",
-    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.25.2\ndev",
-    "preview": true
+    "notes": "Fixed several security issues. More details: https://github.com/brave/browser-laptop/releases/tag/v0.25.2dev",
+    "preview": false
   },
   {
     "version": "0.25.1",
