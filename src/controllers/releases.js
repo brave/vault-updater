@@ -115,55 +115,37 @@ var setup = (runtime, releases) => {
 
   console.log(`Base URL: ${BASE_URL}`)
 
-  // Redirect URLs for latest installer files
-  let platformLatest = {
-    winx64: BASE_URL + '/CHANNEL/VERSION/winx64/BraveSetup-x64.exe',
-    winia32: BASE_URL + '/CHANNEL/VERSION/winia32/BraveSetup-ia32.exe',
-    osx: BASE_URL + '/CHANNEL/VERSION/osx/Brave-VERSION.dmg',
-    linux64: BASE_URL + '/CHANNEL/VERSION/linux64/Brave.tar.bz2',
-    debian64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb',
-    ubuntu64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb',
-    fedora64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.x86_64.rpm',
-    openSUSE64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.x86_64.rpm',
-    redhat64: BASE_URL + '/CHANNEL/VERSION/fedora64/brave-VERSION.x86_64.rpm',
-    mint64: BASE_URL + '/CHANNEL/VERSION/debian64/brave_VERSION_amd64.deb'
+  const braveCoreBase = 'https://brave-browser-downloads.s3.brave.com/latest/'
+  let braveCoreRedirects = {
+    'osx': 'Brave-Browser[CHANNEL].dmg',
+    'winia32': 'BraveBrowser[CHANNEL]Setup32.exe',
+    'winx64': 'BraveBrowser[CHANNEL]Setup.exe'
+  }
+  const braveCoreChannelIdentifiers = {
+    'release': '',
+    'beta': 'Beta',
+    'dev': 'Dev'
   }
 
-  // Handle pre-channel implementation browser requests
-  let legacy_latest = {
+  let latestBraveCore = {
     method: 'GET',
-    path: '/latest/{platform}',
+    path: '/latest/{platform}/{channel?}',
     config: {
       handler: function(request, reply) {
-        var url = `/latest/dev/${request.params.platform}`
-        reply().redirect(url)
-      }
-    }
-  }
-
-  let latest = {
-    method: 'GET',
-    path: '/latest/{channel}/{platform}',
-    config: {
-      handler: function(request, reply) {
-        var channel = request.params.channel
-        var platform = request.params.platform
-        var filteredReleases
-        if (platformLatest[platform] && channelData[channel]) {
-          filteredReleases = releasesWithoutPreviews(releases[channel + ':' + platform])
-          if (filteredReleases.length) {
-            let url = platformLatest[platform]
-            let version = filteredReleases[0].version
-            url = url.replace('CHANNEL', channel)
-            url = url.replace(new RegExp('VERSION', 'g'), version)
-            console.log(`Redirect: ` + url)
-            reply().redirect(url)
-          } else {
-            reply(`No current version for ${channel} / ${platform}`)
-          }
+        request.params.channel = request.params.channel || 'release'
+        if (!braveCoreChannelIdentifiers.hasOwnProperty(request.params.channel)) {
+          console.log('unknown channel')
+          return reply("unknown channel").code(204)
+        }
+        if (request.params.platform && braveCoreRedirects[request.params.platform]) {
+          let url = braveCoreRedirects[request.params.platform]
+          let channelSuffix = braveCoreChannelIdentifiers[request.params.channel]
+          if (request.params.platform === 'osx') channelSuffix = '-' + channelSuffix
+          url = braveCoreBase + url.replace('[CHANNEL]', channelSuffix)
+          reply().redirect(url)
         } else {
-          console.log(`Invalid request for latest build ${channel} ${platform}`)
-          let response = reply('Unknown platform / channel')
+          console.log('unknown platform')
+          let response = reply('unknown platform')
           response.code(204)
         }
       }
@@ -243,8 +225,7 @@ var setup = (runtime, releases) => {
   return [
     legacy_get,
     get,
-    legacy_latest,
-    latest
+    latestBraveCore
   ]
 }
 
