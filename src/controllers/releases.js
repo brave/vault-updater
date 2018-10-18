@@ -135,7 +135,7 @@ var setup = (runtime, releases) => {
         request.params.channel = request.params.channel || 'release'
         if (!braveCoreChannelIdentifiers.hasOwnProperty(request.params.channel)) {
           console.log('unknown channel')
-          return reply("unknown channel").code(204)
+          return reply("unknown channel").code(404)
         }
         if (request.params.platform && braveCoreRedirects[request.params.platform]) {
           let url = braveCoreRedirects[request.params.platform]
@@ -146,7 +146,7 @@ var setup = (runtime, releases) => {
         } else {
           console.log('unknown platform')
           let response = reply('unknown platform')
-          response.code(204)
+          response.code(404)
         }
       }
     }
