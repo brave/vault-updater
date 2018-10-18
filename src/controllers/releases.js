@@ -140,7 +140,7 @@ var setup = (runtime, releases) => {
         if (request.params.platform && braveCoreRedirects[request.params.platform]) {
           let url = braveCoreRedirects[request.params.platform]
           let channelSuffix = braveCoreChannelIdentifiers[request.params.channel]
-          if (request.params.platform === 'osx') channelSuffix = '-' + channelSuffix
+          if (request.params.platform === 'osx' && request.params.channel !== 'release') channelSuffix = '-' + channelSuffix
           url = braveCoreBase + url.replace('[CHANNEL]', channelSuffix)
           reply().redirect(url)
         } else {
