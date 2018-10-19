@@ -14,17 +14,11 @@ const uap = require('user-agent-parser')
 
 const common = require('../common')
 
-const S3_DOWNLOAD_BUCKET = process.env.S3_DOWNLOAD_BUCKET || 'brave-download-staging'
+const S3_DOWNLOAD_BUCKET = process.env.S3_DOWNLOAD_BUCKET || 'brave-browser-downloads'
 const S3_DOWNLOAD_REGION = process.env.S3_DOWNLOAD_REGION || 'us-east-1'
 
 if (!process.env.S3_DOWNLOAD_KEY || !process.env.S3_DOWNLOAD_SECRET) {
   throw new Error('S3_DOWNLOAD_KEY and S3_DOWNLOAD_SECRET should be set to the S3 account credentials for storing crash reports')
-}
-
-var DOWNLOAD_TEMPLATES = {
-  osx: 'multi-channel/releases/dev/VERSION/osx/Brave-VERSION.pkg',
-  winx64: 'multi-channel/releases/dev/VERSION/winx64/BraveSetup-x64.exe',
-  winia32: 'multi-channel/releases/dev/VERSION/winia32/BraveSetup-ia32.exe'
 }
 
 let AWS = require('aws-sdk')
@@ -239,15 +233,15 @@ exports.setup = (runtime, releases) => {
       let ua = parseUserAgent(request.headers['user-agent'])
       let filename, k
       if (ua.os.name.match(/^Mac/)) {
-        filename = `Brave-${request.params.referral_code}.pkg`
-        k = DOWNLOAD_TEMPLATES.osx.replace(/VERSION/g, latestVersionNumber)
+        filename = `Brave-Browser-${request.params.referral_code}.pkg`
+        k = 'latest/Brave-Browser.pkg'
       } else {
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
-          k = DOWNLOAD_TEMPLATES.winx64.replace(/VERSION/g, latestVersionNumber)
-          filename = `BraveSetup-x64-${request.params.referral_code}.exe`
+          k = 'latest/BraveBrowserSetup.exe'
+          filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
         } else {
-          k = DOWNLOAD_TEMPLATES.winia32.replace(/VERSION/g, latestVersionNumber)
-          filename = `BraveSetup-ia32-${request.params.referral_code}.exe`
+          k = 'latest/BraveBrowserSetup32.exe'
+          filename = `BraveBrowserSetup32-${request.params.referral_code}.exe`
         }
       }
       const url = s3.getSignedUrl('getObject', {
