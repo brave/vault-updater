@@ -13,6 +13,7 @@ const semver = require('semver')
 const uap = require('user-agent-parser')
 
 const common = require('../common')
+const promo = require('../lib/promo')
 
 const S3_DOWNLOAD_BUCKET = process.env.S3_DOWNLOAD_BUCKET || 'brave-download-staging'
 const S3_DOWNLOAD_REGION = process.env.S3_DOWNLOAD_REGION || 'us-east-1'
@@ -288,12 +289,33 @@ exports.setup = (runtime, releases) => {
     }
   }
 
+  const redirectMobileGET = {
+    method: 'GET',
+    path: '/mobile/{referral_code}',
+    config: {
+      tags: ['api'],
+      description: "Redirect to platform specific download handler - noop on desktop",
+      handler: async function (request, reply) {
+        const redirectURL = promo.redirectURLForMobileGet(
+          common.userAgentFrom(request),
+          request.params.referral_code
+        )
+        reply().redirect(redirectURL)
+      },
+      validate: {
+        params: {
+          referral_code: Joi.string().required()
+        }
+      }
+    }
+  }
   return proxyRoutes.concat([
     android_download_get,
     redirect_download,
     ios_download_get,
     redirect_get,
     ios_initialize_put,
-    nonua_initialize_put
+    nonua_initialize_put,
+    redirectMobileGET
   ])
 }
