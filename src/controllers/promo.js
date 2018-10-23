@@ -300,7 +300,6 @@ exports.setup = (runtime, releases) => {
           common.userAgentFrom(request),
           request.params.referral_code
         )
-        console.log(redirectURL)
         reply().redirect(redirectURL)
       },
       validate: {
