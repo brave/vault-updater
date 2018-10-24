@@ -88,6 +88,7 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         let url
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, 'android')
         const ua = parseUserAgent(common.userAgentFrom(request))
         if (isFFOnAndroid(ua)) {
           // FireFox on Android
@@ -116,6 +117,7 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async (request, reply) => {
         try {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'ios')
           const ip_address = common.ipAddressFrom(request)
           const body = {
             ip_address: ip_address,
@@ -291,11 +293,9 @@ exports.setup = (runtime, releases) => {
         let referral_code = request.params.referral_code
         let ua = parseUserAgent(common.userAgentFrom(request))
         if (ua.os.name.match(/iOS/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'ios')
           return reply().redirect(`/download/ios/${referral_code}`)
         }
         if (ua.os.name.match(/Android/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'android')
           return reply().redirect(`/download/android/${referral_code}`)
         }
         if (ua.os.name.match(/Windows/) || ua.os.name.match(/Mac/)) {
@@ -322,12 +322,6 @@ exports.setup = (runtime, releases) => {
           common.userAgentFrom(request),
           request.params.referral_code
         )
-        if (redirectURLForMobileGet.match(/android/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'android')
-        }
-        if (redirectURLForMobileGet.match(/ios/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'ios')
-        }
         reply().redirect(redirectURL)
       },
       validate: {
