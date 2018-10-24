@@ -117,7 +117,6 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async (request, reply) => {
         try {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'ios')
           const ip_address = common.ipAddressFrom(request)
           const body = {
             ip_address: ip_address,
@@ -196,6 +195,7 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         try {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'ios')
           const ip_address = common.ipAddressFrom(request)
           const body = {
             ip_address: ip_address,
