@@ -234,13 +234,16 @@ exports.setup = (runtime, releases) => {
       let ua = parseUserAgent(request.headers['user-agent'])
       let filename, k
       if (ua.os.name.match(/^Mac/)) {
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, 'osx')
         filename = `Brave-Browser-${request.params.referral_code}.pkg`
         k = 'latest/Brave-Browser.pkg'
       } else {
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'winx64')
           k = 'latest/BraveBrowserSetup.exe'
           filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
         } else {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'winia32')
           k = 'latest/BraveBrowserSetup32.exe'
           filename = `BraveBrowserSetup32-${request.params.referral_code}.exe`
         }
@@ -255,6 +258,29 @@ exports.setup = (runtime, releases) => {
     }
   }
 
+  const sendRetrievalSignalToReferralServer = async (referral_code, platform) => {
+    try {
+      const request_options = {
+        method: 'POST',
+        uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/2/promo/retrievals`,
+        json: true,
+        body: {
+          referral_code: referral_code,
+          platform: platform
+        },
+        headers: {
+          Authorization: 'Bearer ' + process.env.AUTH_TOKEN
+        }
+      }
+      if (process.env.FIXIE_URL) {
+        request_options.proxy = process.env.FIXIE_URL
+      }
+      let results = await common.prequest(request_options)
+    } catch (e) {
+      console.log(e.toString())
+    }
+  }
+
   const redirect_get = {
     method: 'GET',
     path: '/download/{referral_code}',
@@ -265,9 +291,11 @@ exports.setup = (runtime, releases) => {
         let referral_code = request.params.referral_code
         let ua = parseUserAgent(common.userAgentFrom(request))
         if (ua.os.name.match(/iOS/)) {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'ios')
           return reply().redirect(`/download/ios/${referral_code}`)
         }
         if (ua.os.name.match(/Android/)) {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'android')
           return reply().redirect(`/download/android/${referral_code}`)
         }
         if (ua.os.name.match(/Windows/) || ua.os.name.match(/Mac/)) {
@@ -294,6 +322,12 @@ exports.setup = (runtime, releases) => {
           common.userAgentFrom(request),
           request.params.referral_code
         )
+        if (redirectURLForMobileGet.match(/android/)) {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'android')
+        }
+        if (redirectURLForMobileGet.match(/ios/)) {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'ios')
+        }
         reply().redirect(redirectURL)
       },
       validate: {
