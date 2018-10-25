@@ -88,7 +88,7 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         let url
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, 'android')
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID)
         const ua = parseUserAgent(common.userAgentFrom(request))
         if (isFFOnAndroid(ua)) {
           // FireFox on Android
@@ -195,7 +195,7 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         try {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'ios')
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS)
           const ip_address = common.ipAddressFrom(request)
           const body = {
             ip_address: ip_address,
@@ -236,16 +236,16 @@ exports.setup = (runtime, releases) => {
       let ua = parseUserAgent(request.headers['user-agent'])
       let filename, k
       if (ua.os.name.match(/^Mac/)) {
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, 'osx')
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX)
         filename = `Brave-Browser-${request.params.referral_code}.pkg`
         k = 'latest/Brave-Browser.pkg'
       } else {
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'winx64')
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64)
           k = 'latest/BraveBrowserSetup.exe'
           filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
         } else {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, 'winia32')
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32)
           k = 'latest/BraveBrowserSetup32.exe'
           filename = `BraveBrowserSetup32-${request.params.referral_code}.exe`
         }
