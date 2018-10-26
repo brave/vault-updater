@@ -86,3 +86,12 @@ exports.nope = function (msg) {
   console.log(msg)
   process.exit(1)
 }
+
+exports.platformIdentifiers = {
+  IOS: 'ios',
+  ANDROID: 'android',
+  WINDOWS_64: 'winx64',
+  WINDOWS_32: 'winia32',
+  OSX: 'osx'
+}
+

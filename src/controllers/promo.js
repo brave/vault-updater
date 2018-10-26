@@ -88,6 +88,7 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         let url
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID)
         const ua = parseUserAgent(common.userAgentFrom(request))
         if (isFFOnAndroid(ua)) {
           // FireFox on Android
@@ -194,6 +195,7 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         try {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS)
           const ip_address = common.ipAddressFrom(request)
           const body = {
             ip_address: ip_address,
@@ -234,13 +236,16 @@ exports.setup = (runtime, releases) => {
       let ua = parseUserAgent(request.headers['user-agent'])
       let filename, k
       if (ua.os.name.match(/^Mac/)) {
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX)
         filename = `Brave-Browser-${request.params.referral_code}.pkg`
         k = 'latest/Brave-Browser.pkg'
       } else {
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64)
           k = 'latest/BraveBrowserSetup.exe'
           filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
         } else {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32)
           k = 'latest/BraveBrowserSetup32.exe'
           filename = `BraveBrowserSetup32-${request.params.referral_code}.exe`
         }
@@ -252,6 +257,29 @@ exports.setup = (runtime, releases) => {
         ResponseContentDisposition: 'attachment; filename="' + filename + '"'
       })
       reply().redirect(url)
+    }
+  }
+
+  const sendRetrievalSignalToReferralServer = async (referral_code, platform) => {
+    try {
+      const request_options = {
+        method: 'POST',
+        uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/2/promo/retrievals`,
+        json: true,
+        body: {
+          referral_code: referral_code,
+          platform: platform
+        },
+        headers: {
+          Authorization: 'Bearer ' + process.env.AUTH_TOKEN
+        }
+      }
+      if (process.env.FIXIE_URL) {
+        request_options.proxy = process.env.FIXIE_URL
+      }
+      let results = await common.prequest(request_options)
+    } catch (e) {
+      console.log(e.toString())
     }
   }
 
