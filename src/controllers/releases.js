@@ -126,7 +126,7 @@ var setup = (runtime, releases) => {
     'beta': 'Beta',
     'dev': 'Dev'
   }
-  const LINUX_REDIRECT_URL = 'https://laptop-updates-pre.brave.com/latest/linux'
+  const LINUX_REDIRECT_URL = 'https://brave-browser.readthedocs.io/en/latest/installing-brave.html#linux'
 
   let latestBraveCore = {
     method: 'GET',
@@ -145,7 +145,7 @@ var setup = (runtime, releases) => {
           url = braveCoreBase + url.replace('[CHANNEL]', channelSuffix)
           reply().redirect(url)
         } else {
-          let response = reply().redirect(LINUX_REDIRECT_URL)
+          reply().redirect(LINUX_REDIRECT_URL)
         }
       }
     }
