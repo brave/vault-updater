@@ -5,7 +5,7 @@ var amqp = require('amqplib/callback_api')
 
 const MQ_QUEUE = process.env.MQ_QUEUE || 'crashes'
 const MQ_BC_QUEUE = process.env.MQ_BC_QUEUE || 'crashes-bc'
-const MQ_URL = process.env.RABBITMQ_BIGWIG_TX_URL || process.env.AMQP_URL || 'amqp://localhost:5672'
+const MQ_URL = process.env.CLOUDAMQP_URL || process.env.AMQP_URL || 'amqp://localhost:5672'
 
 let buildSender = exports.buildSender = (channel, queueName) => {
   return (msg) => {

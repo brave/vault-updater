@@ -16,7 +16,7 @@ Install dependencies `npm install`
 
 ```
 MONGOLAB_URI:           URL to Mongo [required]
-RABBITMQ_BIGWIG_TX_URL: URL to RabbitMQ [required]
+CLOUDAMQP_URL: URL to RabbitMQ [required]
 
 FIXIE_URL:              URL to fixie [optional]
 NEW_RELIC_APP_NAME:     Name or app [optional]
