@@ -144,9 +144,7 @@ var setup = (runtime, releases) => {
           url = braveCoreBase + url.replace('[CHANNEL]', channelSuffix)
           reply().redirect(url)
         } else {
-          console.log('unknown platform')
-          let response = reply('unknown platform')
-          response.code(404)
+          let response = reply().redirect('https://brave-browser.readthedocs.io/en/latest/installing-brave.html#linux')
         }
       }
     }
