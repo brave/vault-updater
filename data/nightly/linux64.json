@@ -1,5 +1,13 @@
 [
   {
+    "version": "0.25.207",
+    "name": "Brave 0.25.207",
+    "pub_date": "2018-11-02T06:34:30.783Z",
+    "notes": "More details: https://github.com/brave/browser-laptop/releases/tag/v0.25.207nightly",
+    "preview": false,
+    "url": "https://brave-download.global.ssl.fastly.net/multi-channel/releases/nightly/0.25.207/linux64/Brave-nightly.tar.bz2"
+  },
+  {
     "version": "0.25.206",
     "name": "Brave 0.25.206",
     "pub_date": "2018-11-02T05:45:39.288Z",
