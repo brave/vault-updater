@@ -34,6 +34,29 @@ const parseUserAgent = (ua) => {
   return uap(ua)
 }
 
+const referralDetails = async (referralCode) => {
+  const request_options = {
+    method: 'GET',
+    uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/2/promo/referral_code/${referralCode}`,
+    json: true,
+    headers: {
+      Authorization: 'Bearer ' + process.env.AUTH_TOKEN
+    }
+  }
+  if (process.env.FIXIE_URL) {
+    request_options.proxy = process.env.FIXIE_URL
+  }
+  let results = await common.prequest(request_options)
+  if (results.statusCode === 404) {
+    console.log(`Referral code ${referralCode} not found, creating default`)
+    // referral code is not found, create a default
+    return {
+      installer_type: 'standard'
+    }
+  }
+  return results
+}
+
 exports.setup = (runtime, releases) => {
 
   const previewFilter = process.env.TESTING ?
@@ -292,12 +315,23 @@ exports.setup = (runtime, releases) => {
       handler: async function (request, reply) {
         let referral_code = request.params.referral_code
         let ua = parseUserAgent(common.userAgentFrom(request))
+        let refDetails = await referralDetails(referral_code)
+
+        // mobile redirect handlers
         if (ua.os.name.match(/iOS/)) {
           return reply().redirect(`/download/ios/${referral_code}`)
         }
         if (ua.os.name.match(/Android/)) {
           return reply().redirect(`/download/android/${referral_code}`)
         }
+
+        // short circuit request if installer type is 'mobile'
+        if (refDetails.installer_type === 'mobile') {
+          console.log(`Referral code ${referral_code} only supports mobile downloads`)
+          return reply().redirect(process.env.MOBILE_DESKTOP_REDIRECT_URL || 'https://www.brave.com')
+        }
+
+        // desktop redirect handlers
         if (ua.os.name.match(/Windows/) || ua.os.name.match(/Mac/)) {
           return reply().redirect(`/download/desktop/${referral_code}`)
         }
@@ -331,6 +365,7 @@ exports.setup = (runtime, releases) => {
       }
     }
   }
+
   return proxyRoutes.concat([
     android_download_get,
     redirect_download,
