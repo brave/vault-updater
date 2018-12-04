@@ -263,16 +263,28 @@ exports.setup = (runtime, releases) => {
         filename = `Brave-Browser-${request.params.referral_code}.pkg`
         k = 'latest/Brave-Browser.pkg'
       } else {
+        let refDetails = await referralDetails(request.params.referral_code)
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
           await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64)
-          k = 'latest/BraveBrowserSetup.exe'
-          filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
+          if (refDetails.installer_type === 'silent') {
+            k = 'latest/BraveBrowserSilentSetup.exe'
+            filename = `BraveBrowserSilentSetup-${request.params.referral_code}.exe`
+          } else {
+            k = 'latest/BraveBrowserSetup.exe'
+            filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
+          }
         } else {
           await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32)
-          k = 'latest/BraveBrowserSetup32.exe'
-          filename = `BraveBrowserSetup32-${request.params.referral_code}.exe`
+          if (refDetails.installer_type === 'silent') {
+            k = 'latest/BraveBrowserSilentSetup32.exe'
+            filename = `BraveBrowserSilentSetup32-${request.params.referral_code}.exe`
+          } else {
+            k = 'latest/BraveBrowserSetup32.exe'
+            filename = `BraveBrowserSetup32-${request.params.referral_code}.exe`
+          }
         }
       }
+      console.log(k, filename)
       const url = s3.getSignedUrl('getObject', {
         Bucket: S3_DOWNLOAD_BUCKET,
         Key: k,
