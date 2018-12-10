@@ -284,7 +284,6 @@ exports.setup = (runtime, releases) => {
           }
         }
       }
-      console.log(k, filename)
       const url = s3.getSignedUrl('getObject', {
         Bucket: S3_DOWNLOAD_BUCKET,
         Key: k,
