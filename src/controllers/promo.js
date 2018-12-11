@@ -111,7 +111,8 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         let url
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID)
+        const ip_address = common.ipAddressFrom(request)
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID, ip_address)
         const ua = parseUserAgent(common.userAgentFrom(request))
         if (isFFOnAndroid(ua)) {
           // FireFox on Android
@@ -218,8 +219,8 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       handler: async function (request, reply) {
         try {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS)
           const ip_address = common.ipAddressFrom(request)
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS, ip_address)
           const body = {
             ip_address: ip_address,
             referral_code: request.params.referral_code,
@@ -259,12 +260,13 @@ exports.setup = (runtime, releases) => {
       let ua = parseUserAgent(request.headers['user-agent'])
       let filename, k
       if (ua.os.name.match(/^Mac/)) {
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX)
+        const ip_address = common.ipAddressFrom(request)
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address)
         filename = `Brave-Browser-${request.params.referral_code}.pkg`
         k = 'latest/Brave-Browser.pkg'
       } else {
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64)
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address)
           k = 'latest/BraveBrowserSetup.exe'
           filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
         } else {
@@ -283,7 +285,7 @@ exports.setup = (runtime, releases) => {
     }
   }
 
-  const sendRetrievalSignalToReferralServer = async (referral_code, platform) => {
+  const sendRetrievalSignalToReferralServer = async (referral_code, platform, ip_address) => {
     try {
       const request_options = {
         method: 'POST',
@@ -291,7 +293,8 @@ exports.setup = (runtime, releases) => {
         json: true,
         body: {
           referral_code: referral_code,
-          platform: platform
+          platform: platform,
+          ip_address: ip_address
         },
         headers: {
           Authorization: 'Bearer ' + process.env.AUTH_TOKEN
