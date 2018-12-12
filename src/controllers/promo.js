@@ -259,8 +259,8 @@ exports.setup = (runtime, releases) => {
     handler: async function (request, reply) {
       let ua = parseUserAgent(request.headers['user-agent'])
       let filename, k
+      const ip_address = common.ipAddressFrom(request)
       if (ua.os.name.match(/^Mac/)) {
-        const ip_address = common.ipAddressFrom(request)
         await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address)
         filename = `Brave-Browser-${request.params.referral_code}.pkg`
         k = 'latest/Brave-Browser.pkg'
