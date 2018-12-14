@@ -132,7 +132,7 @@ var setup = (runtime, releases) => {
     method: 'GET',
     path: '/latest/{platform}/{channel?}',
     config: {
-      handler: function(request, reply) {
+      handler: async (request, reply) => {
         request.params.channel = request.params.channel || 'release'
         if (!braveCoreChannelIdentifiers.hasOwnProperty(request.params.channel)) {
           console.log('unknown channel')
@@ -143,6 +143,13 @@ var setup = (runtime, releases) => {
           let channelSuffix = braveCoreChannelIdentifiers[request.params.channel]
           if (request.params.platform === 'osx' && request.params.channel !== 'release') channelSuffix = '-' + channelSuffix
           url = braveCoreBase + url.replace('[CHANNEL]', channelSuffix)
+          if (process.env.DEFAULT_BRAVE_REFERRAL_CODE) {
+            await common.sendRetrievalSignalToReferralServer(
+              process.env.DEFAULT_BRAVE_REFERRAL_CODE,
+              request.params.platform,
+              common.ipAddressFrom(request)
+            )
+          }
           reply().redirect(url)
         } else {
           reply().redirect(LINUX_REDIRECT_URL)

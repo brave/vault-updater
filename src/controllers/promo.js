@@ -2,10 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-const SERVICES_HOST = process.env.SERVICES_HOST || 'localhost'
-const SERVICES_PORT = process.env.SERVICES_PORT || 8194
-const SERVICES_PROTOCOL = process.env.SERVICES_PROTOCOL || 'http'
-
 const Boom = require('boom')
 const Joi = require('joi')
 const ProxyAgent = require('proxy-agent')
@@ -14,6 +10,10 @@ const uap = require('user-agent-parser')
 
 const common = require('../common')
 const promo = require('../lib/promo')
+
+const SERVICES_HOST = process.env.SERVICES_HOST || 'localhost'
+const SERVICES_PORT = process.env.SERVICES_PORT || 8194
+const SERVICES_PROTOCOL = process.env.SERVICES_PROTOCOL || 'http'
 
 const S3_DOWNLOAD_BUCKET = process.env.S3_DOWNLOAD_BUCKET || 'brave-browser-downloads'
 const S3_DOWNLOAD_REGION = process.env.S3_DOWNLOAD_REGION || 'us-east-1'
@@ -112,7 +112,7 @@ exports.setup = (runtime, releases) => {
       handler: async function (request, reply) {
         let url
         const ip_address = common.ipAddressFrom(request)
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID, ip_address)
+        await common.sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID, ip_address)
         const ua = parseUserAgent(common.userAgentFrom(request))
         if (isFFOnAndroid(ua)) {
           // FireFox on Android
@@ -220,7 +220,7 @@ exports.setup = (runtime, releases) => {
       handler: async function (request, reply) {
         try {
           const ip_address = common.ipAddressFrom(request)
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS, ip_address)
+          await common.sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS, ip_address)
           const body = {
             ip_address: ip_address,
             referral_code: request.params.referral_code,
@@ -261,13 +261,13 @@ exports.setup = (runtime, releases) => {
       let filename, k
       const ip_address = common.ipAddressFrom(request)
       if (ua.os.name.match(/^Mac/)) {
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address)
+        await common.sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address)
         filename = `Brave-Browser-${request.params.referral_code}.pkg`
         k = 'latest/Brave-Browser.pkg'
       } else {
         let refDetails = await referralDetails(request.params.referral_code)
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address)
+          await common.sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address)
           if (refDetails.installer_type === 'silent') {
             k = 'latest/BraveBrowserSilentSetup.exe'
             filename = `BraveBrowserSilentSetup-${request.params.referral_code}.exe`
@@ -276,7 +276,7 @@ exports.setup = (runtime, releases) => {
             filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
           }
         } else {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32, ip_address)
+          await common.sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32, ip_address)
           if (refDetails.installer_type === 'silent') {
             k = 'latest/BraveBrowserSilentSetup32.exe'
             filename = `BraveBrowserSilentSetup32-${request.params.referral_code}.exe`
@@ -293,30 +293,6 @@ exports.setup = (runtime, releases) => {
         ResponseContentDisposition: 'attachment; filename="' + filename + '"'
       })
       reply().redirect(url)
-    }
-  }
-
-  const sendRetrievalSignalToReferralServer = async (referral_code, platform, ip_address) => {
-    try {
-      const request_options = {
-        method: 'POST',
-        uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/2/promo/retrievals`,
-        json: true,
-        body: {
-          referral_code: referral_code,
-          platform: platform,
-          ip_address: ip_address
-        },
-        headers: {
-          Authorization: 'Bearer ' + process.env.AUTH_TOKEN
-        }
-      }
-      if (process.env.FIXIE_URL) {
-        request_options.proxy = process.env.FIXIE_URL
-      }
-      let results = await common.prequest(request_options)
-    } catch (e) {
-      console.log(e.toString())
     }
   }
 

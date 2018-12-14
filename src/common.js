@@ -95,3 +95,31 @@ exports.platformIdentifiers = {
   OSX: 'osx'
 }
 
+const SERVICES_HOST = process.env.SERVICES_HOST || 'localhost'
+const SERVICES_PORT = process.env.SERVICES_PORT || 8194
+const SERVICES_PROTOCOL = process.env.SERVICES_PROTOCOL || 'http'
+
+exports.sendRetrievalSignalToReferralServer = async (referral_code, platform, ip_address) => {
+  try {
+    const request_options = {
+      method: 'POST',
+      uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/2/promo/retrievals`,
+      json: true,
+      body: {
+        referral_code: referral_code,
+        platform: platform,
+        ip_address: ip_address
+      },
+      headers: {
+        Authorization: 'Bearer ' + process.env.AUTH_TOKEN
+      }
+    }
+    if (process.env.FIXIE_URL) {
+      request_options.proxy = process.env.FIXIE_URL
+    }
+    let results = await exports.prequest(request_options)
+  } catch (e) {
+    console.log(e.toString())
+  }
+}
+
