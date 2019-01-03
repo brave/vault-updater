@@ -35,6 +35,7 @@ exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
     const iosUsageCollection = connection.collection('ios_usage')
     const braveCoreUsageCollection = connection.collection('brave_core_usage')
     const crashesCollection = connection.collection('crashes')
+    const installerEventCollection = connection.collection('installer_events')
 
     // install a series of model data handlers on connection
     connection.models = {
@@ -61,6 +62,15 @@ exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
           // Null usage indicates no values passed
           done(null, {})
         }
+      },
+
+      // insert an installation event
+      insertInstallerEvent: async (evt) => {
+        // note: validation happens at the API level
+        evt.ts = (new Date()).getTime()
+        evt.year_month_day = moment().format('YYYY-MM-DD')
+        console.log(JSON.stringify(evt))
+        await installerEventCollection.insertOne(evt)
       },
 
       // insert Android usage record

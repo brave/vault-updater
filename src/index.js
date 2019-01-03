@@ -57,6 +57,9 @@ mq.setup((senders) => {
     let iosRoutes = require('./controllers/ios').setup(runtime)
     let braveCoreRoutes = require('./controllers/braveCore').setup(runtime)
 
+    // GET /1/installerEvent
+    let installerEventsCollectionRoutes = require('./controllers/installer-events').setup(runtime)
+
     // promotional proxy
     let promoProxy = []
     if (process.env.FEATURE_REFERRAL_PROMO) {
@@ -107,7 +110,7 @@ mq.setup((senders) => {
     server.route(
       [
         common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy)
+      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy, installerEventsCollectionRoutes)
     )
 
     server.start((err) => {
