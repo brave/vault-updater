@@ -13,7 +13,7 @@ let validator = {
     channel: Joi.valid(channels).required(),
     version: Joi.string().required(),
     ref: Joi.string(),
-    event: Joi.string().required()
+    event: Joi.string().only(['startup', 'download-complete', 'installer-run']).required()
   }
 }
 
