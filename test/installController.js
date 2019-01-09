@@ -10,7 +10,7 @@ var query = {
   platform: 'winx64-bc',
   version: '1.2.3',
   channel: 'dev',
-  ref: 'ABC123',
+  ref: null,
   event: 'install'
 }
 
@@ -18,7 +18,7 @@ var expected = {
   version: '1.2.3',
   channel: 'dev',
   platform: 'winx64-bc',
-  ref: 'ABC123',
+  ref: 'none',
   event: 'install'
 }
 
