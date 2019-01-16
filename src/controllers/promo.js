@@ -250,9 +250,6 @@ exports.setup = (runtime, releases) => {
     }
   }
 
-  const FASTLY_DOWNLOAD_HOST = process.env.FASTLY_DOWNLOAD_HOST || common.nope('FASTLY_DOWNLOAD_HOST required')
-  console.log(`Serving referral downloads from ${FASTLY_DOWNLOAD_HOST}`)
-
   const redirect_download = {
     method: 'GET',
     path: '/download/desktop/{referral_code}',
@@ -261,10 +258,11 @@ exports.setup = (runtime, releases) => {
     },
     handler: async function (request, reply) {
       let ua = parseUserAgent(request.headers['user-agent'])
-      let k
+      let filename, k
       const ip_address = common.ipAddressFrom(request)
       if (ua.os.name.match(/^Mac/)) {
         await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address)
+        filename = `Brave-Browser-${request.params.referral_code}.pkg`
         k = 'latest/Brave-Browser.pkg'
       } else {
         let refDetails = await referralDetails(request.params.referral_code)
@@ -272,19 +270,28 @@ exports.setup = (runtime, releases) => {
           await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address)
           if (refDetails.installer_type === 'silent') {
             k = 'latest/BraveBrowserSilentSetup.exe'
+            filename = `BraveBrowserSilentSetup-${request.params.referral_code}.exe`
           } else {
             k = 'latest/BraveBrowserSetup.exe'
+            filename = `BraveBrowserSetup-${request.params.referral_code}.exe`
           }
         } else {
           await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32, ip_address)
           if (refDetails.installer_type === 'silent') {
             k = 'latest/BraveBrowserSilentSetup32.exe'
+            filename = `BraveBrowserSilentSetup32-${request.params.referral_code}.exe`
           } else {
             k = 'latest/BraveBrowserSetup32.exe'
+            filename = `BraveBrowserSetup32-${request.params.referral_code}.exe`
           }
         }
       }
-      let url = `https://${FASTLY_DOWNLOAD_HOST}/${k}/${request.params.referral_code}`
+      const url = s3.getSignedUrl('getObject', {
+        Bucket: S3_DOWNLOAD_BUCKET,
+        Key: k,
+        Expires: 10,
+        ResponseContentDisposition: 'attachment; filename="' + filename + '"'
+      })
       reply().redirect(url)
     }
   }
