@@ -21,7 +21,8 @@ const usageSchema = Joi.object().keys({
   version: Joi.string(),
   channel: Joi.string(),
   woi: Joi.string(),
-  ref: Joi.string()
+  ref: Joi.string(),
+  country_code: Joi.string()
 })
 .with('daily', 'weekly', 'monthly')
 

@@ -52,7 +52,8 @@ let buildUsage = (request) => {
       first: request.query.first === 'true',
       channel: request.params.channel || 'unknown',
       woi: request.query.woi || '2016-01-04',
-      ref: request.query.ref || 'none'
+      ref: request.query.ref || 'none',
+      country_code: common.countryCodeFrom(request)
     }
   } else {
     return null

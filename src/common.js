@@ -72,6 +72,10 @@ exports.userAgentFrom = function (request) {
   return request.headers['user-agent']
 }
 
+exports.countryCodeFrom = (request) => {
+  return (request.headers['x-brave-country-code'] || 'unknown').toUpperCase()
+}
+
 // promisified request
 exports.prequest = function (url) {
   return new Promise((resolve, reject) => {
