@@ -125,7 +125,8 @@ var setup = (runtime, releases) => {
   const braveCoreChannelIdentifiers = {
     'release': '',
     'beta': 'Beta',
-    'dev': 'Dev'
+    'dev': 'Dev',
+    'nightly': 'Nightly'
   }
   const LINUX_REDIRECT_URL = 'https://brave-browser.readthedocs.io/en/latest/installing-brave.html#linux'
 
