@@ -253,6 +253,11 @@ exports.setup = (runtime, releases) => {
   const FASTLY_DOWNLOAD_HOST = process.env.FASTLY_DOWNLOAD_HOST || common.nope('FASTLY_DOWNLOAD_HOST required')
   console.log(`Serving referral downloads from ${FASTLY_DOWNLOAD_HOST}`)
 
+  const referralExceptions = {
+    'ABC128': 'latest/BraveBrowserStandaloneSetup1.exe',
+    'ABC129': 'latest/BraveBrowserStandaloneSetup2.exe'
+  }
+
   const redirect_download = {
     method: 'GET',
     path: '/download/desktop/{referral_code}',
@@ -283,6 +288,10 @@ exports.setup = (runtime, releases) => {
             k = 'latest/BraveBrowserSetup32.exe'
           }
         }
+      }
+      let upperReferralCode = request.params.referral_code.toUpperCase()
+      if (referralExceptions[upperReferralCode]) {
+        k = referralExceptions[upperReferralCode]
       }
       let url = `https://${FASTLY_DOWNLOAD_HOST}/${k}/${request.params.referral_code}`
       reply().redirect(url)
