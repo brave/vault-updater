@@ -89,6 +89,7 @@ mq.setup((senders) => {
     server.register({ register: h2o2 }, function (err) {})
     server.register(require('blipp'), function () {})
     server.register(require('hapi-serve-s3'), function () {})
+    server.register(require('hapi-qs'), function () {})
 
     // Output request headers to aid in osx crash storage issue
     if (process.env.LOG_HEADERS) {

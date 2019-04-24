@@ -2,7 +2,7 @@ let assert = require('assert')
 let Joi = require('joi')
 let common = require('../common')
 let _ = require('underscore')
-let qs = require('querystring')
+let qs = require('qs')
 let semver = require('semver')
 let boom = require('boom')
 
