@@ -258,6 +258,64 @@ exports.setup = (runtime, releases) => {
     'ABC129': 'latest/BraveBrowserStandaloneSetup2.exe'
   }
 
+  const braveCoreRedirects = {
+    'osx': 'Brave-Browser[CHANNEL].dmg',
+    'winia32': 'BraveBrowser[CHANNEL]Setup32.exe',
+    'winx64': 'BraveBrowser[CHANNEL]Setup.exe'
+  }
+
+  const braveCoreChannelIdentifiers = {
+    'release': '',
+    'beta': 'Beta',
+    'dev': 'Dev',
+    'nightly': 'Nightly'
+  }
+
+  const redirect_channel_download = {
+    method: 'GET',
+    path: '/download/desktop/{channel}/{referral_code}',
+    config: {
+      description: "Download a promo renamed desktop binary for a platform and channel",
+    },
+    handler: async function (request, reply) {
+      let ua = parseUserAgent(request.headers['user-agent'])
+      let k
+      const ip_address = common.ipAddressFrom(request)
+      if (ua.os.name.match(/^Mac/)) {
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address)
+        k = 'latest/Brave-Browser[CHANNEL].pkg'
+      } else {
+        let refDetails = await referralDetails(request.params.referral_code)
+        if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address)
+          if (refDetails.installer_type === 'silent') {
+            k = 'latest/BraveBrowserSilentSetup.exe'
+          } else {
+            k = 'latest/BraveBrowser[CHANNEL]Setup.exe'
+          }
+        } else {
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32, ip_address)
+          if (refDetails.installer_type === 'silent') {
+            k = 'latest/BraveBrowserSilentSetup32.exe'
+          } else {
+            k = 'latest/BraveBrowser[CHANNEL]Setup32.exe'
+          }
+        }
+      }
+      let upperReferralCode = request.params.referral_code.toUpperCase()
+      if (referralExceptions[upperReferralCode]) {
+        k = referralExceptions[upperReferralCode]
+      }
+      let channelSuffix = braveCoreChannelIdentifiers[request.params.channel]
+      if (ua.os.name.match(/Mac/) && request.params.channel !== 'release') {
+        channelSuffix = '-' + channelSuffix
+      }
+      k = k.replace('[CHANNEL]', channelSuffix)
+      let url = `https://${FASTLY_DOWNLOAD_HOST}/${k}/${request.params.referral_code}`
+      reply().redirect(url)
+    }
+  }
+
   const redirect_download = {
     method: 'GET',
     path: '/download/desktop/{referral_code}',
@@ -389,6 +447,7 @@ exports.setup = (runtime, releases) => {
     redirect_get,
     ios_initialize_put,
     nonua_initialize_put,
-    redirectMobileGET
+    redirectMobileGET,
+    redirect_channel_download
   ])
 }
