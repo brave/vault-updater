@@ -112,7 +112,7 @@ exports.setup = (runtime, releases) => {
       handler: async function (request, reply) {
         let url
         const ip_address = common.ipAddressFrom(request)
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID, ip_address)
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID, ip_address, request)
         const ua = parseUserAgent(common.userAgentFrom(request))
         if (isFFOnAndroid(ua)) {
           // FireFox on Android
@@ -150,7 +150,11 @@ exports.setup = (runtime, releases) => {
             method: 'PUT',
             uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/initialize/ua`,
             json: true,
-            body: body
+            body: body,
+            headers: {}
+          }
+          if (request.headers['x-brave-country-code']) {
+            request_options.headers['x-brave-country-code'] = request.headers['x-brave-country-code']
           }
           if (process.env.FIXIE_URL) {
             request_options.proxy = process.env.FIXIE_URL
@@ -189,7 +193,11 @@ exports.setup = (runtime, releases) => {
             method: 'PUT',
             uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/initialize/nonua`,
             json: true,
-            body: body
+            body: body,
+            headers: {}
+          }
+          if (request.headers['x-brave-country-code']) {
+            request_options.headers['x-brave-country-code'] = request.headers['x-brave-country-code']
           }
           if (process.env.FIXIE_URL) {
             request_options.proxy = process.env.FIXIE_URL
@@ -220,7 +228,7 @@ exports.setup = (runtime, releases) => {
       handler: async function (request, reply) {
         try {
           const ip_address = common.ipAddressFrom(request)
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS, ip_address)
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS, ip_address, request)
           const body = {
             ip_address: ip_address,
             referral_code: request.params.referral_code,
@@ -282,19 +290,19 @@ exports.setup = (runtime, releases) => {
       let k
       const ip_address = common.ipAddressFrom(request)
       if (ua.os.name.match(/^Mac/)) {
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address)
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address, request)
         k = 'latest/Brave-Browser[CHANNEL].pkg'
       } else {
         let refDetails = await referralDetails(request.params.referral_code)
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address)
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address, request)
           if (refDetails.installer_type === 'silent') {
             k = 'latest/BraveBrowserSilentSetup.exe'
           } else {
             k = 'latest/BraveBrowser[CHANNEL]Setup.exe'
           }
         } else {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32, ip_address)
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32, ip_address, request)
           if (refDetails.installer_type === 'silent') {
             k = 'latest/BraveBrowserSilentSetup32.exe'
           } else {
@@ -327,19 +335,19 @@ exports.setup = (runtime, releases) => {
       let k
       const ip_address = common.ipAddressFrom(request)
       if (ua.os.name.match(/^Mac/)) {
-        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address)
+        await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.OSX, ip_address, request)
         k = 'latest/Brave-Browser.pkg'
       } else {
         let refDetails = await referralDetails(request.params.referral_code)
         if (ua.cpu && ua.cpu.architecture && ua.cpu.architecture.match(/64/)) {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address)
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_64, ip_address, request)
           if (refDetails.installer_type === 'silent') {
             k = 'latest/BraveBrowserSilentSetup.exe'
           } else {
             k = 'latest/BraveBrowserSetup.exe'
           }
         } else {
-          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32, ip_address)
+          await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.WINDOWS_32, ip_address, request)
           if (refDetails.installer_type === 'silent') {
             k = 'latest/BraveBrowserSilentSetup32.exe'
           } else {
@@ -356,7 +364,7 @@ exports.setup = (runtime, releases) => {
     }
   }
 
-  const sendRetrievalSignalToReferralServer = async (referral_code, platform, ip_address) => {
+  const sendRetrievalSignalToReferralServer = async (referral_code, platform, ip_address, request) => {
     try {
       const request_options = {
         method: 'POST',
@@ -370,6 +378,9 @@ exports.setup = (runtime, releases) => {
         headers: {
           Authorization: 'Bearer ' + process.env.AUTH_TOKEN
         }
+      }
+      if (request.headers['x-brave-country-code']) {
+        request_options.headers['x-brave-country-code'] = request.headers['x-brave-country-code']
       }
       if (process.env.FIXIE_URL) {
         request_options.proxy = process.env.FIXIE_URL
