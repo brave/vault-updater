@@ -5,6 +5,7 @@
 var tap = require('tap')
 var _ = require('underscore')
 var ctrl = require('../src/controllers/braveCore')
+let Joi = require('joi')
 
 var query = {
   daily: 'true',
@@ -54,5 +55,10 @@ tap.test('Brave Core Controller', function (t) {
   }
   var endpoints = ctrl.setup(runtimeMock)
   endpoints[0].config.handler(requestMock, replyMock)
-  t.plan(4)
+
+  let queryAndroidBC = _.clone(query)
+  queryAndroidBC.platform = 'android-bc'
+  t.doesNotThrow(() => { return Joi.validate(queryAndroidBC, ctrl.validator.query) }, 'android-bc validates')
+
+  t.plan(5)
 })
