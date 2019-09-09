@@ -55,6 +55,9 @@ mq.setup((senders) => {
     // promotional proxy
     let promoProxy = require('./controllers/promo').setup(runtime, releases)
 
+    // webcompat collection routes
+    let webcompatRoutes = require('./controllers/webcompat').setup(runtime, releases)
+
     let server = new Hapi.Server({
       host: config.host,
       port: config.port
@@ -67,7 +70,7 @@ mq.setup((senders) => {
     server.route(
       [
         common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy, installerEventsCollectionRoutes)
+      ].concat(releaseRoutes, extensionRoutes, crashes, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy, installerEventsCollectionRoutes, webcompatRoutes)
     )
 
     await server.start()
