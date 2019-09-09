@@ -8,7 +8,7 @@
     "npm": "4.2.0"
   },
   "scripts": {
-    "start": "./node_modules/.bin/babel-node src/index.js",
+    "start": "node src/index.js",
     "lint": "standard",
     "verify": "node tools/verify.js",
     "test": "BEHIND_FASTLY=1 tap test/*.js",
@@ -17,28 +17,23 @@
   "author": "Brave",
   "license": "MPL-2.0",
   "dependencies": {
+    "@hapi/boom": "^7.4.3",
+    "@hapi/h2o2": "^8.3.1",
+    "@hapi/inert": "^5.2.1",
+    "@hapi/joi": "^15.1.1",
     "amqplib": "^0.4.1",
     "aws-sdk": "^2.2.30",
-    "babel": "^6.1.18",
-    "babel-cli": "^6.2.0",
-    "babel-core": "^6.2.1",
-    "babel-preset-es2015": "^6.1.18",
-    "blipp": "^2.3.0",
-    "boom": "^4.3.1",
+    "blipp": "^4.0.0",
     "glob": "^6.0.1",
-    "h2o2": "^6.0.0",
-    "hapi": "^11.1.2",
-    "hapi-serve-s3": "^2.0.1",
+    "hapi": "^18.1.0",
     "hapi-set-header": "^1.0.0",
-    "inert": "^3.2.0",
-    "joi": "^7.0.1",
-    "logfmt": "^1.2.0",
+    "logfmt": "^1.3.2",
     "moment": "^2.11.1",
-    "mongodb": "^2.1.4",
-    "newrelic": "^1.25.3",
-    "proxy-agent": "^2.2.0",
+    "mongodb": "^3.3.2",
+    "newrelic": "^5.11.0",
+    "proxy-agent": "^3.1.0",
     "randomstring": "^1.1.5",
-    "request": "^2.83.0",
+    "request": "^2.88.0",
     "rewire": "^2.5.2",
     "semver": "^5.3.0",
     "underscore": "^1.8.3",
@@ -47,9 +42,8 @@
     "yargs": "^3.31.0"
   },
   "devDependencies": {
-    "s3": "^4.4.0",
-    "standard": "^5.4.1",
-    "tap": "^6.1.1"
+    "tap": "^14.6.1",
+    "standard": "^14.1.0"
   },
   "precommit": [
     "lint"

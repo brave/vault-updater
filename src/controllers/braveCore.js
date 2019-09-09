@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-let Joi = require('joi')
+let Joi = require('@hapi/joi')
 
 let platforms = ['osx-bc', 'winia32-bc', 'winx64-bc', 'linux-bc']
 let channels = ['dev', 'release', 'nightly', 'beta']
@@ -48,16 +48,15 @@ exports.setup = (runtime) => {
     method: 'GET',
     path: '/1/usage/brave-core',
     config: {
-      handler: function (request, reply) {
-        var usage = buildUsage(request)
-        runtime.mongo.models.insertBraveCoreUsage(usage, (err, results) => {
-          if (err) {
-            console.log(err.toString())
-            reply({ ts: (new Date()).getTime(), status: 'error', message: err }).code(500)
-          } else {
-            reply({ ts: (new Date()).getTime(), status: 'ok' })
-          }
-        })
+      description: "* Record Brave Core usage record",
+      handler: async (request, h) => {
+        try {
+          const usage = buildUsage(request)
+          await runtime.mongo.models.insertBraveCoreUsage(usage)
+          return h.response({ ts: (new Date()).getTime(), status: 'ok' })
+        } catch (err) {
+          return h.response({ ts: (new Date()).getTime(), status: 'error', message: err }).code(500)
+        }
       },
       validate: validator
     }

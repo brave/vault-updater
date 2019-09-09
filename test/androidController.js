@@ -4,7 +4,7 @@
 
 var tap = require('tap')
 var _ = require('underscore')
-var ios = require('../src/controllers/android')
+var android = require('../src/controllers/android')
 
 var query = {
   daily: 'true',
@@ -24,24 +24,26 @@ var expected = {
   channel: 'dev',
   platform: 'android',
   ref: 'none',
-  woi: '2016-01-04'
+  woi: '2016-01-04',
+  country_code: 'UNKNOWN'
 }
 
-tap.test('Android Controller', function (t) {
+tap.test('Android controller', async (t) => {
   var runtimeMock = {
     mongo: {
       models: {
-        insertAndroidUsage: function (usage, cb) {
+        insertAndroidUsage: function (usage) {
           t.ok(_.isObject(usage), 'usage is an object')
           t.same(usage, expected, 'usage built correctly')
-          cb(null, 'ok')
         }
       }
     }
   }
-  var replyMock = function (obj) {
-    t.ok(obj.ts, 'timestamp returned')
-    t.ok(obj.status === 'ok', 'status ok')
+  var replyMock = {
+    response: (obj) => {
+      t.ok(obj.ts, 'timestamp returned')
+      t.ok(obj.status === 'ok', 'status ok')
+    }
   }
   var requestMock = {
     query: query,
@@ -50,7 +52,7 @@ tap.test('Android Controller', function (t) {
     },
     headers: {}
   }
-  var endpoints = ios.setup(runtimeMock)
-  endpoints[0].config.handler(requestMock, replyMock)
-  t.plan(4)
+  var endpoints = android.setup(runtimeMock)
+  await endpoints[0].config.handler(requestMock, replyMock)
+  t.end()
 })

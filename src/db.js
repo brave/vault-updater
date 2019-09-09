@@ -5,7 +5,7 @@
 let assert = require('assert')
 let moment = require('moment')
 
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 const MongoClient = require('mongodb').MongoClient
 const s3 = require('./s3')
 
@@ -24,12 +24,13 @@ const usageSchema = Joi.object().keys({
   ref: Joi.string(),
   country_code: Joi.string()
 })
-.with('daily', 'weekly', 'monthly')
 
 exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
   MongoClient.connect(mongoURL, (err, connection) => {
     assert.equal(null, err)
     console.log(`connection to Mongo established at ${mongoURL}`)
+
+    connection = connection.db()
 
     const usageCollection = connection.collection('usage')
     const androidUsageCollection = connection.collection('android_usage')

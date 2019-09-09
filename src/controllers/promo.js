@@ -6,8 +6,8 @@ const SERVICES_HOST = process.env.SERVICES_HOST || 'localhost'
 const SERVICES_PORT = process.env.SERVICES_PORT || 8194
 const SERVICES_PROTOCOL = process.env.SERVICES_PROTOCOL || 'http'
 
-const Boom = require('boom')
-const Joi = require('joi')
+const Boom = require('@hapi/boom')
+const Joi = require('@hapi/joi')
 const ProxyAgent = require('proxy-agent')
 const semver = require('semver')
 const uap = require('user-agent-parser')
@@ -70,23 +70,24 @@ exports.setup = (runtime, releases) => {
 
   // method, local uri, remote uri, description
   const proxyForwards = [
-    ['PUT', '/promo/activity', '/api/1/promo/activity', 'Called on periodic check-in and finalization from browser'],
-    ['GET', '/promo/custom-headers', '/api/1/promo/custom-headers', 'Array of custom headers for publishers'],
-    ['GET', '/promo/publisher/{referral_code}', '/api/1/promo/publishers/{referral_code}', 'Retrieve details about publisher referral']
+    ['PUT', '/promo/activity', '/api/1/promo/activity', '* Called on periodic check-in and finalization from browser'],
+    ['GET', '/promo/custom-headers', '/api/1/promo/custom-headers', '* Array of custom headers for publishers'],
+    ['GET', '/promo/publisher/{referral_code}', '/api/1/promo/publishers/{referral_code}', '* Retrieve details about publisher referral']
   ]
 
   const proxyRoutes = proxyForwards.map((definition) => {
     let route = {
       method: definition[0],
       path: definition[1],
+      handler: {
+        proxy: {
+          passThrough: true,
+          uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}${definition[2]}`
+        }
+      },
       config: {
         tags: ['api'],
         description: definition[3],
-        handler: {
-          proxy: {
-            uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}${definition[2]}`
-          }
-        }
       }
     }
     if (process.env.FIXIE_URL) {
@@ -107,9 +108,9 @@ exports.setup = (runtime, releases) => {
     method: 'GET',
     path: '/download/android/{referral_code}',
     config: {
-      description: "Redirect download to Play store",
+      description: "* Redirect download to Play store",
       tags: ['api'],
-      handler: async function (request, reply) {
+      handler: async function (request, h) {
         let url
         const ip_address = common.ipAddressFrom(request)
         await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.ANDROID, ip_address, request)
@@ -121,7 +122,7 @@ exports.setup = (runtime, releases) => {
           // all others
           url = PLAY_URL.replace('REFERRAL_CODE', request.params.referral_code)
         }
-        reply().redirect(url)
+        return h.redirect(url)
       },
       validate: {
         params: {
@@ -137,9 +138,9 @@ exports.setup = (runtime, releases) => {
     method: 'PUT',
     path: '/promo/initialize/ua',
     config: {
-      description: "Called on first connection with browser containing IP and UA",
+      description: "* Called on first connection with browser containing IP and UA",
       tags: ['api'],
-      handler: async (request, reply) => {
+      handler: async (request, h) => {
         try {
           const ip_address = common.ipAddressFrom(request)
           const body = {
@@ -160,10 +161,10 @@ exports.setup = (runtime, releases) => {
             request_options.proxy = process.env.FIXIE_URL
           }
           let results = await common.prequest(request_options)
-          reply(results)
+          return results
         } catch (e) {
           console.log(e.toString())
-          reply(new Boom(e.toString()))
+          return new Boom(e.toString())
         }
       },
       validate: {
@@ -178,9 +179,9 @@ exports.setup = (runtime, releases) => {
     method: 'PUT',
     path: '/promo/initialize/nonua',
     config: {
-      description: "Called on first connection with browser",
+      description: "* Called on first connection with browser",
       tags: ['api'],
-      handler: async (request, reply) => {
+      handler: async (request, h) => {
         try {
           const ip_address = common.ipAddressFrom(request)
           const body = {
@@ -203,10 +204,10 @@ exports.setup = (runtime, releases) => {
             request_options.proxy = process.env.FIXIE_URL
           }
           let results = await common.prequest(request_options)
-          reply(results)
+          return results
         } catch (e) {
           console.log(e.toString())
-          reply(new Boom(e.toString()))
+          return new Boom(e.toString())
         }
       },
       validate: {
@@ -223,9 +224,9 @@ exports.setup = (runtime, releases) => {
     method: 'GET',
     path: '/download/ios/{referral_code}',
     config: {
-      description: "Redirect download to App Store",
+      description: "* Redirect download to App Store",
       tags: ['api'],
-      handler: async function (request, reply) {
+      handler: async function (request, h) {
         try {
           const ip_address = common.ipAddressFrom(request)
           await sendRetrievalSignalToReferralServer(request.params.referral_code, common.platformIdentifiers.IOS, ip_address, request)
@@ -244,10 +245,11 @@ exports.setup = (runtime, releases) => {
             request_options.proxy = process.env.FIXIE_URL
           }
           let results = await common.prequest(request_options)
-          reply().redirect(APP_STORE_URL)
+          console.log(results)
+          return h.redirect(APP_STORE_URL)
         } catch (e) {
           console.log(e.toString())
-          reply(new Boom(e.toString()))
+          return new Boom(e.toString())
         }
       },
       validate: {
@@ -283,9 +285,9 @@ exports.setup = (runtime, releases) => {
     method: 'GET',
     path: '/download/desktop/{channel}/{referral_code}',
     config: {
-      description: "Download a promo renamed desktop binary for a platform and channel",
+      description: "* Download a promo renamed desktop binary for a platform and channel",
     },
-    handler: async function (request, reply) {
+    handler: async function (request, h) {
       let ua = parseUserAgent(request.headers['user-agent'])
       let k
       const ip_address = common.ipAddressFrom(request)
@@ -320,7 +322,7 @@ exports.setup = (runtime, releases) => {
       }
       k = k.replace('[CHANNEL]', channelSuffix)
       let url = `https://${FASTLY_DOWNLOAD_HOST}/${k}/${request.params.referral_code}`
-      reply().redirect(url)
+      return h.redirect(url)
     }
   }
 
@@ -328,9 +330,9 @@ exports.setup = (runtime, releases) => {
     method: 'GET',
     path: '/download/desktop/{referral_code}',
     config: {
-      description: "Download a promo renamed desktop binary for a platform",
+      description: "* Download a promo renamed desktop binary for a platform",
     },
-    handler: async function (request, reply) {
+    handler: async function (request, h) {
       let ua = parseUserAgent(request.headers['user-agent'])
       let k
       const ip_address = common.ipAddressFrom(request)
@@ -360,7 +362,7 @@ exports.setup = (runtime, releases) => {
         k = referralExceptions[upperReferralCode]
       }
       let url = `https://${FASTLY_DOWNLOAD_HOST}/${k}/${request.params.referral_code}`
-      reply().redirect(url)
+      return h.redirect(url)
     }
   }
 
@@ -396,31 +398,31 @@ exports.setup = (runtime, releases) => {
     path: '/download/{referral_code}',
     config: {
       tags: ['api'],
-      description: "Redirect to platform specific download handler",
-      handler: async function (request, reply) {
+      description: "* Redirect to platform specific download handler",
+      handler: async function (request, h) {
         let referral_code = request.params.referral_code
         let ua = parseUserAgent(common.userAgentFrom(request))
         let refDetails = await referralDetails(referral_code)
 
         // mobile redirect handlers
         if (ua.os.name.match(/iOS/)) {
-          return reply().redirect(`/download/ios/${referral_code}`)
+          return h.redirect(`/download/ios/${referral_code}`)
         }
         if (ua.os.name.match(/Android/)) {
-          return reply().redirect(`/download/android/${referral_code}`)
+          return h.redirect(`/download/android/${referral_code}`)
         }
 
         // short circuit request if installer type is 'mobile'
         if (refDetails.installer_type === 'mobile') {
           console.log(`Referral code ${referral_code} only supports mobile downloads`)
-          return reply().redirect(process.env.MOBILE_DESKTOP_REDIRECT_URL || 'https://www.brave.com')
+          return h.redirect(process.env.MOBILE_DESKTOP_REDIRECT_URL || 'https://www.brave.com')
         }
 
         // desktop redirect handlers
         if (ua.os.name.match(/Windows/) || ua.os.name.match(/Mac/)) {
-          return reply().redirect(`/download/desktop/${referral_code}`)
+          return h.redirect(`/download/desktop/${referral_code}`)
         }
-        return reply().redirect(`/latest/linux64`)
+        return h.redirect(`/latest/linux64`)
       },
       validate: {
         params: {
@@ -435,13 +437,13 @@ exports.setup = (runtime, releases) => {
     path: '/mobile/{referral_code}',
     config: {
       tags: ['api'],
-      description: "Redirect to platform specific download handler - noop on desktop",
-      handler: async function (request, reply) {
+      description: "* Redirect to platform specific download handler - noop on desktop",
+      handler: async function (request, h) {
         const redirectURL = promo.redirectURLForMobileGet(
           common.userAgentFrom(request),
           request.params.referral_code
         )
-        reply().redirect(redirectURL)
+        return h.redirect(redirectURL)
       },
       validate: {
         params: {
