@@ -9,7 +9,6 @@ const WEBCOMPAT_COLLECTION = process.env.WEBCOMPAT_COLLECTION || 'webcompat'
 const validator = {
   payload: {
     domain: Joi.string().required(),
-    ip_address: Joi.string().required(),
     api_key: Joi.string().required()
   }
 }
