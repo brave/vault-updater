@@ -91,7 +91,7 @@ exports.setup = (runtime, releases) => {
       }
     }
     if (process.env.FIXIE_URL) {
-      route.config.handler.proxy.agent = new ProxyAgent(process.env.FIXIE_URL)
+      route.handler.proxy.agent = new ProxyAgent(process.env.FIXIE_URL)
     }
     return route
   })
