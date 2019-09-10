@@ -4,8 +4,8 @@
   "description": "Auto-update server for Brave laptop browser",
   "main": "index.js",
   "engines": {
-    "node": "7.10.1",
-    "npm": "4.2.0"
+    "node": "8.11.3",
+    "npm": "6.10.3"
   },
   "scripts": {
     "start": "node src/index.js",
