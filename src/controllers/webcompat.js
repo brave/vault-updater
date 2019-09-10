@@ -2,6 +2,7 @@ const Joi = require('@hapi/joi')
 const Boom = require('@hapi/boom')
 const moment = require('moment')
 const uap = require('user-agent-parser')
+const storage = require('../storage')
 
 const WEBCOMPAT_COLLECTION = process.env.WEBCOMPAT_COLLECTION || 'webcompat'
 
@@ -30,7 +31,7 @@ const platformFromUA = (userAgent) => {
 const versionFromUA = (userAgent) => {
   const ua = uap(userAgent)
 
-  // userAgents such as curl do not have an OS component
+  // userAgents such as curl do not have a version component
   if (!ua.browser || !ua.browser.version) return 'unknown'
 
   return ua.browser.version
@@ -50,6 +51,13 @@ const domainIsValid = (domain) => {
   return domain.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+/gm)
 }
 
+const successResult = (runtime) => {
+  return {
+    status: 'ok',
+    ts: (new Date()).getTime()
+  }
+}
+
 exports.setup = (runtime) => {
   const routes = []
 
@@ -65,13 +73,16 @@ exports.setup = (runtime) => {
 
           // phase 2 - to be implemented - rate limit on IP address
 
-          // build and store event
+          // phase 2 - to be implemented - callout to referral server to verify api key
+
+          // build event
           const storageObject = buildStorageObject(request.payload.domain, request.headers['user-agent'])
-          await runtime.mongo.collection(WEBCOMPAT_COLLECTION).insertOne(storageObject)
-          return {
-            status: 'ok',
-            ts: (new Date()).getTime()
-          }
+
+          // abstract storage mechanism
+          await storage.storeObjectOrEvent(runtime, WEBCOMPAT_COLLECTION, storageObject)
+
+          // return success
+          return successResult(runtime)
         } catch (e) {
           return Boom.badImplementation(e.toString())
         }
@@ -86,3 +97,4 @@ exports.setup = (runtime) => {
 exports.buildStorageObject = buildStorageObject
 exports.domainIsValid = domainIsValid
 exports.versionFromUA = versionFromUA
+exports.successResult = successResult

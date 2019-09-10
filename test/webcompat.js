@@ -16,5 +16,7 @@ tap.test('webcompat', (t) => {
 
   t.equal(webcompat.versionFromUA('Google Chrome Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'), '58.0.3029.110', 'correct version extracted')
 
+  t.equal(webcompat.successResult().status, 'ok', 'ok result well formed')
+
   t.done()
 })
