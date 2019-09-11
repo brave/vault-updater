@@ -42,8 +42,9 @@
     "yargs": "^3.31.0"
   },
   "devDependencies": {
-    "tap": "^14.6.1",
-    "standard": "^14.1.0"
+    "diff": "^4.0.1",
+    "standard": "^14.1.0",
+    "tap": "^14.6.1"
   },
   "precommit": [
     "lint"
