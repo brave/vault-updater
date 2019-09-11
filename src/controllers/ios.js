@@ -3,7 +3,6 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const common = require('../common')
-const ipLimit = require('../IPLimit')
 
 // Build a usage object if query parameters passed in
 let buildUsage = (request) => {
@@ -30,16 +29,15 @@ exports.setup = (runtime) => {
     method: 'GET',
     path: '/1/usage/ios',
     config: {
-      handler: function (request, reply) {
-        var usage = buildUsage(request)
-        runtime.mongo.models.insertIOSUsage(usage, (err, results) => {
-          if (err) {
-            console.log(err.toString())
-            reply({ ts: (new Date()).getTime(), status: 'error' }).code(500)
-          } else {
-            reply({ ts: (new Date()).getTime(), status: 'ok' })
-          }
-        })
+      description: "* Record iOS usage record",
+      handler: async (request, h) => {
+        try {
+          const usage = buildUsage(request)
+          await runtime.mongo.models.insertIOSUsage(usage)
+          return h.response({ ts: (new Date()).getTime(), status: 'ok' })
+        } catch (e) {
+          return h.response({ ts: (new Date()).getTime(), status: 'error' }).code(500)
+        }
       }
     }
   }

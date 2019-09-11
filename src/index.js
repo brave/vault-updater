@@ -4,19 +4,12 @@
 
 let Hapi = require('hapi')
 
-process.env.NEW_RELIC_NO_CONFIG_FILE = true
-if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
-  var newrelic = require('newrelic')
-} else {
-  console.log("Warning: New Relic not configured!")
-}
-
 let logger = require('logfmt')
-let Inert = require('inert')
+let Inert = require('@hapi/inert')
 let assert = require('assert')
 let setGlobalHeader = require('hapi-set-header')
 let _ = require('underscore')
-let h2o2 = require('h2o2')
+let h2o2 = require('@hapi/h2o2')
 
 let profile = process.env.NODE_ENV || 'development'
 let config = require('../config/config.' + profile + '.js')
@@ -40,7 +33,7 @@ mq.setup((senders) => {
   let muonSender = senders.muon
   let braveCoreSender = senders.braveCore
 
-  db.setup(muonSender, braveCoreSender, (mongo) => {
+  db.setup(muonSender, braveCoreSender, async (mongo) => {
     let runtime = {
       'mongo': mongo,
       'sender': muonSender
@@ -50,7 +43,6 @@ mq.setup((senders) => {
     let releaseRoutes = require('./controllers/releases').setup(runtime, releases)
     let extensionRoutes = require('./controllers/extensions').setup(runtime, extensions)
     let crashes = require('./controllers/crashes').setup(runtime)
-    let monitoring = require('./controllers/monitoring').setup(runtime)
 
     // GET /1/usage/[ios|android|brave-core]
     let androidRoutes = require('./controllers/android').setup(runtime)
@@ -61,61 +53,23 @@ mq.setup((senders) => {
     let installerEventsCollectionRoutes = require('./controllers/installer-events').setup(runtime)
 
     // promotional proxy
-    let promoProxy = []
-    if (process.env.FEATURE_REFERRAL_PROMO) {
-      console.log("Configuring promo proxy [FEATURE_REFERRAL_PROMO]")
-      promoProxy = require('./controllers/promo').setup(runtime, releases)
-    }
+    let promoProxy = require('./controllers/promo').setup(runtime, releases)
 
-    let server = null
-
-    // Output request headers to aid in osx crash storage issue
-    if (process.env.LOG_HEADERS) {
-      server = new Hapi.Server({
-        debug: {
-          request: ['error', 'received', 'handler'],
-          log: ['error']
-        }
-      })
-    } else {
-      server = new Hapi.Server()
-    }
-
-    let serv = server.connection({
+    let server = new Hapi.Server({
       host: config.host,
       port: config.port
     })
 
-    server.register({ register: h2o2, options: { passThrough: true } }, function (err) {})
-    server.register(require('blipp'), function () {})
-    server.register(require('hapi-serve-s3'), function () {})
-
-    // Output request headers to aid in osx crash storage issue
-    if (process.env.LOG_HEADERS) {
-      serv.listener.on('request', (request, event, tags) => {
-        logger.log(request.headers)
-      })
-    }
-
-    // Handle the boom response as well as all other requests (cache control for telemetry)
-    setGlobalHeader(server, 'Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0')
-    setGlobalHeader(server, 'Pragma', 'no-cache')
-    setGlobalHeader(server, 'Expires', 0)
-
-    serv.listener.once('clientError', function (e) {
-      console.error(e)
-    })
+    await server.register(h2o2)
+    await server.register(require('blipp'))
 
     // Routes
     server.route(
       [
         common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy, installerEventsCollectionRoutes)
+      ].concat(releaseRoutes, extensionRoutes, crashes, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy, installerEventsCollectionRoutes)
     )
 
-    server.start((err) => {
-      assert(!err, `error starting service ${err}`)
-      console.log('update service started')
-    })
+    await server.start()
   })
 })

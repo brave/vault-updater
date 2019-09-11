@@ -44,3 +44,6 @@ out
 
 #macOS cruft
 .DS_Store
+
+# tap test output
+.nyc_output

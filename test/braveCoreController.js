@@ -25,24 +25,26 @@ var expected = {
   channel: 'dev',
   platform: 'winia32-bc',
   ref: 'none',
-  woi: '2016-01-04'
+  woi: '2016-01-04',
+  country_code: 'UNKNOWN'
 }
 
-tap.test('Brave Core Controller', function (t) {
+tap.test('Brave Core Controller', async (t) => {
   var runtimeMock = {
     mongo: {
       models: {
-        insertBraveCoreUsage: function (usage, cb) {
+        insertBraveCoreUsage: function (usage) {
           t.ok(_.isObject(usage), 'usage is an object')
           t.same(usage, expected, 'usage built correctly')
-          cb(null, 'ok')
         }
       }
     }
   }
-  var replyMock = function (obj) {
-    t.ok(obj.ts, 'timestamp returned')
-    t.ok(obj.status === 'ok', 'status ok')
+  var replyMock = {
+    response: (obj) => {
+      t.ok(obj.ts, 'timestamp returned')
+      t.ok(obj.status === 'ok', 'status ok')
+    }
   }
   var requestMock = {
     query: query,
@@ -52,6 +54,6 @@ tap.test('Brave Core Controller', function (t) {
     headers: {}
   }
   var endpoints = ctrl.setup(runtimeMock)
-  endpoints[0].config.handler(requestMock, replyMock)
+  await endpoints[0].config.handler(requestMock, replyMock)
   t.plan(4)
 })

@@ -3,12 +3,11 @@ const r = require('request')
 exports.root = {
   method: 'GET',
   path: '/',
-  config:
-  { handler: function (request, reply) {
-    request.log([], 'Auto updater')
-    reply('Auto updater')
-  },
-    validate: undefined
+  config: {
+    description: "* report service name",
+    handler: function (request, h) {
+      return 'Auto updater'
+    }
   }
 }
 

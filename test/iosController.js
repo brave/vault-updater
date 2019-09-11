@@ -20,24 +20,26 @@ var expected = {
   channel: 'dev',
   platform: 'ios',
   ref: 'none',
-  woi: '2016-01-04'
+  woi: '2016-01-04',
+  country_code: 'UNKNOWN'
 }
 
-tap.test('iOS Controller', function (t) {
+tap.test('iOS Controller', async (t) => {
   var runtimeMock = {
     mongo: {
       models: {
-        insertIOSUsage: function (usage, cb) {
+        insertIOSUsage: function (usage) {
           t.ok(_.isObject(usage), 'usage is an object')
           t.same(usage, expected, 'usage built correctly')
-          cb(null, 'ok')
         }
       }
     }
   }
-  var replyMock = function (obj) {
-    t.ok(obj.ts, 'timestamp returned')
-    t.ok(obj.status === 'ok', 'status ok')
+  var replyMock = {
+    response: async (obj) => {
+      t.ok(obj.ts, 'timestamp returned')
+      t.ok(obj.status === 'ok', 'status ok')
+    }
   }
   var requestMock = {
     query: query,
@@ -46,6 +48,6 @@ tap.test('iOS Controller', function (t) {
     }
   }
   var endpoints = ios.setup(runtimeMock)
-  endpoints[0].config.handler(requestMock, replyMock)
+  await endpoints[0].config.handler(requestMock, replyMock)
   t.plan(4)
 })

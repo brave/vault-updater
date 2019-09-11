@@ -1,10 +1,10 @@
 let assert = require('assert')
-let Joi = require('joi')
+let Joi = require('@hapi/joi')
 let common = require('../common')
 let _ = require('underscore')
 let qs = require('querystring')
 let semver = require('semver')
-let boom = require('boom')
+let boom = require('@hapi/boom')
 
 let channelData = require('../common').channelData
 let platformData = require('../common').platformData
@@ -134,20 +134,21 @@ var setup = (runtime, releases) => {
     method: 'GET',
     path: '/latest/{platform}/{channel?}',
     config: {
-      handler: function(request, reply) {
+      description: '* Return redirect to latest binary for a platform and channel',
+      handler: function (request, h) {
         request.params.channel = request.params.channel || 'release'
         if (!braveCoreChannelIdentifiers.hasOwnProperty(request.params.channel)) {
           console.log('unknown channel')
-          return reply("unknown channel").code(404)
+          return h.response("unknown channel").code(404)
         }
         if (request.params.platform && braveCoreRedirects[request.params.platform]) {
           let url = braveCoreRedirects[request.params.platform]
           let channelSuffix = braveCoreChannelIdentifiers[request.params.channel]
           if (request.params.platform === 'osx' && request.params.channel !== 'release') channelSuffix = '-' + channelSuffix
           url = braveCoreBase + url.replace('[CHANNEL]', channelSuffix)
-          reply().redirect(url)
+          return h.redirect(url)
         } else {
-          reply().redirect(LINUX_REDIRECT_URL)
+          return h.redirect(LINUX_REDIRECT_URL)
         }
       }
     }
@@ -159,10 +160,11 @@ var setup = (runtime, releases) => {
     method: 'GET',
     path: '/1/releases/{platform}/{version}',
     config: {
-      handler: function (request, reply) {
+      description: "* LEGACY MUON",
+      handler: function (request, h) {
         let url = `/1/releases/dev/${request.params.version}/${request.params.platform}?${qs.stringify(request.query)}`
         console.log("redirecting to " + url)
-        reply().redirect(url)
+        return h.redirect(url)
       }
     }
   }
@@ -172,7 +174,8 @@ var setup = (runtime, releases) => {
     method: 'GET',
     path: '/1/releases/{channel}/{version}/{platform}',
     config: {
-      handler: function (request, reply) {
+      description: '* LEGACY MUON',
+      handler: function (request, h) {
         // Handle undefined platforms
         if (request.params.platform === 'undefined') {
           request.params.platform = 'unknown'
@@ -182,8 +185,8 @@ var setup = (runtime, releases) => {
         let platform = request.params.platform
         let version = request.params.version
 
-        if (!semver.valid(version)) return reply(boom.badRequest("Invalid version " + version))
-        if (!channelData[channel]) return reply(boom.badRequest("Invalid channel " + channel))
+        if (!semver.valid(version)) return boom.badRequest("Invalid version " + version)
+        if (!channelData[channel]) return boom.badRequest("Invalid channel " + channel)
 
         // Build the usage record (for Mongo)
         let usage = buildUsage(request)
@@ -212,10 +215,9 @@ var setup = (runtime, releases) => {
           if (targetRelease) {
             var response = responseFormatter(targetRelease, channel, platform)
             console.log(response)
-            reply(response)
+            return response
           } else {
-            let response = reply('No Content')
-            response.code(204)
+            return h.response('No Content').code(204)
           }
         })
       },
