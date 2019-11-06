@@ -20,7 +20,8 @@ var expected = {
   channel: 'dev',
   platform: 'ios',
   ref: 'none',
-  woi: '2016-01-04'
+  woi: '2016-01-04',
+  country_code: 'UNKNOWN'
 }
 
 tap.test('iOS Controller', function (t) {
