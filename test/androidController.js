@@ -24,7 +24,8 @@ var expected = {
   channel: 'dev',
   platform: 'android',
   ref: 'none',
-  woi: '2016-01-04'
+  woi: '2016-01-04',
+  country_code: 'UNKNOWN'
 }
 
 tap.test('Android Controller', function (t) {

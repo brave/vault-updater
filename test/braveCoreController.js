@@ -25,7 +25,8 @@ var expected = {
   channel: 'dev',
   platform: 'winia32-bc',
   ref: 'none',
-  woi: '2016-01-04'
+  woi: '2016-01-04',
+  country_code: 'UNKNOWN'
 }
 
 tap.test('Brave Core Controller', function (t) {
