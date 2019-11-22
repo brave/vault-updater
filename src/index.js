@@ -71,6 +71,9 @@ mq.setup((senders) => {
     // webcompat collection routes
     let webcompatRoutes = require('./controllers/webcompat').setup(runtime, releases)
 
+    // feedback collection routes
+    let feedbackRoutes = require('./controllers/feedback').setup(runtime, releases)
+
     let server = null
 
     // Output request headers to aid in osx crash storage issue
@@ -119,7 +122,7 @@ mq.setup((senders) => {
     server.route(
       [
         common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy, installerEventsCollectionRoutes, webcompatRoutes)
+      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy, installerEventsCollectionRoutes, webcompatRoutes, feedbackRoutes)
     )
 
     server.start((err) => {
