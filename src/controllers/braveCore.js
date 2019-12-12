@@ -4,8 +4,8 @@
 
 let Joi = require('joi')
 
-let platforms = ['osx-bc', 'winia32-bc', 'winx64-bc', 'linux-bc']
-let channels = ['dev', 'release', 'nightly', 'beta']
+let platforms = ['osx-bc', 'winia32-bc', 'winx64-bc', 'linux-bc', 'android-bc']
+let channels = ['dev', 'release', 'nightly', 'beta', 'stable']
 let booleanString = ['true', 'false']
 let common = require('../common')
 
@@ -65,3 +65,5 @@ exports.setup = (runtime) => {
 
   return [get]
 }
+
+exports.validator = validator
