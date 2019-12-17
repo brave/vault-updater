@@ -14,6 +14,7 @@ const uap = require('user-agent-parser')
 
 const common = require('../common')
 const promo = require('../lib/promo')
+const MC = require('../memory-cache')
 
 const S3_DOWNLOAD_BUCKET = process.env.S3_DOWNLOAD_BUCKET || 'brave-browser-downloads'
 const S3_DOWNLOAD_REGION = process.env.S3_DOWNLOAD_REGION || 'us-east-1'
@@ -68,12 +69,38 @@ exports.setup = (runtime, releases) => {
     .sort((a, b) => { semver.compare(a.version, b.version) })[0].version
   console.log("Serving promo download for version: " + latestVersionNumber)
 
+  const customHeadersCacheFunc = MC.create(parseInt(process.env.CUSTOM_HEADERS_CACHE_TIMEOUT || 30), async () => {
+    const requestOptions = {
+      method: 'GET',
+      uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/custom-headers`,
+      json: true,
+      headers: {
+        Authorization: 'Bearer ' + process.env.AUTH_TOKEN
+      }
+    }
+    if (process.env.FIXIE_URL) {
+      requestOptions.proxy = process.env.FIXIE_URL
+    }
+    return await common.prequest(requestOptions)
+  })
+
   // method, local uri, remote uri, description
   const proxyForwards = [
     ['PUT', '/promo/activity', '/api/1/promo/activity', 'Called on periodic check-in and finalization from browser'],
-    ['GET', '/promo/custom-headers', '/api/1/promo/custom-headers', 'Array of custom headers for publishers'],
     ['GET', '/promo/publisher/{referral_code}', '/api/1/promo/publishers/{referral_code}', 'Retrieve details about publisher referral']
   ]
+
+  const customHeadersGet = {
+    method: 'GET',
+    path: '/promo/custom-headers',
+    config: {
+      description: "Retrieve custom headers from referral",
+      tags: ['api'],
+      handler: async (request, reply) => {
+        reply(await customHeadersCacheFunc())
+      }
+    }
+  }
 
   const proxyRoutes = proxyForwards.map((definition) => {
     let route = {
@@ -459,6 +486,7 @@ exports.setup = (runtime, releases) => {
     ios_initialize_put,
     nonua_initialize_put,
     redirectMobileGET,
-    redirect_channel_download
+    redirect_channel_download,
+    customHeadersGet
   ])
 }
