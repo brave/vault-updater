@@ -58,6 +58,21 @@ const referralDetails = async (referralCode) => {
   return results
 }
 
+const customHeadersCacheFunc = MC.create(parseInt(process.env.CUSTOM_HEADERS_CACHE_TIMEOUT || 30), async () => {
+  const requestOptions = {
+    method: 'GET',
+    uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/custom-headers`,
+    json: true,
+    headers: {
+      Authorization: 'Bearer ' + process.env.AUTH_TOKEN
+    }
+  }
+  if (process.env.FIXIE_URL) {
+    requestOptions.proxy = process.env.FIXIE_URL
+  }
+  return await common.prequest(requestOptions)
+})
+
 exports.setup = (runtime, releases) => {
 
   const previewFilter = process.env.TESTING ?
@@ -69,20 +84,6 @@ exports.setup = (runtime, releases) => {
     .sort((a, b) => { semver.compare(a.version, b.version) })[0].version
   console.log("Serving promo download for version: " + latestVersionNumber)
 
-  const customHeadersCacheFunc = MC.create(parseInt(process.env.CUSTOM_HEADERS_CACHE_TIMEOUT || 30), async () => {
-    const requestOptions = {
-      method: 'GET',
-      uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/custom-headers`,
-      json: true,
-      headers: {
-        Authorization: 'Bearer ' + process.env.AUTH_TOKEN
-      }
-    }
-    if (process.env.FIXIE_URL) {
-      requestOptions.proxy = process.env.FIXIE_URL
-    }
-    return await common.prequest(requestOptions)
-  })
 
   // method, local uri, remote uri, description
   const proxyForwards = [
@@ -490,3 +491,5 @@ exports.setup = (runtime, releases) => {
     customHeadersGet
   ])
 }
+
+exports.customHeadersCacheFunc = customHeadersCacheFunc
