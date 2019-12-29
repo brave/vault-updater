@@ -1,3 +1,4 @@
+const moment = require('moment')
 const r = require('request')
 
 exports.root = {
@@ -99,3 +100,6 @@ exports.platformIdentifiers = {
   OSX: 'osx'
 }
 
+exports.reformatANSIDate = (dt) => {
+  return moment(dt, 'YYYY-MM-DD').format('YYYY-MM-DD')
+}
