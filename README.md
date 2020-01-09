@@ -15,8 +15,8 @@ Install dependencies `npm install`
 ## Environment variables
 
 ```
-MONGOLAB_URI:           URL to Mongo [required]
-CLOUDAMQP_URL: URL to RabbitMQ [required]
+MLAB_URI:               URL to Mongo [required]
+CLOUDAMQP_URL:          URL to RabbitMQ [required]
 
 FIXIE_URL:              URL to fixie [optional]
 NEW_RELIC_APP_NAME:     Name or app [optional]
