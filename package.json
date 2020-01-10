@@ -11,7 +11,7 @@
     "start": "./node_modules/.bin/babel-node src/index.js",
     "lint": "standard",
     "verify": "node tools/verify.js",
-    "test": "BEHIND_FASTLY=1 tap test/*.js",
+    "test": "S3_DOWNLOAD_KEY=1 S3_DOWNLOAD_SECRET=1 BEHIND_FASTLY=1 tap test/*.js",
     "test-win": "set BEHIND_FASTLY=1 && tap test/*.js"
   },
   "author": "Brave",
@@ -47,6 +47,7 @@
     "yargs": "^3.31.0"
   },
   "devDependencies": {
+    "nock": "^11.7.0",
     "s3": "^4.4.0",
     "standard": "^5.4.1",
     "tap": "^6.1.1"
