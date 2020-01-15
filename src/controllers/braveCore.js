@@ -4,10 +4,12 @@
 
 let Joi = require('joi')
 
+let verification = require('../verification')
+let common = require('../common')
+
 let platforms = ['osx-bc', 'winia32-bc', 'winx64-bc', 'linux-bc', 'android-bc']
 let channels = ['dev', 'release', 'nightly', 'beta', 'stable']
 let booleanString = ['true', 'false']
-let common = require('../common')
 
 let validator = {
   query: {
@@ -48,16 +50,22 @@ exports.setup = (runtime) => {
     method: 'GET',
     path: '/1/usage/brave-core',
     config: {
-      handler: function (request, reply) {
-        var usage = buildUsage(request)
-        runtime.mongo.models.insertBraveCoreUsage(usage, (err, results) => {
-          if (err) {
-            console.log(err.toString())
-            reply({ ts: (new Date()).getTime(), status: 'error', message: err }).code(500)
-          } else {
+      handler: (request, reply) => {
+        const usage = buildUsage(request)
+        if (verification.isUsagePingValid(request, usage, [], [])) {
+          runtime.mongo.models.insertBraveCoreUsage(usage, (err, results) => {
+            if (err) {
+              console.log(err.toString())
+              reply({ ts: (new Date()).getTime(), status: 'error', message: err }).code(500)
+            } else {
+              reply({ ts: (new Date()).getTime(), status: 'ok' })
+            }
+          })
+        } else {
+          verification.writeFilteredUsagePing(runtime.mongo, usage, (err, results) => {
             reply({ ts: (new Date()).getTime(), status: 'ok' })
-          }
-        })
+          })
+        }
       },
       validate: validator
     }
