@@ -16,7 +16,7 @@ let buildUsage = (request) => {
       version: request.query.version || 'unknown',
       first: request.query.first === 'true',
       channel: request.query.channel || 'unknown',
-      woi: request.query.woi || '2016-01-04',
+      woi: common.reformatANSIDate(request.query.woi || '2016-01-04'),
       ref: request.query.ref || 'none',
       country_code: common.countryCodeFrom(request)
     }
