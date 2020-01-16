@@ -1,5 +1,5 @@
-const Joi = require('joi')
-const Boom = require('boom')
+const Joi = require('@hapi/joi')
+const Boom = require('@hapi/boom')
 const moment = require('moment')
 const storage = require('../storage')
 const uuid = require('uuid/v4')
@@ -56,13 +56,13 @@ exports.setup = (runtime) => {
     path: '/1/feedback',
     config: {
       description: '* Record feedback',
-      handler: async (request, reply) => {
+      handler: async (request, h) => {
         try {
           // phase 2 - to be implemented - rate limit on IP address
 
           // verify API key
           if (!verification.isValidAPIKey(request.payload.api_key)) {
-            return reply(Boom.notAcceptable('invalid api key'))
+            return h.response(Boom.notAcceptable('invalid api key'))
           }
 
           // build event
@@ -72,9 +72,9 @@ exports.setup = (runtime) => {
           await storage.storeObjectOrEvent(runtime, FEEDBACK_COLLECTION, storageObject)
 
           // return success
-          return reply(successResult(storageObject.id))
+          return h.response(successResult(storageObject.id))
         } catch (e) {
-          return reply(Boom.badImplementation(e.toString()))
+          return h.response(Boom.badImplementation(e.toString()))
         }
       },
       validate: validator

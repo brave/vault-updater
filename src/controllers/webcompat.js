@@ -1,5 +1,5 @@
-const Joi = require('joi')
-const Boom = require('boom')
+const Joi = require('@hapi/joi')
+const boom = require('@hapi/boom')
 const moment = require('moment')
 const uap = require('user-agent-parser')
 const storage = require('../storage')
@@ -63,29 +63,29 @@ exports.setup = (runtime) => {
   routes.push({
     method: 'POST',
     path: '/1/webcompat',
-    config: {
+    handler: async (request, h) => {
+      try {
+        // exit early if malformed domain
+        if (!domainIsValid(request.payload.domain)) return boom.badRequest('invalid domain')
+
+        // phase 2 - to be implemented - rate limit on IP address
+
+        // phase 2 - to be implemented - callout to referral server to verify api key
+
+        // build event
+        const storageObject = buildStorageObject(request.payload.domain, request.headers['user-agent'])
+
+        // abstract storage mechanism
+        await storage.storeObjectOrEvent(runtime, WEBCOMPAT_COLLECTION, storageObject)
+
+        // return success
+        return h.response(successResult(runtime))
+      } catch (e) {
+        return h.response(boom.badImplementation(e.toString()))
+      }
+    },
+    options: {
       description: '* Record webcompat issue',
-      handler: async (request, reply) => {
-        try {
-          // exit early if malformed domain
-          if (!domainIsValid(request.payload.domain)) return Boom.badRequest('invalid domain')
-
-          // phase 2 - to be implemented - rate limit on IP address
-
-          // phase 2 - to be implemented - callout to referral server to verify api key
-
-          // build event
-          const storageObject = buildStorageObject(request.payload.domain, request.headers['user-agent'])
-
-          // abstract storage mechanism
-          await storage.storeObjectOrEvent(runtime, WEBCOMPAT_COLLECTION, storageObject)
-
-          // return success
-          return reply(successResult(runtime))
-        } catch (e) {
-          return reply(Boom.badImplementation(e.toString()))
-        }
-      },
       validate: validator
     }
   })

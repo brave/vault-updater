@@ -91,13 +91,14 @@ const setup = (runtime, availableExtensions) => {
   let extensionsRoute = {
     method: ['POST'],
     path: '/extensions',
-    config: {
-      handler: function (request, reply) {
-        const {requestedExtensions, version} = getRequestedExtensions(request.payload.toString())
-        const extensionsWithUpdates = getExtensionsWithUpdates(availableExtensions, requestedExtensions)
-        reply(getExtensionsResponse(braveBaseExtensionUrl, extensionsWithUpdates, version))
-          .type('application/xml')
-      },
+    handler: function (request, h) {
+      const {requestedExtensions, version} = getRequestedExtensions(request.payload.toString())
+      const extensionsWithUpdates = getExtensionsWithUpdates(availableExtensions, requestedExtensions)
+      return h.response(getExtensionsResponse(braveBaseExtensionUrl, extensionsWithUpdates, version))
+        .type('application/xml')
+    },
+    options: {
+      description: "* LEGACY MUON - check for extension update",
       payload: {
         parse: false,
         allow: 'application/xml'

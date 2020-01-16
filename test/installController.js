@@ -33,9 +33,11 @@ tap.test('Installer Controller', async (t) => {
       }
     }
   }
-  var replyMock = function (obj) {
-    t.ok(obj.ts, 'timestamp returned')
-    t.ok(obj.status === 'ok', 'status ok')
+  var hMock = {
+    response: function(obj) {
+      t.ok(obj.ts, 'timestamp returned')
+      t.ok(obj.status === 'ok', 'status ok')
+    }
   }
   var requestMock = {
     query: query,
@@ -45,6 +47,6 @@ tap.test('Installer Controller', async (t) => {
     headers: {}
   }
   var endpoints = ctrl.setup(runtimeMock)
-  await endpoints[0].config.handler(requestMock, replyMock)
+  await endpoints[0].handler(requestMock, hMock)
   t.end()
 })

@@ -19,8 +19,6 @@ MLAB_URI:               URL to Mongo [required]
 CLOUDAMQP_URL:          URL to RabbitMQ [required]
 
 FIXIE_URL:              URL to fixie [optional]
-NEW_RELIC_APP_NAME:     Name or app [optional]
-NEW_RELIC_LICENSE_KEY:  New Relic key [optional]
 PAPERTRAIL_API_TOKEN:   Papertrail API token [optional]
 
 S3_CRASH_KEY:           S3 crash key [required]

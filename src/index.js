@@ -5,14 +5,13 @@
 if (process.env.NEWRELIC_LICENSE_KEY) {
   require('newrelic')
 }
-
-let Hapi = require('hapi')
+let Hapi = require('@hapi/hapi')
+let Boom = require('@hapi/boom')
+let Joi = require('@hapi/joi')
 
 let logger = require('logfmt')
-let Inert = require('inert')
 let assert = require('assert')
 let _ = require('underscore')
-let h2o2 = require('h2o2')
 
 let profile = process.env.NODE_ENV || 'development'
 let config = require('../config/config.' + profile + '.js')
@@ -47,7 +46,6 @@ mq.setup((senders) => {
     let releaseRoutes = require('./controllers/releases').setup(runtime, releases)
     let extensionRoutes = require('./controllers/extensions').setup(runtime, extensions)
     let crashes = require('./controllers/crashes').setup(runtime)
-    let monitoring = require('./controllers/monitoring').setup(runtime)
 
     // GET /1/usage/[ios|android|brave-core]
     let androidRoutes = require('./controllers/android').setup(runtime)
@@ -70,68 +68,76 @@ mq.setup((senders) => {
     // feedback collection routes
     let feedbackRoutes = require('./controllers/feedback').setup(runtime, releases)
 
-    let server = null
+    const init = async () => {
+      let server = null
 
-    // Output request headers to aid in osx crash storage issue
-    if (process.env.LOG_HEADERS) {
-      server = new Hapi.Server({
-        debug: {
-          request: ['error', 'received', 'handler'],
-          log: ['error']
-        }
-      })
-    } else {
-      server = new Hapi.Server()
-    }
-
-    let serv = server.connection({
-      host: config.host,
-      port: config.port
-    })
-
-    server.register({ register: h2o2, options: { passThrough: true } }, function (err) {})
-    server.register(require('blipp'), function () {})
-
-    if (process.env.LOG_HEADERS) {
-      serv.listener.on('request', (request, event, tags) => {
-        logger.log(request.headers)
-      })
-    }
-
-    if (process.env.INSPECT_BRAVE_HEADERS) {
-      serv.listener.on('request', (request, event, tags) => {
-        headers.inspectBraveHeaders(request)
-      })
-    }
-
-    server.ext('onPreResponse', (request, reply) => {
-      const response = request.response;
-      if (request.response.isBoom) {
-        response.output.headers['cache-control'] = 'no-cache, no-store, must-revalidate, private, max-age=0'
-        response.output.headers['pragma'] = 'no-cache'
-        response.output.headers['expires'] =  0
-      } else if (!('cache-control' in response.headers)) {
-        response.header('cache-control', 'no-cache, no-store, must-revalidate, private, max-age=0')
-        response.header('pragma', 'no-cache')
-        response.header('expires', 0)
+      // Output request headers to aid in osx crash storage issue
+      if (process.env.LOG_HEADERS) {
+        server = new Hapi.Server({
+          host: config.host,
+          port: config.port,
+        })
+      } else {
+        server = new Hapi.Server({
+          host: config.host,
+          port: config.port,
+        })
       }
-      reply.continue()
-    })
 
-    serv.listener.once('clientError', function (e) {
-      console.error(e)
-    })
+      if (process.env.INSPECT_BRAVE_HEADERS) {
+        server.events.on('request', (request, event, tags) => {
+          headers.inspectBraveHeaders(request)
+        })
+      }
+      server.validator(Joi)
 
-    // Routes
-    server.route(
-      [
-        common.root
-      ].concat(releaseRoutes, extensionRoutes, crashes, monitoring, androidRoutes, iosRoutes, braveCoreRoutes, promoProxy, installerEventsCollectionRoutes, webcompatRoutes, feedbackRoutes)
-    )
+      await server.register({ plugin: require('@hapi/h2o2'), options: { passThrough: true } })
+      await server.register({ plugin: require('blipp') })
 
-    server.start((err) => {
-      assert(!err, `error starting service ${err}`)
-      console.log('update service started')
-    })
+      // Output request headers to aid in osx crash storage issue
+      if (process.env.LOG_HEADERS) {
+        server.events.on('request', (request, event, tags) => {
+          logger.log(request.headers)
+        })
+      }
+
+      server.ext('onPreResponse', (request, h) => {
+        const response = request.response;
+        if (request.response.isBoom) {
+          response.output.headers['cache-control'] = 'no-cache, no-store, must-revalidate, private, max-age=0'
+          response.output.headers['pragma'] = 'no-cache'
+          response.output.headers['expires'] =  0
+        } else if (!('cache-control' in response.headers)) {
+          response.header('cache-control', 'no-cache, no-store, must-revalidate, private, max-age=0')
+          response.header('pragma', 'no-cache')
+          response.header('expires', 0)
+        }
+        return h.continue;
+      });
+
+      // Routes
+      server.route(
+        [
+          common.root
+        ].concat(
+          braveCoreRoutes,
+          androidRoutes,
+          iosRoutes,
+          crashes,
+          extensionRoutes,
+          installerEventsCollectionRoutes,
+          releaseRoutes,
+          webcompatRoutes,
+          promoProxy
+        )
+      )
+
+      await server.start((err) => {
+        assert(!err, `error starting service ${err}`)
+        console.log('update service started')
+      })
+    }
+
+    init()
   })
 })
