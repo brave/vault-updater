@@ -27,22 +27,24 @@ const usageSchema = Joi.object().keys({
 .with('daily', 'weekly', 'monthly')
 
 exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
-  MongoClient.connect(mongoURL, (err, connection) => {
+  MongoClient.connect(mongoURL, (err, client) => {
     assert.equal(null, err)
     console.log(`connection to Mongo established at ${mongoURL}`)
 
-    const usageCollection = connection.collection('usage')
-    const androidUsageCollection = connection.collection('android_usage')
-    const iosUsageCollection = connection.collection('ios_usage')
-    const braveCoreUsageCollection = connection.collection('brave_core_usage')
-    const crashesCollection = connection.collection('crashes')
-    const installerEventCollection = connection.collection('installer_events')
+    const db = client.db()
+
+    const usageCollection = db.collection('usage')
+    const androidUsageCollection = db.collection('android_usage')
+    const iosUsageCollection = db.collection('ios_usage')
+    const braveCoreUsageCollection = db.collection('brave_core_usage')
+    const crashesCollection = db.collection('crashes')
+    const installerEventCollection = db.collection('installer_events')
 
     // install a series of model data handlers on connection
-    connection.models = {
+    db.models = {
 
       retrieveStats: (done) => {
-        connection.stats(done)
+        db.stats(done)
       },
 
       // insert Laptop usage record
@@ -170,6 +172,6 @@ exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
       }
 
     }
-    done(connection)
+    done(db)
   })
 }
