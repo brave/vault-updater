@@ -30,6 +30,7 @@
     "hapi": "^11.1.2",
     "hapi-serve-s3": "^2.0.1",
     "hapi-set-header": "^1.0.0",
+    "hot-shots": "^6.8.5",
     "inert": "^3.2.0",
     "joi": "^7.0.1",
     "logfmt": "^1.2.0",
