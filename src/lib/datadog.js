@@ -8,9 +8,9 @@ Datadog.register = function (server, options, next) {
     let responseTime = Datadog.responseTime(request)
     let statusCode = Datadog.statusCode(request)
 
-    statsd.increment('http.request.count', 1, tags)
-    statsd.histogram('http.response.time.milliseconds', responseTime, 1, tags)
-    statsd.histogram('http.response.status.buckets', statusCode, 1, tags)
+    statsd.increment('http.request.count', 1, 0.25, tags)
+    statsd.histogram('http.response.time.milliseconds', responseTime, 0.25, tags)
+    statsd.histogram('http.response.status.buckets', statusCode, 0.25, tags)
   })
 
   next()
