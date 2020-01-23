@@ -143,18 +143,31 @@ const getRelease = function() {
 const run = async function() {
 
   weightedFuncs = [
-    usagePings,
-    crashReport,
-    reportExtensions,
-    installerEvents,
-    getRelease,
+    [ usagePings, 9 ],
+    [ installerEvents, 5 ],
+    [ getRelease, 3 ],
+    [ reportExtensions, 2 ],
+    [ crashReport, 1 ],
   ]
+
+  const weightedSample = function() {
+    let sum = 0
+    let cumWeights = []
+
+    _.each(weightedFuncs, (func) => {
+      sum += func[1]
+      cumWeights.push([func[0], sum])
+    })
+
+    let r = randInterval(0, sum)
+    return _.find(cumWeights, (x) => x[1] > r)[0]
+  }
 
   reqCount = randInterval(5, 30)
   let reqs = []
 
   for (let i = 0; i < reqCount; i++) {
-    let f = _.sample(weightedFuncs)
+    let f = weightedSample()
     reqs.push(f())
   }
 
