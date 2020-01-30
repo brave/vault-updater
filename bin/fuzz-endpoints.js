@@ -5,6 +5,8 @@ let rp = require('request-promise')
 let common = require('../src/common')
 
 let url = process.env.UPDATES_URI  || 'https://laptop-updates-staging.brave.com'
+let minRequests = process.env.REQUESTS_MIN || 5
+let maxRequests = process.env.REQUESTS_MAX || 30
 
 const extensionsXML = [
 `
@@ -163,7 +165,7 @@ const run = async function() {
     return _.find(cumWeights, (x) => x[1] > r)[0]
   }
 
-  reqCount = randInterval(5, 30)
+  reqCount = randInterval(minRequests, maxRequests)
   let reqs = []
 
   for (let i = 0; i < reqCount; i++) {
@@ -173,6 +175,11 @@ const run = async function() {
 
   let responses = await Promise.all(reqs)
   _.each(responses, (resp) => console.log("Response: " + resp))
+}
+
+if (minRequests > maxRequests || maxRequests < 1 || minRequests < 1) {
+  console.log('You are only hurting yourself')
+  process.exit(1)
 }
 
 setInterval(run, randInterval(1000, 4000))
