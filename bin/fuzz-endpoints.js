@@ -65,7 +65,11 @@ const usagePings = function() {
 // POST /1/crashes
 // POST /1/bc-crashes
 const crashReport = function() {
-  const crashVersion = _.sample(['crashes', 'bc-crashes'])
+  const crashVersion = _.sample(
+    [
+      //'crashes',
+      'bc-crashes'
+    ])
   const path = `/1/${crashVersion}`
   const endpoint = `${url}${path}`
 
