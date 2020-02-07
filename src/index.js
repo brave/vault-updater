@@ -3,7 +3,6 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 let Hapi = require('hapi')
-let StatsD = require('hot-shots')
 
 process.env.NEW_RELIC_NO_CONFIG_FILE = true
 if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
@@ -93,12 +92,6 @@ mq.setup((senders) => {
     server.register({ register: h2o2, options: { passThrough: true } }, function (err) {})
     server.register(require('blipp'), function () {})
     server.register(require('hapi-serve-s3'), function () {})
-    server.register({
-      register: require('./lib/datadog'),
-      options: {
-        statsd: new StatsD()
-      }
-    }, function () {})
 
     // Output request headers to aid in osx crash storage issue
     if (process.env.LOG_HEADERS) {
