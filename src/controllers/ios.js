@@ -33,9 +33,10 @@ exports.setup = (runtime) => {
       handler: function (request, reply) {
         headers.potentiallyInspectBraveHeaders(request)
         var usage = buildUsage(request)
+        usage = headers.potentiallyStoreBraveHeaders(request, usage)
         runtime.mongo.models.insertIOSUsage(usage, (err, results) => {
           if (err) {
-            console.log(err.toString())
+            console.log(err)
             reply({ ts: (new Date()).getTime(), status: 'error' }).code(500)
           } else {
             reply({ ts: (new Date()).getTime(), status: 'ok' })

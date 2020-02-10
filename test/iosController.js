@@ -24,7 +24,8 @@ var expected = {
   platform: 'ios',
   ref: 'none',
   woi: '2019-01-07',
-  country_code: 'UNKNOWN'
+  country_code: 'UNKNOWN',
+  braveDataCenter: true
 }
 
 tap.test('iOS Controller', function (t) {
@@ -46,10 +47,12 @@ tap.test('iOS Controller', function (t) {
   var requestMock = {
     query: query,
     headers: {
-      'X-Forwarded-For': '1.1.1.1'
+      'X-Forwarded-For': '1.1.1.1',
+      'x-brave-req-from-dc': true,
     }
   }
   var endpoints = ios.setup(runtimeMock)
+  process.env.STORE_BRAVE_HEADERS = 1
   endpoints[0].config.handler(requestMock, replyMock)
   t.plan(4)
 })
