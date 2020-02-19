@@ -48,7 +48,7 @@ tap.test('iOS Controller', function (t) {
     query: query,
     headers: {
       'X-Forwarded-For': '1.1.1.1',
-      'x-brave-req-from-dc': true,
+      'x-brave-req-from-dc': 'true',
     }
   }
   var endpoints = ios.setup(runtimeMock)

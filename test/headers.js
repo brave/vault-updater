@@ -8,7 +8,7 @@ tap.test("custom Brave header handling", (t) => {
   delete process.env.STORE_BRAVE_HEADERS
 
   usage = {}
-  request = { headers: { 'x-brave-req-from-dc': true } }
+  request = { headers: { 'x-brave-req-from-dc': 'true' } }
   usage = headers.potentiallyStoreBraveHeaders(request, usage)
   t.ok(typeof usage.braveDataCenter === 'undefined', 'braveDataCenter not set if STORE_BRAVE_HEADERS not set')
 
@@ -20,12 +20,12 @@ tap.test("custom Brave header handling", (t) => {
   t.ok(usage.braveDataCenter === false, 'braveDataCenter not set if missing header')
 
   usage = {}
-  request = { headers: { 'x-brave-req-from-dc': false } }
+  request = { headers: { 'x-brave-req-from-dc': 'false' } }
   usage = headers.potentiallyStoreBraveHeaders(request, usage)
   t.ok(usage.braveDataCenter === false, 'braveDataCenter not set if false')
 
   usage = {}
-  request = { headers: { 'x-brave-req-from-dc': true } }
+  request = { headers: { 'x-brave-req-from-dc': 'true' } }
   usage = headers.potentiallyStoreBraveHeaders(request, usage)
   t.ok(usage.braveDataCenter === true, 'braveDataCenter set if true')
 

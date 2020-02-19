@@ -31,7 +31,6 @@ exports.setup = (runtime) => {
     path: '/1/usage/ios',
     config: {
       handler: function (request, reply) {
-        headers.potentiallyInspectBraveHeaders(request)
         var usage = buildUsage(request)
         usage = headers.potentiallyStoreBraveHeaders(request, usage)
         runtime.mongo.models.insertIOSUsage(usage, (err, results) => {

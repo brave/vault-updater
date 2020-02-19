@@ -1,21 +1,22 @@
 const _ = require('underscore')
 
-const potentiallyInspectBraveHeaders = (request) => {
-  if (!process.env.INSPECT_BRAVE_HEADERS) return
+const inspectBraveHeaders = (request) => {
   _.each(request.headers, (v, k) => {
-    if (k.match(/^x-brave-/)) {
+    if (k.startsWith('x-brave-')) {
       console.log(`${k}=${v}`)
     }
   })
 }
 
 const storeDataCenterFlag = (headers, usage) => {
-  usage.braveDataCenter = headers.hasOwnProperty('x-brave-req-from-dc') && headers['x-brave-req-from-dc']
+  usage.braveDataCenter = headers.hasOwnProperty('x-brave-req-from-dc') && headers['x-brave-req-from-dc'] === "true"
   return usage
 }
 
 const potentiallyStoreBraveHeaders = (request, usage) => {
-  if (!process.env.STORE_BRAVE_HEADERS) return usage
+  if (!process.env.STORE_BRAVE_HEADERS) {
+    return usage
+  }
   // first brave flag to test is data center
   usage = storeDataCenterFlag(request.headers, usage)
   // todo add other brave flags
@@ -23,6 +24,6 @@ const potentiallyStoreBraveHeaders = (request, usage) => {
 }
 
 module.exports = {
-  potentiallyInspectBraveHeaders,
+  inspectBraveHeaders,
   potentiallyStoreBraveHeaders,
 }

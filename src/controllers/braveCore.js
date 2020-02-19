@@ -52,7 +52,6 @@ exports.setup = (runtime) => {
     path: '/1/usage/brave-core',
     config: {
       handler: (request, reply) => {
-        headers.potentiallyInspectBraveHeaders(request)
         let usage = buildUsage(request)
         usage = headers.potentiallyStoreBraveHeaders(request, usage)
         if (verification.isUsagePingValid(request, usage, [], [])) {
