@@ -3,7 +3,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const common = require('../common')
-const ipLimit = require('../IPLimit')
+const headers = require('../lib/headers')
 
 // Build a usage object if query parameters passed in
 let buildUsage = (request) => {
@@ -32,6 +32,7 @@ exports.setup = (runtime) => {
     config: {
       handler: function (request, reply) {
         var usage = buildUsage(request)
+        usage = headers.potentiallyStoreBraveHeaders(request, usage)
         runtime.mongo.models.insertAndroidUsage(usage, (err, results) => {
           if (err) {
             console.log(err.toString())

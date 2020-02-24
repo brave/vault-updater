@@ -6,6 +6,7 @@ let Joi = require('joi')
 
 let verification = require('../verification')
 let common = require('../common')
+const headers = require('../lib/headers')
 
 let platforms = ['osx-bc', 'winia32-bc', 'winx64-bc', 'linux-bc', 'android-bc']
 let channels = ['dev', 'release', 'nightly', 'beta', 'stable']
@@ -51,7 +52,8 @@ exports.setup = (runtime) => {
     path: '/1/usage/brave-core',
     config: {
       handler: (request, reply) => {
-        const usage = buildUsage(request)
+        let usage = buildUsage(request)
+        usage = headers.potentiallyStoreBraveHeaders(request, usage)
         if (verification.isUsagePingValid(request, usage, [], [])) {
           runtime.mongo.models.insertBraveCoreUsage(usage, (err, results) => {
             if (err) {

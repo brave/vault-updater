@@ -25,6 +25,7 @@ let db = require('./db')
 let setup = require('./setup')
 let common = require('./common')
 let mq = require('./mq')
+let headers = require('./lib/headers')
 
 // Read in the channel / platform releases meta-data
 let releases = setup.readReleases('data')
@@ -93,10 +94,15 @@ mq.setup((senders) => {
     server.register(require('blipp'), function () {})
     server.register(require('hapi-serve-s3'), function () {})
 
-    // Output request headers to aid in osx crash storage issue
     if (process.env.LOG_HEADERS) {
       serv.listener.on('request', (request, event, tags) => {
         logger.log(request.headers)
+      })
+    }
+
+    if (process.env.INSPECT_BRAVE_HEADERS) {
+      serv.listener.on('request', (request, event, tags) => {
+        headers.inspectBraveHeaders(request)
       })
     }
 
