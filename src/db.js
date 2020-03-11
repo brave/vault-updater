@@ -157,8 +157,12 @@ exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
             // Log the crash
             console.log(JSON.stringify(crash))
             // Insert miniDump into S3
-            s3.storeCrashReport(id, miniDump, function() {
-              console.log('minidump stored in S3')
+            s3.storeCrashReport(id, miniDump, function(err, data) {
+              if (err) {
+                console.log("Could not upload to s3: ", err)
+                return
+              }
+              console.log(`minidump ${id} stored in S3`)
               // check if this is coming from muon or brave core
               let sender = product === 'muon' ?
                 amqpSender : amqpBraveCoreSender
