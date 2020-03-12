@@ -4,7 +4,8 @@ let _ = require('underscore')
 let rp = require('request-promise')
 let common = require('../src/common')
 
-let url = process.env.UPDATES_URI  || 'https://laptop-updates-staging.brave.com'
+let url = process.env.UPDATES_URI  || 'https://laptop-updates-pre.brave.com/'
+let api_key = process.env.API_KEY  || 'key'
 let minRequests = process.env.REQUESTS_MIN || 5
 let maxRequests = process.env.REQUESTS_MAX || 30
 
@@ -20,6 +21,8 @@ const extensionsXML = [
 const randInterval = function(min, max) {
   return Math.floor(Math.random() * max) + min
 }
+
+const braveUA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
 
 // GET /1/usage/brave-core
 // GET /1/usage/ios
@@ -60,6 +63,50 @@ const usagePings = function() {
 
   console.log(`Queuing request for ${path}`)
   return rp.get(options)
+}
+
+// GET /download/desktop/{referral_code}
+// GET /download/android/{referral_code}
+// GET /download/ios/{referral_code}
+const downloads = function() {
+  const codes = [ 'wts071', 'ABC123', 'BRV001', 'CLU884' ]
+  const platforms = [ 'desktop', 'android', 'ios' ]
+
+  const referralCode = _.sample(codes)
+  const platform = _.sample(platforms)
+  const path = `/download/${platform}/${referralCode}`
+  const endpoint = `${url}${path}`
+  console.log(`Queuing request for ${path}`)
+  const options = {
+    url: endpoint,
+    headers: {
+      'User-Agent': braveUA
+    }
+  }
+  return rp.get(options)
+}
+
+// PUT /promo/initialize/nonua
+const installation = function() {
+  const codes = [ 'wts071', 'ABC123', 'BRV001', 'CLU884' ]
+  const platforms = [ 'desktop', 'android', 'ios' ]
+
+  const referralCode = _.sample(codes)
+  const platform = _.sample(platforms)
+  const path = 'promo/initialize/nonua'
+  console.log(`Queuing request for ${path}`)
+  const endpoint = `${url}${path}`
+
+  const options = {
+    url: endpoint,
+    json: true,
+    body: {
+      referral_code: referralCode,
+      platform: platform,
+      api_key: api_key
+    }
+  }
+  return rp.put(options)
 }
 
 // POST /1/crashes
@@ -150,6 +197,8 @@ const run = async function() {
 
   weightedFuncs = [
     [ usagePings, 9 ],
+    [ downloads, 9 ],
+    [ installation, 5 ],
     [ installerEvents, 5 ],
     [ getRelease, 3 ],
     [ reportExtensions, 2 ],
