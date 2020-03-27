@@ -30,6 +30,14 @@ tap.test('verification', (t) => {
     headers: {  }
   }, { platform: 'linux-bc', version: '1.0.0', first: true }, apiKeys), 'platform=linux-bc,version=1.0.0,first=true is rejected')
 
+  t.notok(verification.isUsagePingValid({
+    headers: {  }
+  }, { platform: 'linux-bc', version: '1.5.113', first: true }, apiKeys), 'platform=linux-bc,version=1.5.113,first=true is rejected')
+
+  t.notok(verification.isUsagePingValid({
+    headers: {  }
+  }, { platform: 'linux-bc', version: '0.73.29', first: true }, apiKeys), 'platform=linux-bc,version=1.5.113,first=true is rejected')
+
   t.ok(verification.isUsagePingValid({
     headers: {  }
   }, { platform: 'linux-bc', version: '1.0.1', first: true }, apiKeys), 'platform=linux-bc,version=1.0.1,first=true is stored')
@@ -49,6 +57,6 @@ tap.test('verification', (t) => {
     platform: 'foobar'
   })
 
-  t.plan(5)
+  t.plan(7)
   t.end()
 })
