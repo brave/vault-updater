@@ -9,7 +9,7 @@ const FILTERED_COLLECTION = 'filtered' || process.env.FILTERED_COLLECTION
 // array of verifiers. A verifier is compose of a shouldVerify function and an
 // isValid function.
 const verifiers = [
-  linuxCore.onePointZeroFirst,
+  linuxCore.variousVersions,
 ]
 
 // public function to determine is a request should be verified, and if so,
