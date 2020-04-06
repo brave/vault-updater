@@ -2,6 +2,7 @@ const tap = require('tap')
 const moment = require('moment')
 
 const feedback = require('../src/controllers/feedback')
+const verification = require('../src/verification')
 
 tap.test('feedback', (t) => {
   let results = feedback.buildStorageObject({
@@ -21,6 +22,9 @@ tap.test('feedback', (t) => {
 
   t.equal(feedback.successResult('1').status, 'ok', 'ok result well formed')
   t.ok(feedback.successResult('1').id, 'ok result has id')
+
+  t.ok(verification.isValidAPIKey('a'), 'verification key found')
+  t.notok(verification.isValidAPIKey('z'), 'verification key not found')
 
   t.done()
 })

@@ -1,3 +1,4 @@
+const _ = require('underscore')
 const moment = require('moment')
 
 // verification libraries
@@ -11,6 +12,13 @@ const FILTERED_COLLECTION = 'filtered' || process.env.FILTERED_COLLECTION
 const verifiers = [
   linuxCore.variousVersions,
 ]
+
+const API_KEYS = _.object(
+  (process.env.API_KEYS || '')
+    .split(',')
+    .map((k) => { return k.trim() })
+    .map((k) => { return [k, true] })
+)
 
 // public function to determine is a request should be verified, and if so,
 // if the usage ping is valid (by iterating over a set of verifiers)
@@ -33,7 +41,12 @@ const writeFilteredUsagePing = (mg, usage, cb) => {
   filteredCollection.insertOne(usage, cb)
 }
 
+const isValidAPIKey = (k) => {
+  return !!API_KEYS[k]
+}
+
 module.exports = {
   isUsagePingValid,
-  writeFilteredUsagePing
+  writeFilteredUsagePing,
+  isValidAPIKey,
 }

@@ -3,6 +3,7 @@ const Boom = require('boom')
 const moment = require('moment')
 const storage = require('../storage')
 const uuid = require('uuid/v4')
+const verification = require('../verification')
 
 const FEEDBACK_COLLECTION = process.env.FEEDBACK_COLLECTION || 'feedback'
 
@@ -59,7 +60,10 @@ exports.setup = (runtime) => {
         try {
           // phase 2 - to be implemented - rate limit on IP address
 
-          // phase 2 - to be implemented - callout to referral server to verify api key
+          // verify API key
+          if (!verification.isValidAPIKey(request.payload.api_key)) {
+            return reply(Boom.notAcceptable('invalid api key'))
+          }
 
           // build event
           const storageObject = buildStorageObject(request.payload)
