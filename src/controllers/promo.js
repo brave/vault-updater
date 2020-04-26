@@ -172,7 +172,8 @@ exports.setup = (runtime, releases) => {
           const ip_address = common.ipAddressFrom(request)
           const body = {
             ip_address: ip_address,
-            api_key: request.payload.api_key
+            api_key: request.payload.api_key,
+            signals: new Buffer(JSON.stringify(common.signalsFromRequest(request))).toString('base64'),
           }
           const request_options = {
             method: 'PUT',
@@ -260,7 +261,9 @@ exports.setup = (runtime, releases) => {
           const body = {
             ip_address: ip_address,
             referral_code: request.params.referral_code,
-            platform: 'ios'
+            platform: 'ios',
+            // base 64 encode the signals
+            signals: new Buffer(JSON.stringify(common.signalsFromRequest(request))).toString('base64'),
           }
           const request_options = {
             method: 'POST',
