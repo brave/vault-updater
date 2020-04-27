@@ -33,7 +33,7 @@ const usagePings = function() {
   const booleanString = ['true', 'false']
 
   let platform = _.sample(['android', 'ios', 'brave-core'])
-  const path = `/1/usage/${platform}`
+  const path = `1/usage/${platform}`
   const endpoint = `${url}${path}`
 
   if (platform === 'brave-core') {
@@ -74,7 +74,7 @@ const downloads = function() {
 
   const referralCode = _.sample(codes)
   const platform = _.sample(platforms)
-  const path = `/download/${platform}/${referralCode}`
+  const path = `download/${platform}/${referralCode}`
   const endpoint = `${url}${path}`
   console.log(`Queuing request for ${path}`)
   const options = {
@@ -117,7 +117,7 @@ const crashReport = function() {
       //'crashes',
       'bc-crashes'
     ])
-  const path = `/1/${crashVersion}`
+  const path = `1/${crashVersion}`
   const endpoint = `${url}${path}`
 
   const options = {
@@ -134,7 +134,7 @@ const crashReport = function() {
 
 // POST /extensions
 const reportExtensions = function() {
-  const path = '/extensions'
+  const path = 'extensions'
   const endpoint = `${url}${path}`
 
   const options = {
@@ -155,7 +155,7 @@ const installerEvents = function() {
   const channels = ['dev', 'release', 'nightly', 'beta']
   const events = ['startup', 'download-complete', 'installer-run']
 
-  const path = '/1/installerEvent'
+  const path = '1/installerEvent'
   const endpoint = `${url}${path}`
 
   const options = {
@@ -186,7 +186,7 @@ const getRelease = function() {
   const version = '1.2.3'
   const channel = _.sample(channels)
   const platform = _.sample(platforms)
-  const path = `/1/releases/${channel}/${version}/${platform}`
+  const path = `1/releases/${channel}/${version}/${platform}`
   const endpoint = `${url}${path}`
 
   console.log(`Queueing request for ${path}`)
