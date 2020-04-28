@@ -72,7 +72,7 @@ exports.ipAddressFrom = (request) => {
 
 exports.signalsFromRequest = (request) => {
   const userAgent = request.headers['user-agent']
-  if (!userAgent) return {}
+  if (!userAgent) return null
 
   const parsedUserAgent = uap(userAgent)
   return {
