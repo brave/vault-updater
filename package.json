@@ -4,8 +4,8 @@
   "description": "Auto-update server for Brave laptop browser",
   "main": "index.js",
   "engines": {
-    "node": "7.10.1",
-    "npm": "4.2.0"
+    "node": "10.18.x",
+    "npm": "6.13.x"
   },
   "scripts": {
     "start": "./node_modules/.bin/babel-node src/index.js",
