@@ -1,5 +1,6 @@
 const moment = require('moment')
 const r = require('request')
+const uap = require('user-agent-parser')
 
 exports.root = {
   method: 'GET',
@@ -66,6 +67,18 @@ exports.ipAddressFrom = (request) => {
     }
   } else {
     return request.info.remoteAddress
+  }
+}
+
+exports.signalsFromRequest = (request) => {
+  const userAgent = request.headers['user-agent']
+  if (!userAgent) return null
+
+  const parsedUserAgent = uap(userAgent)
+  return {
+    osVersion: parsedUserAgent.os.version,
+    model: parsedUserAgent.device.model,
+    countryCode: request.headers['x-brave-country-code'] || 'unknown',
   }
 }
 

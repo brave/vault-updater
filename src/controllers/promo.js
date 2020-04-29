@@ -174,6 +174,8 @@ exports.setup = (runtime, releases) => {
             ip_address: ip_address,
             api_key: request.payload.api_key
           }
+          const signals = common.signalsFromRequest(request)
+          if (signals) body.signals = Buffer.from(JSON.stringify(signals)).toString('base64')
           const request_options = {
             method: 'PUT',
             uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/initialize/ua`,
@@ -262,6 +264,8 @@ exports.setup = (runtime, releases) => {
             referral_code: request.params.referral_code,
             platform: 'ios'
           }
+          const signals = common.signalsFromRequest(request)
+          if (signals) body.signals = Buffer.from(JSON.stringify(signals)).toString('base64')
           const request_options = {
             method: 'POST',
             uri: `${SERVICES_PROTOCOL}://${SERVICES_HOST}:${SERVICES_PORT}/api/1/promo/download`,
