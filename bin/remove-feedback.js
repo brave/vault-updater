@@ -15,8 +15,10 @@ const args = require('yargs')
   .argv
 
 const main = async (args) => {
-  MongoClient.connect(mongoURL, (err, connection) => {
-    const collection = connection.collection(FEEDBACK_COLLECTION);
+  MongoClient.connect(mongoURL, (err, client) => {
+    const db = client.db()
+
+    const collection = db.collection(FEEDBACK_COLLECTION);
     if (args.id) {
       collection.deleteOne({ id : args.id }, (err, result) => {
         assert.equal(err, null)
@@ -25,11 +27,12 @@ const main = async (args) => {
         } else {
           console.log(`Feedback with id ${args.id} removed`)
         }
-        connection.close()
+        client.close()
       })
     } else if (args.interval) {
       let [num, period] = args.interval.split(' ')
       num = parseInt(num)
+      assert(typeof(period) === 'string')
       const targetYMD = moment().subtract(num, period).format('YYYY-MM-DD')
       console.log(`This will remove all feedback before ${targetYMD}. Run again with -f to accept`)
       if (targetYMD && args.f) {
@@ -37,13 +40,13 @@ const main = async (args) => {
         collection.deleteMany({ ymd: { $lt: targetYMD }}, (err, result) => {
           assert.equal(err, null)
           console.log(`${result.result.n} feedback records removed`)
-          connection.close()
+          client.close()
         })
       } else {
-        connection.close()
+        client.close()
       }
     } else {
-      connection.close()
+      client.close()
     }
   })
 }
