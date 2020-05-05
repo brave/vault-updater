@@ -11,7 +11,7 @@
     "start": "./node_modules/.bin/babel-node src/index.js",
     "lint": "standard",
     "verify": "node tools/verify.js",
-    "test": "S3_DOWNLOAD_KEY=1 S3_DOWNLOAD_SECRET=1 BEHIND_FASTLY=1 tap test/*.js",
+    "test": "S3_DOWNLOAD_KEY=1 S3_DOWNLOAD_SECRET=1 BEHIND_FASTLY=1 API_KEYS=a,b,c tap test/*.js",
     "test-win": "set BEHIND_FASTLY=1 && tap test/*.js"
   },
   "author": "Brave",
