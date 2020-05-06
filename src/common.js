@@ -1,6 +1,7 @@
 const moment = require('moment')
 const r = require('request')
 const uap = require('user-agent-parser')
+const _ = require('underscore')
 
 exports.root = {
   method: 'GET',
@@ -74,12 +75,17 @@ exports.signalsFromRequest = (request) => {
   const userAgent = request.headers['user-agent']
   if (!userAgent) return null
 
+  let querySignals = {}
+  if (request.query.s) {
+    querySignals = JSON.parse(Buffer.from(request.query.s, 'base64').toString())
+  }
+
   const parsedUserAgent = uap(userAgent)
-  return {
+  return _.defaults({
     osVersion: parsedUserAgent.os.version,
     model: parsedUserAgent.device.model,
     countryCode: request.headers['x-brave-country-code'] || 'unknown',
-  }
+  }, querySignals)
 }
 
 exports.userAgentFrom = function (request) {
