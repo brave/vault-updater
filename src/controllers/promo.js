@@ -423,6 +423,38 @@ exports.setup = (runtime, releases) => {
     }
   }
 
+  const buildSuperReferrerResponse = (referralCode) => {
+    return `
+    <html>
+      <body>
+        <script>
+           // is iOS (iPhone and iPad)
+           var isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
+             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
+             !window.MSStream
+           if (isIOS) {
+             window.location = '${process.env.SUPER_REFERRER_REDIRECT}/${referralCode}'
+           } else {
+             window.location = '/download/${referralCode}'
+           }
+        </script>
+      </body>
+    </html>
+    `
+  }
+
+  const redirectSuperReferrerGet = {
+    method: 'GET',
+    path: '/super/{referral_code}',
+    config: {
+      tags: ['api'],
+      description: "Redirect to platform specific download handler",
+      handler: async function (request, reply) {
+        reply(buildSuperReferrerResponse(request.params.referral_code))
+      }
+    }
+  }
+
   const redirect_get = {
     method: 'GET',
     path: '/download/{referral_code}',
@@ -492,7 +524,8 @@ exports.setup = (runtime, releases) => {
     nonua_initialize_put,
     redirectMobileGET,
     redirect_channel_download,
-    customHeadersGet
+    customHeadersGet,
+    redirectSuperReferrerGet
   ])
 }
 
