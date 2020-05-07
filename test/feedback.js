@@ -6,7 +6,7 @@ const verification = require('../src/verification')
 
 tap.test('feedback', (t) => {
   let results = feedback.buildStorageObject({
-    selection: 'no',
+    selection: 'neutral',
     platform: 'androidbrowser',
     os_version: 'os',
     phone_make: 'make',
