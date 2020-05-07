@@ -10,7 +10,7 @@ const FEEDBACK_COLLECTION = process.env.FEEDBACK_COLLECTION || 'feedback'
 // feedback validator
 const validator = {
   payload: {
-    selection: Joi.any().allow('yes', 'no').required(),
+    selection: Joi.any().required(),
     platform: Joi.string().required(),
     os_version: Joi.string().required(),
     phone_make: Joi.string().required(),
