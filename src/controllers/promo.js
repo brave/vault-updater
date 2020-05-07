@@ -450,7 +450,14 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       description: "Redirect to platform specific download handler",
       handler: async function (request, reply) {
-        reply(buildSuperReferrerResponse(request.params.referral_code))
+        const ua = parseUserAgent(request.headers['user-agent'])
+        // redirect to /download link if Android or Windows
+        if (ua.os.name.match(/Android/) || ua.os.name.match(/Windows/)) {
+          return reply().redirect(`/download/${request.params.referral_code}`)
+        } else {
+          // client side detection for iOS iPad and iPhone
+          reply(buildSuperReferrerResponse(request.params.referral_code))
+        }
       }
     }
   }
