@@ -54,7 +54,6 @@ tap.test('iOS Controller', function (t) {
     }
   }
   var endpoints = ios.setup(runtimeMock)
-  process.env.STORE_BRAVE_HEADERS = 1
   endpoints[0].config.handler(requestMock, replyMock)
   t.plan(4)
 })

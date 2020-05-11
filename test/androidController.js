@@ -25,7 +25,9 @@ var expected = {
   platform: 'android',
   ref: 'none',
   woi: '2016-01-04',
-  country_code: 'UNKNOWN'
+  country_code: 'UNKNOWN',
+  braveAPIKeyStatus: 'missing',
+  braveDataCenter: false,
 }
 
 tap.test('Android Controller', function (t) {

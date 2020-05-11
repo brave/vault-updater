@@ -27,7 +27,9 @@ var expected = {
   platform: 'winia32-bc',
   ref: 'none',
   woi: '2016-01-04',
-  country_code: 'UNKNOWN'
+  country_code: 'UNKNOWN',
+  braveDataCenter: false,
+  braveAPIKeyStatus: 'invalid',
 }
 
 tap.test('Brave Core Controller', function (t) {
@@ -51,7 +53,9 @@ tap.test('Brave Core Controller', function (t) {
     info: {
       remoteAddress: '1.1.1.1'
     },
-    headers: {}
+    headers: {
+      'x-brave-api-key': 'invalid_key',
+    }
   }
   var endpoints = ctrl.setup(runtimeMock)
   endpoints[0].config.handler(requestMock, replyMock)
