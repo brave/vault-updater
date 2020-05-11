@@ -25,7 +25,8 @@ var expected = {
   ref: 'none',
   woi: '2019-01-07',
   country_code: 'UNKNOWN',
-  braveDataCenter: true
+  braveDataCenter: true,
+  braveAPIKeyStatus: 'matched',
 }
 
 tap.test('iOS Controller', function (t) {
@@ -49,6 +50,7 @@ tap.test('iOS Controller', function (t) {
     headers: {
       'X-Forwarded-For': '1.1.1.1',
       'x-brave-req-from-dc': 'true',
+      'x-brave-api-key': 'c',
     }
   }
   var endpoints = ios.setup(runtimeMock)

@@ -29,5 +29,20 @@ tap.test("custom Brave header handling", (t) => {
   usage = headers.potentiallyStoreBraveHeaders(request, usage)
   t.ok(usage.braveDataCenter === true, 'braveDataCenter set if true')
 
+  usage = {}
+  request = { headers: { } }
+  usage = headers.potentiallyStoreBraveHeaders(request, usage)
+  t.ok(usage.braveAPIKeyStatus === 'missing', 'api key match status set to missing')
+
+  usage = {}
+  request = { headers: { 'x-brave-api-key': 'INVALID' } }
+  usage = headers.potentiallyStoreBraveHeaders(request, usage)
+  t.ok(usage.braveAPIKeyStatus === 'invalid', 'api key match status set to invalid')
+
+  usage = {}
+  request = { headers: { 'x-brave-api-key': 'b' } }
+  usage = headers.potentiallyStoreBraveHeaders(request, usage)
+  t.equal(usage.braveAPIKeyStatus, 'matched', 'api key match status set to matched')
+
   t.end()
 })
