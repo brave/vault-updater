@@ -445,7 +445,7 @@ exports.setup = (runtime, releases) => {
 
   const redirectSuperReferrerGet = {
     method: 'GET',
-    path: '/super/{referral_code}',
+    path: '/r/{referral_code}',
     config: {
       tags: ['api'],
       description: "Redirect to platform specific download handler",
