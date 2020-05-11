@@ -249,9 +249,44 @@ exports.setup = (runtime, releases) => {
     }
   }
 
-  const ios_download_get = {
+  const buildiOSSignalsHTML = (referralCode) => {
+    return `
+  <html>
+  <body>
+    <script>
+    var o = {
+      screenHeight: screen.height,
+      screenWidth: screen.width,
+      pixelDepth: screen.pixelDepth,
+      colorDepth: screen.colorDepth,
+      maxTouchPoints: navigator.maxTouchPoints,
+      languages: navigator.languages.join('|'),
+      deviceMemory: navigator.deviceMemory,
+      tzo: new Date().getTimezoneOffset(),
+      tz: new window.Intl.DateTimeFormat().resolvedOptions().timeZone,
+    }
+    window.location = '/hop/ios/${referralCode}?s=' + btoa(JSON.stringify(o))
+    </script>
+  </body>
+  </html>
+  `
+  }
+
+  const iosDownloadGet = {
     method: 'GET',
     path: '/download/ios/{referral_code}',
+    config: {
+      description: "Redirect download to App Store",
+      tags: ['api'],
+      handler: async function (request, reply) {
+        reply(buildiOSSignalsHTML(request.params.referral_code))
+      }
+    }
+  }
+
+  const ios_download_get = {
+    method: 'GET',
+    path: '/hop/ios/{referral_code}',
     config: {
       description: "Redirect download to App Store",
       tags: ['api'],
@@ -492,7 +527,8 @@ exports.setup = (runtime, releases) => {
     nonua_initialize_put,
     redirectMobileGET,
     redirect_channel_download,
-    customHeadersGet
+    customHeadersGet,
+    iosDownloadGet,
   ])
 }
 
