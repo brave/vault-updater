@@ -57,16 +57,26 @@ exports.ipAddressFrom = (request) => {
   // Since it is easy to forge an X-Forwarded-For field the given information should be used with care.
   // The last IP address is always the IP address that connects to the last proxy, which means it is the most reliable source of information.
 
-  const forwardedFor = request.headers['x-forwarded-for']
-  if (forwardedFor) {
-    const forwardedIps = forwardedFor.split(',')
-    if (process.env.BEHIND_FASTLY) {
-      return forwardedIps[forwardedIps.length - 2].trim() || request.info.remoteAddress
+  if (process.env.X_FORWARDED_NONSTANDARD) {
+    const forwardedFor = request.headers['x-forwarded-for']
+    if (forwardedFor) {
+      const forwardedIps = forwardedFor.split(',')
+      if (process.env.BEHIND_FASTLY) {
+        return forwardedIps[forwardedIps.length - 2].trim() || request.info.remoteAddress
+      } else {
+        return forwardedIps[forwardedIps.length - 1].trim() || request.info.remoteAddress
+      }
     } else {
-      return forwardedIps[forwardedIps.length - 1].trim() || request.info.remoteAddress
+      return request.info.remoteAddress
     }
   } else {
-    return request.info.remoteAddress
+    const forwardedFor = request.headers['x-forwarded-for']
+    if (forwardedFor) {
+      const forwardedIps = forwardedFor.split(',')
+      return forwardedIps[0].trim() || request.info.remoteAddress
+    } else {
+      return request.info.remoteAddress
+    }
   }
 }
 
