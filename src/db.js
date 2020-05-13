@@ -23,7 +23,8 @@ const usageSchema = Joi.object().keys({
   woi: Joi.string(),
   ref: Joi.string(),
   country_code: Joi.string(),
-  braveDataCenter: Joi.boolean()
+  braveDataCenter: Joi.boolean(),
+  braveAPIKeyStatus: Joi.string(),
 })
 .with('daily', 'weekly', 'monthly')
 

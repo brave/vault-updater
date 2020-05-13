@@ -1,3 +1,5 @@
+const verifications = require('../verification')
+
 const _ = require('underscore')
 
 const inspectBraveHeaders = (request) => {
@@ -13,13 +15,25 @@ const storeDataCenterFlag = (headers, usage) => {
   return usage
 }
 
+const storeAPIKeyValidation = (headers, usage) => {
+  if (headers['x-brave-api-key']) {
+    usage.braveAPIKeyStatus = verifications.isValidAPIKey(headers['x-brave-api-key']) ? 'matched' : 'invalid'
+  } else {
+    usage.braveAPIKeyStatus = 'missing'
+  }
+  return usage
+}
+
 const potentiallyStoreBraveHeaders = (request, usage) => {
   if (!process.env.STORE_BRAVE_HEADERS) {
     return usage
   }
-  // first brave flag to test is data center
+
+  // data center
   usage = storeDataCenterFlag(request.headers, usage)
-  // todo add other brave flags
+  // api key
+  usage = storeAPIKeyValidation(request.headers, usage)
+
   return usage
 }
 
