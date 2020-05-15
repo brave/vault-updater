@@ -2,14 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-let Hapi = require('hapi')
-
-process.env.NEW_RELIC_NO_CONFIG_FILE = true
-if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
-  var newrelic = require('newrelic')
-} else {
-  console.log("Warning: New Relic not configured!")
+if (process.env.NEWRELIC_LICENSE_KEY) {
+  require('newrelic')
 }
+
+let Hapi = require('hapi')
 
 let logger = require('logfmt')
 let Inert = require('inert')
