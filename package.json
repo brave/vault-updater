@@ -17,6 +17,7 @@
   "author": "Brave",
   "license": "MPL-2.0",
   "dependencies": {
+    "@newrelic/native-metrics": "^5.1.0",
     "amqplib": "^0.4.1",
     "aws-sdk": "^2.2.30",
     "babel-cli": "^6.2.0",
@@ -34,7 +35,7 @@
     "logfmt": "^1.2.0",
     "moment": "^2.11.1",
     "mongodb": "^3.5.2",
-    "newrelic": "^1.25.3",
+    "newrelic": "^6.7.1",
     "proxy-agent": "^2.2.0",
     "randomstring": "^1.1.5",
     "request": "^2.83.0",
