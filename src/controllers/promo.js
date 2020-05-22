@@ -18,6 +18,7 @@ const MC = require('../memory-cache')
 
 const S3_DOWNLOAD_BUCKET = process.env.S3_DOWNLOAD_BUCKET || 'brave-browser-downloads'
 const S3_DOWNLOAD_REGION = process.env.S3_DOWNLOAD_REGION || 'us-east-1'
+const SUPER_REFERRER_REDIRECT = process.env.SUPER_REFERRER_REDIRECT || 'staging.brave.com'
 
 if (!process.env.S3_DOWNLOAD_KEY || !process.env.S3_DOWNLOAD_SECRET) {
   throw new Error('S3_DOWNLOAD_KEY and S3_DOWNLOAD_SECRET should be set to the S3 account credentials for storing crash reports')
@@ -423,26 +424,6 @@ exports.setup = (runtime, releases) => {
     }
   }
 
-  const buildSuperReferrerResponse = (referralCode) => {
-    return `
-    <html>
-      <body>
-        <script>
-           // is iOS (iPhone and iPad)
-           var isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
-             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
-             !window.MSStream
-           if (isIOS) {
-             window.location = '${process.env.SUPER_REFERRER_REDIRECT}/${referralCode}'
-           } else {
-             window.location = '/download/${referralCode}'
-           }
-        </script>
-      </body>
-    </html>
-    `
-  }
-
   const redirectSuperReferrerGet = {
     method: 'GET',
     path: '/r/{referral_code}',
@@ -450,13 +431,20 @@ exports.setup = (runtime, releases) => {
       tags: ['api'],
       description: "Redirect to platform specific download handler",
       handler: async function (request, reply) {
+        const referralCode = request.params.referral_code
         const ua = parseUserAgent(request.headers['user-agent'])
-        // redirect to /download link if Android or Windows
-        if (ua.os.name.match(/Android/) || ua.os.name.match(/Windows/)) {
-          return reply().redirect(`/download/${request.params.referral_code}`)
+        if (ua.os.name.match(/Android/)) {
+          // Normal download for Android
+          return reply().redirect(`/download/${referralCode}`)
         } else {
-          // client side detection for iOS iPad and iPhone
-          reply(buildSuperReferrerResponse(request.params.referral_code))
+          // All other platforms go to super referrer landing page
+          const superReferrer = `${SUPER_REFERRER_REDIRECT}/${referralCode}`
+          return reply().redirect(superReferrer)
+        }
+      },
+      validate: {
+        params: {
+          referral_code: Joi.string().required()
         }
       }
     }
