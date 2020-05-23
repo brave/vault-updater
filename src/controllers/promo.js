@@ -98,7 +98,8 @@ exports.setup = (runtime, releases) => {
       description: "Retrieve custom headers from referral",
       tags: ['api'],
       handler: async (request, reply) => {
-        reply(await customHeadersCacheFunc())
+        // static for now - will need to re-assess how this is done
+        reply([{"domains":["coinbase.com","api.coinbase.com"],"headers":{"X-Brave-Partner":"coinbase"},"cookieNames":[],"expiration":31536000000},{"domains":["softonic.com","softonic.cn","softonic.jp","softonic.pl","softonic.com.br"],"headers":{"X-Brave-Partner":"softonic"},"cookieNames":[],"expiration":31536000000},{"domains":["marketwatch.com","barrons.com"],"headers":{"X-Brave-Partner":"dowjones"},"cookieNames":[],"expiration":31536000000},{"domains":["townsquareblogs.com","tasteofcountry.com","ultimateclassicrock.com","xxlmag.com","popcrush.com"],"headers":{"X-Brave-Partner":"townsquare"},"cookieNames":[],"expiration":31536000000},{"domains":["cheddar.com"],"headers":{"X-Brave-Partner":"cheddar"},"cookieNames":[],"expiration":31536000000},{"domains":["upbit.com","sg.upbit.com","id.upbit.com","ccx.upbit.com","ccx.upbitit.com","ccxsg.upbit.com","cgate.upbitit.be","ccxid.upbit.com","cgate.upbitit.tv"],"headers":{"X-Brave-Partner":"upbit"},"cookieNames":[],"expiration":31536000000},{"domains":["eaff.com","stg.eaff.com"],"headers":{"X-Brave-Partner":"eaff"},"cookieNames":[],"expiration":31536000000},{"domains":["sandbox.uphold.com","api-sandbox.uphold.com","uphold.com","api.uphold.com"],"headers":{"X-Brave-Partner":"uphold"},"cookieNames":[],"expiration":31536000000}])
       }
     }
   }
