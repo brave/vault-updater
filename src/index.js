@@ -11,7 +11,6 @@ let Hapi = require('hapi')
 let logger = require('logfmt')
 let Inert = require('inert')
 let assert = require('assert')
-let setGlobalHeader = require('hapi-set-header')
 let _ = require('underscore')
 let h2o2 = require('h2o2')
 
@@ -106,10 +105,19 @@ mq.setup((senders) => {
       })
     }
 
-    // Handle the boom response as well as all other requests (cache control for telemetry)
-    setGlobalHeader(server, 'Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0')
-    setGlobalHeader(server, 'Pragma', 'no-cache')
-    setGlobalHeader(server, 'Expires', 0)
+    server.ext('onPreResponse', (request, reply) => {
+      const response = request.response;
+      if (request.response.isBoom) {
+        response.output.headers['cache-control'] = 'no-cache, no-store, must-revalidate, private, max-age=0'
+        response.output.headers('pragma', 'no-cache')
+        response.output.headers('expires', 0)
+      } else if (!('cache-control' in response.headers)) {
+        response.header('cache-control', 'no-cache, no-store, must-revalidate, private, max-age=0')
+        response.header('pragma', 'no-cache')
+        response.header('expires', 0)
+      }
+      reply.continue()
+    })
 
     serv.listener.once('clientError', function (e) {
       console.error(e)
