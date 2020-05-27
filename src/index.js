@@ -109,8 +109,8 @@ mq.setup((senders) => {
       const response = request.response;
       if (request.response.isBoom) {
         response.output.headers['cache-control'] = 'no-cache, no-store, must-revalidate, private, max-age=0'
-        response.output.headers('pragma', 'no-cache')
-        response.output.headers('expires', 0)
+        response.output.headers['pragma'] = 'no-cache'
+        response.output.headers['expires'] =  0
       } else if (!('cache-control' in response.headers)) {
         response.header('cache-control', 'no-cache, no-store, must-revalidate, private, max-age=0')
         response.header('pragma', 'no-cache')
