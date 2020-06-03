@@ -20,6 +20,7 @@ const MC = require('../memory-cache')
 
 const S3_DOWNLOAD_BUCKET = process.env.S3_DOWNLOAD_BUCKET || 'brave-browser-downloads'
 const S3_DOWNLOAD_REGION = process.env.S3_DOWNLOAD_REGION || 'us-east-1'
+const SUPER_REFERRER_REDIRECT = process.env.SUPER_REFERRER_REDIRECT || 'staging.brave.com'
 
 if (!process.env.S3_DOWNLOAD_KEY || !process.env.S3_DOWNLOAD_SECRET) {
   throw new Error('S3_DOWNLOAD_KEY and S3_DOWNLOAD_SECRET should be set to the S3 account credentials for storing crash reports')
@@ -427,6 +428,32 @@ exports.setup = (runtime, releases) => {
     }
   }
 
+  const redirectSuperReferrerGet = {
+    method: 'GET',
+    path: '/r/{referral_code}',
+    config: {
+      tags: ['api'],
+      description: "Redirect to platform specific download handler",
+      handler: async function (request, reply) {
+        const referralCode = request.params.referral_code
+        const ua = parseUserAgent(request.headers['user-agent'])
+        if (ua.os.name.match(/Android/)) {
+          // Normal download for Android
+          return reply().redirect(`/download/${referralCode}`)
+        } else {
+          // All other platforms go to super referrer landing page
+          const superReferrer = `${SUPER_REFERRER_REDIRECT}/${referralCode}`
+          return reply().redirect(superReferrer)
+        }
+      },
+      validate: {
+        params: {
+          referral_code: Joi.string().required()
+        }
+      }
+    }
+  }
+
   const redirect_get = {
     method: 'GET',
     path: '/download/{referral_code}',
@@ -496,7 +523,8 @@ exports.setup = (runtime, releases) => {
     nonua_initialize_put,
     redirectMobileGET,
     redirect_channel_download,
-    customHeadersGet
+    customHeadersGet,
+    redirectSuperReferrerGet
   ])
 }
 
