@@ -100,6 +100,22 @@ exports.countryCodeFrom = (request) => {
   return (request.headers['x-brave-country-code'] || 'unknown').toUpperCase()
 }
 
+/* Country codes with, on average, less than 100 DAU that we want to exclude
+ * from certain collections for privacy purposes. Eventually we will want to
+  * make this a dynamic list. */
+const countryCodesLowDAU = new Set([
+  'AX', 'AS', 'AI', 'AQ', 'AG', 'BQ', 'BV', 'IO', 'BI', 'CV', 'CF', 'TD', 'CX',
+  'CC', 'KM', 'CG', 'CK', 'DJ', 'DM', 'GQ', 'ER', 'FK', 'FO', 'GF', 'TF', 'GM',
+  'GL', 'GD', 'GG', 'GN', 'GW', 'HM', 'VA', 'KI', 'KP', 'LS', 'LI', 'MH', 'MR',
+  'KN', 'MF', 'PM', 'VC', 'WS', 'SM', 'ST', 'SC', 'SL', 'SX', 'SB', 'GS', 'SS',
+  'SJ', 'TJ', 'TL', 'TK', 'TO', 'TC', 'TV', 'UM', 'VU', 'VI', 'WF', 'EH', 'YT',
+  'FM', 'MC', 'MS', 'NR', 'NE', 'NU', 'NF', 'MP', 'PW', 'PN', 'BL', 'SH',
+])
+
+exports.shouldExcludeCountryCode = function(countryCode) {
+  return countryCodesLowDAU.has(countryCode)
+}
+
 // promisified request
 exports.prequest = function (url) {
   return new Promise((resolve, reject) => {

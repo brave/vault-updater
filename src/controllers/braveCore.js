@@ -22,6 +22,7 @@ let validator = {
     monthly: Joi.valid(booleanString).required(),
     first: Joi.valid(booleanString).required(),
     woi: Joi.string(),
+    dtoi: Joi.string().optional(),
     ref: Joi.string()
   }
 }
@@ -29,7 +30,8 @@ let validator = {
 // Build a usage object if query parameters passed in
 let buildUsage = (request) => {
   if (request.query.daily) {
-    return {
+    const country_code = common.countryCodeFrom(request)
+    const usagePing = {
       daily: request.query.daily === 'true',
       weekly: request.query.weekly === 'true',
       monthly: request.query.monthly === 'true',
@@ -39,8 +41,13 @@ let buildUsage = (request) => {
       channel: request.query.channel || 'unknown',
       woi: request.query.woi || '2016-01-04',
       ref: request.query.ref || 'none',
-      country_code: common.countryCodeFrom(request)
+      country_code: country_code
     }
+    const dtoi = request.query.dtoi
+    if (!common.shouldExcludeCountryCode(country_code) && dtoi
+          && dtoi !== 'null')
+      usagePing.dtoi = request.query.dtoi
+    return usagePing
   } else {
     return null
   }
