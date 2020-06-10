@@ -6,14 +6,15 @@ const Joi = require('joi')
 
 let platforms = ['winia32-bc', 'winx64-bc']
 let channels = ['dev', 'release', 'nightly', 'beta']
+let installerStates = ['startup', 'download-complete', 'installer-run']
 
 let validator = {
   query: {
     platform: Joi.valid(platforms).required(),
     channel: Joi.valid(channels).required(),
+    event: Joi.valid(installerStates).required(),
     version: Joi.string().required(),
-    ref: Joi.string(),
-    event: Joi.string().only(['startup', 'download-complete', 'installer-run']).required()
+    ref: Joi.string().allow('')
   }
 }
 
