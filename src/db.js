@@ -21,7 +21,8 @@ const usageSchema = Joi.object().keys({
   version: Joi.string(),
   channel: Joi.string(),
   woi: Joi.string(),
-  dtoi: Joi.string().optional(),
+  dtoi: Joi.string().optional(),    /* Optional for older browser releases. */
+  api_key: Joi.string().optional(), /* Optional for older browser releases. */
   ref: Joi.string(),
   country_code: Joi.string(),
   braveDataCenter: Joi.boolean(),

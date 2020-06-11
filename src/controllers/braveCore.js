@@ -25,7 +25,8 @@ let validator = {
     monthly: Joi.valid(booleanString).required(),
     first: Joi.valid(booleanString).required(),
     woi: Joi.string(),
-    dtoi: Joi.string().optional(),
+    dtoi: Joi.string().optional(),    /* Optional for older browser releases. */
+    api_key: Joi.string().optional(), /* Optional for older browser releases. */
     ref: Joi.string()
   }
 }
@@ -46,10 +47,16 @@ let buildUsage = (request) => {
       ref: request.query.ref || 'none',
       country_code: country_code
     }
+
+    /* Params introduced in newer releases of the browser version >= 1.9.x. */
     const dtoi = request.query.dtoi
+    const api_key = request.query.api_key
     if (!common.shouldExcludeCountryCode(country_code) && dtoi
           && dtoi !== 'null')
       usagePing.dtoi = request.query.dtoi
+    if (api_key)
+      usagePing.api_key = api_key
+
     return usagePing
   } else {
     return null
