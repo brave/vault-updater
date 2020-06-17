@@ -7,7 +7,6 @@ let moment = require('moment')
 
 const Joi = require('joi')
 const MongoClient = require('mongodb').MongoClient
-const s3 = require('./s3')
 
 const mongoURL = process.env.MLAB_URI
 if (!mongoURL) throw new Error('MLAB_URI must be set in environment')

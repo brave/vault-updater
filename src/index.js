@@ -91,7 +91,6 @@ mq.setup((senders) => {
 
     server.register({ register: h2o2, options: { passThrough: true } }, function (err) {})
     server.register(require('blipp'), function () {})
-    server.register(require('hapi-serve-s3'), function () {})
 
     if (process.env.LOG_HEADERS) {
       serv.listener.on('request', (request, event, tags) => {
