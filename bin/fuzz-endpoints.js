@@ -109,29 +109,6 @@ const installation = function() {
   return rp.put(options)
 }
 
-// POST /1/crashes
-// POST /1/bc-crashes
-const crashReport = function() {
-  const crashVersion = _.sample(
-    [
-      //'crashes',
-      'bc-crashes'
-    ])
-  const path = `1/${crashVersion}`
-  const endpoint = `${url}${path}`
-
-  const options = {
-    url: endpoint,
-    // TODO: Change this to make JSON blobs vary in size?
-    json: {
-      "test": "test"
-    }
-  }
-
-  console.log(`Queueing request for ${path}`)
-  return rp.post(options)
-}
-
 // POST /extensions
 const reportExtensions = function() {
   const path = 'extensions'
@@ -201,8 +178,7 @@ const run = async function() {
     [ installation, 5 ],
     [ installerEvents, 5 ],
     [ getRelease, 3 ],
-    [ reportExtensions, 2 ],
-    [ crashReport, 1 ],
+    [ reportExtensions, 2 ]
   ]
 
   const weightedSample = function() {
