@@ -10,6 +10,9 @@ const headers = require('../lib/headers')
 
 let platforms = ['osx-bc', 'winia32-bc', 'winx64-bc', 'linux-bc', 'android-bc']
 let channels = ['dev', 'release', 'nightly', 'beta', 'stable']
+if (process.env.TESTING)
+  channels.push('developer')
+
 let booleanString = ['true', 'false']
 
 let validator = {
