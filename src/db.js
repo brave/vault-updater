@@ -41,6 +41,7 @@ exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
     const braveCoreUsageCollection = db.collection('brave_core_usage')
     const crashesCollection = db.collection('crashes')
     const installerEventCollection = db.collection('installer_events')
+    const braveReferrerCollection = db.collection('download_referrers')
 
     // install a series of model data handlers on connection
     db.models = {
@@ -116,6 +117,16 @@ exports.setup = (amqpSender, amqpBraveCoreSender, done) => {
           // Null usage indicates no values passed
           done(null, {})
         }
+      },
+
+      insertReferrer: (referralCode, referrer, done) => {
+        braveReferrerCollection.insertOne(
+          {
+            referral_code: referralCode,
+            referrer: referrer
+          },
+          done
+        )
       },
 
       // insert iOS usage record
