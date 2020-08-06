@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-let Joi = require('joi')
+let Joi = require('@hapi/joi')
 
 let verification = require('../verification')
 let common = require('../common')
@@ -17,13 +17,13 @@ let booleanString = ['true', 'false']
 
 let validator = {
   query: {
-    platform: Joi.valid(platforms).required(),
-    channel: Joi.valid(channels).required(),
+    platform: Joi.valid(...platforms).required(),
+    channel: Joi.valid(...channels).required(),
     version: Joi.string().required(),
-    daily: Joi.valid(booleanString).required(),
-    weekly: Joi.valid(booleanString).required(),
-    monthly: Joi.valid(booleanString).required(),
-    first: Joi.valid(booleanString).required(),
+    daily: Joi.valid(...booleanString).required(),
+    weekly: Joi.valid(...booleanString).required(),
+    monthly: Joi.valid(...booleanString).required(),
+    first: Joi.valid(...booleanString).required(),
     woi: Joi.string(),
     dtoi: Joi.string().optional(),
     ref: Joi.string()
@@ -60,25 +60,28 @@ exports.setup = (runtime) => {
   const get = {
     method: 'GET',
     path: '/1/usage/brave-core',
-    config: {
-      handler: (request, reply) => {
-        let usage = buildUsage(request)
-        usage = headers.potentiallyStoreBraveHeaders(request, usage)
-        if (verification.isUsagePingValid(request, usage, [], [])) {
-          runtime.mongo.models.insertBraveCoreUsage(usage, (err, results) => {
-            if (err) {
-              console.log(err.toString())
-              reply({ ts: (new Date()).getTime(), status: 'error', message: err }).code(500)
-            } else {
-              reply({ ts: (new Date()).getTime(), status: 'ok' })
-            }
-          })
-        } else {
-          verification.writeFilteredUsagePing(runtime.mongo, usage, (err, results) => {
-            reply({ ts: (new Date()).getTime(), status: 'ok' })
-          })
-        }
-      },
+    handler: (request, h) => {
+      let usage = buildUsage(request)
+      usage = headers.potentiallyStoreBraveHeaders(request, usage)
+      let resp = h.response({ ts: (new Date()).getTime(), status: 'ok' })
+      if (verification.isUsagePingValid(request, usage, [], [])) {
+        runtime.mongo.models.insertBraveCoreUsage(usage, (err, results) => {
+          if (err) {
+            console.log(err.toString())
+            resp = h.response({ ts: (new Date()).getTime(), status: 'error', message: err }).code(500)
+          }
+        })
+      } else {
+        verification.writeFilteredUsagePing(runtime.mongo, usage, (err, results) => {
+          if (err) {
+            console.log(err.toString())
+          }
+        })
+      }
+      return resp
+    },
+    options: {
+      description: "* Record Brave Core usage record",
       validate: validator
     }
   }

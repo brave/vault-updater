@@ -29,19 +29,18 @@ exports.setup = (runtime) => {
   const get = {
     method: 'GET',
     path: '/1/usage/android',
-    config: {
-      handler: function (request, reply) {
-        var usage = buildUsage(request)
-        usage = headers.potentiallyStoreBraveHeaders(request, usage)
-        runtime.mongo.models.insertAndroidUsage(usage, (err, results) => {
-          if (err) {
-            console.log(err.toString())
-            reply({ ts: (new Date()).getTime(), status: 'error', message: err }).code(500)
-          } else {
-            reply({ ts: (new Date()).getTime(), status: 'ok' })
-          }
-        })
-      }
+    handler: function (request, h) {
+      var usage = buildUsage(request)
+      usage = headers.potentiallyStoreBraveHeaders(request, usage)
+      runtime.mongo.models.insertAndroidUsage(usage, (err, results) => {
+        if (err) {
+          console.log(err.toString())
+        }
+      })
+      return h.response({ ts: (new Date()).getTime(), status: 'ok' })
+    },
+    options: {
+      description: '* Record android usage record',
     }
   }
 

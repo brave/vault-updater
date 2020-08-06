@@ -1,10 +1,10 @@
 let assert = require('assert')
-let Joi = require('joi')
+let Joi = require('@hapi/joi')
 let common = require('../common')
 let _ = require('underscore')
 let qs = require('querystring')
 let semver = require('semver')
-let boom = require('boom')
+let boom = require('@hapi/boom')
 
 let channelData = require('../common').channelData
 let platformData = require('../common').platformData
@@ -14,7 +14,7 @@ let platforms = _.keys(platformData)
 
 let commonValidator = {
   params: {
-    platform: Joi.valid(platforms),
+    platform: Joi.valid(...platforms),
     channel: Joi.string(),
     version: Joi.string()
   }
@@ -133,23 +133,24 @@ var setup = (runtime, releases) => {
   let latestBraveCore = {
     method: 'GET',
     path: '/latest/{platform}/{channel?}',
-    config: {
-      handler: function(request, reply) {
-        request.params.channel = request.params.channel || 'release'
-        if (!braveCoreChannelIdentifiers.hasOwnProperty(request.params.channel)) {
-          console.log('unknown channel')
-          return reply("unknown channel").code(404)
-        }
-        if (request.params.platform && braveCoreRedirects[request.params.platform]) {
-          let url = braveCoreRedirects[request.params.platform]
-          let channelSuffix = braveCoreChannelIdentifiers[request.params.channel]
-          if (request.params.platform === 'osx' && request.params.channel !== 'release') channelSuffix = '-' + channelSuffix
-          url = braveCoreBase + url.replace('[CHANNEL]', channelSuffix)
-          reply().redirect(url)
-        } else {
-          reply().redirect(LINUX_REDIRECT_URL)
-        }
+    handler: function(request, h) {
+      request.params.channel = request.params.channel || 'release'
+      if (!braveCoreChannelIdentifiers.hasOwnProperty(request.params.channel)) {
+        console.log('unknown channel')
+        return h.response("unknown channel").code(404)
       }
+      if (request.params.platform && braveCoreRedirects[request.params.platform]) {
+        let url = braveCoreRedirects[request.params.platform]
+        let channelSuffix = braveCoreChannelIdentifiers[request.params.channel]
+        if (request.params.platform === 'osx' && request.params.channel !== 'release') channelSuffix = '-' + channelSuffix
+        url = braveCoreBase + url.replace('[CHANNEL]', channelSuffix)
+        return h.redirect(url)
+      } else {
+        return h.redirect(LINUX_REDIRECT_URL)
+      }
+    },
+    options: {
+      description: '* Return redirect to latest binary for a platform and channel'
     }
   }
 
@@ -158,12 +159,13 @@ var setup = (runtime, releases) => {
   let legacy_get = {
     method: 'GET',
     path: '/1/releases/{platform}/{version}',
-    config: {
-      handler: function (request, reply) {
-        let url = `/1/releases/dev/${request.params.version}/${request.params.platform}?${qs.stringify(request.query)}`
-        console.log("redirecting to " + url)
-        reply().redirect(url)
-      }
+    handler: function (request, h) {
+      let url = `/1/releases/dev/${request.params.version}/${request.params.platform}?${qs.stringify(request.query)}`
+      console.log("redirecting to " + url)
+      return h.redirect(url)
+    },
+    options: {
+      description: "* LEGACY MUON"
     }
   }
 
@@ -171,54 +173,55 @@ var setup = (runtime, releases) => {
   let get = {
     method: 'GET',
     path: '/1/releases/{channel}/{version}/{platform}',
-    config: {
-      handler: function (request, reply) {
-        // Handle undefined platforms
-        if (request.params.platform === 'undefined') {
-          request.params.platform = 'unknown'
-        }
+    handler: function (request, h) {
+      // Handle undefined platforms
+      if (request.params.platform === 'undefined') {
+        request.params.platform = 'unknown'
+      }
 
-        let channel = request.params.channel
-        let platform = request.params.platform
-        let version = request.params.version
+      let channel = request.params.channel
+      let platform = request.params.platform
+      let version = request.params.version
 
-        if (!semver.valid(version)) return reply(boom.badRequest("Invalid version " + version))
-        if (!channelData[channel]) return reply(boom.badRequest("Invalid channel " + channel))
+      if (!semver.valid(version)) return h.response(boom.badRequest("Invalid version " + version))
+      if (!channelData[channel]) return h.response(boom.badRequest("Invalid channel " + channel))
 
-        // Build the usage record (for Mongo)
-        let usage = buildUsage(request)
+      // Build the usage record (for Mongo)
+      let usage = buildUsage(request)
 
-        // Array of potential releases
-        let potentials = potentialReleases(
-          releases,
-          channel,
-          platform,
-          version,
-          request.query.accept_preview
-        )
+      // Array of potential releases
+      let potentials = potentialReleases(
+        releases,
+        channel,
+        platform,
+        version,
+        request.query.accept_preview
+      )
 
-        let targetRelease = null
-        if (!_.isEmpty(potentials)) {
-          // Most current release
-          targetRelease = _.clone(potentials[0])
-          // Concatenate the release notes for all potential updates
-          targetRelease.notes = buildReleaseNotes(potentials)
-        }
+      let targetRelease = null
+      if (!_.isEmpty(potentials)) {
+        // Most current release
+        targetRelease = _.clone(potentials[0])
+        // Concatenate the release notes for all potential updates
+        targetRelease.notes = buildReleaseNotes(potentials)
+      }
 
-        // Insert usage record if not null
-        runtime.mongo.models.insertUsage(usage, (err, results) => {
-          assert.equal(err, null)
-          request.log([], 'get')
-          if (targetRelease) {
-            var response = responseFormatter(targetRelease, channel, platform)
-            console.log(response)
-            reply(response)
-          } else {
-            let response = reply('No Content')
-            response.code(204)
-          }
-        })
-      },
+      // Insert usage record if not null
+      runtime.mongo.models.insertUsage(usage, (err, results) => {
+        assert.equal(err, null)
+        request.log([], 'get')
+      })
+
+      if (targetRelease) {
+        var response = responseFormatter(targetRelease, channel, platform)
+        console.log(response)
+        return h.response(response)
+      } else {
+        return h.response('No Content').code(204)
+      }
+    },
+    options: {
+      description: '* LEGACY MUON',
       validate: commonValidator
     }
   }

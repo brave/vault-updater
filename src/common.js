@@ -5,12 +5,12 @@ const uap = require('user-agent-parser')
 exports.root = {
   method: 'GET',
   path: '/',
-  config:
-  { handler: function (request, reply) {
+  handler: function (request, h) {
     request.log([], 'Auto updater')
-    reply('Auto updater')
+    return h.response('Auto updater')
   },
-    validate: undefined
+  options: {
+    description: "* report service name",
   }
 }
 
