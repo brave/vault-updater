@@ -454,6 +454,31 @@ exports.setup = (runtime, releases) => {
     }
   }
 
+  const saveReferrerInfo = {
+    method: 'GET',
+    path: '/download/referrer',
+    config: {
+      description: "Save referrer header when users download Brave",
+      handler: (request, reply) => {
+        const { referral_code, referrer } = request.query
+        runtime.mongo.models.insertReferrer(referral_code, referral_code, (err, results) => {
+          if (err) {
+            console.log(err.toString())
+            reply({message: err}).code(500)
+          } else {
+            reply('Success')
+          }
+        })
+      },
+      validate: {
+        query: {
+          referral_code: Joi.string().max(30).required(),
+          referrer: Joi.string().required(),
+        }
+      }
+    }
+  }
+
   const redirect_get = {
     method: 'GET',
     path: '/download/{referral_code}',
@@ -524,7 +549,8 @@ exports.setup = (runtime, releases) => {
     redirectMobileGET,
     redirect_channel_download,
     customHeadersGet,
-    redirectSuperReferrerGet
+    redirectSuperReferrerGet,
+    saveReferrerInfo,
   ])
 }
 
